@@ -1,0 +1,118 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pm="http://primefaces.org/mobile" contentType="text/html"
+	renderKitId="PRIMEFACES_MOBILE">
+	<pm:page title="Mobile">
+
+		<pm:view>
+			<pm:header>
+
+			</pm:header>
+			<pm:content>
+				<h:form id="firma">
+					<p:panelGrid columns="2">
+						<pm:field>
+							<p:outputLabel value=" Firma Adı : " />
+							<p:inputText value="#{firmaGirisi.firma.name}" />
+						</pm:field>
+						<pm:field>
+							<p:outputLabel value="Firma Adresi" />
+						</pm:field>
+						<p:column>
+							<pre />
+							<p:panelGrid id="firmaAdresi" columns="1">
+								<p:column>
+									<pm:field>
+										<p:outputLabel for="il" value="İl " />
+										<p:selectOneMenu id="il" value="#{firmaGirisi.secilenIl}"
+											converter="omnifaces.SelectItemsConverter" var="i"
+											filter="true" filterMatchMode="contains">
+											<f:selectItem noSelectionOption="true" itemLabel="İl Seç"
+												itemValue="" />
+											<f:selectItems value="#{firmaGirisi.ilList}" var="il"
+												itemLabel="#{il.adi}" itemValue="#{il}" />
+											<p:column>
+												<h:outputText value="#{i.adi}" />
+											</p:column>
+											<p:ajax update="ilce,mahalle,sokak"
+												listener="#{firmaGirisi.ilSecildi}" />
+										</p:selectOneMenu>
+									</pm:field>
+
+									<pre />
+									<pm:field>v
+								<p:outputLabel for="ilce" value="İlçe " />
+										<p:selectOneMenu id="ilce" value="#{firmaGirisi.secilenIlce}"
+											converter="omnifaces.SelectItemsConverter" var="ic"
+											filter="true" filterMatchMode="contains">
+											<f:selectItem noSelectionOption="true" itemLabel="İlçe Seç"
+												itemValue="" />
+											<f:selectItems value="#{firmaGirisi.ilceList}" var="ilce"
+												itemLabel="#{ilce.adi}" itemValue="#{ilce}" />
+											<p:column>
+												<h:outputText value="#{ic.adi}" />
+											</p:column>
+											<p:ajax update="mahalle,sokak"
+												listener="#{firmaGirisi.ilceSecildi}" />
+										</p:selectOneMenu>
+									</pm:field>
+									<pre />
+									<pm:field>
+										<p:outputLabel for="mahalle" value="Mahalle " />
+										<p:selectOneMenu id="mahalle"
+											value="#{firmaGirisi.secilenMahalle}"
+											converter="omnifaces.SelectItemsConverter" var="m"
+											filter="true" filterMatchMode="contains">
+											<f:selectItem noSelectionOption="true"
+												itemLabel="Mahalle Seç" itemValue="" />
+											<f:selectItems value="#{firmaGirisi.mahalleList}"
+												var="mahalle" itemLabel="#{mahalle.adi}"
+												itemValue="#{mahalle}" />
+											<p:column>
+												<h:outputText value="#{m.adi}" />
+											</p:column>
+											<p:ajax update="sokak"
+												listener="#{firmaGirisi.mahalleSecildi}" />
+										</p:selectOneMenu>
+									</pm:field>
+									<pre />
+									<pm:field>
+										<p:outputLabel for="sokak" value="Sokak " />
+										<p:selectOneMenu id="sokak" value="#{firmaGirisi.firma.sokak}"
+											converter="omnifaces.SelectItemsConverter" var="sk"
+											filter="true" filterMatchMode="contains">
+											<f:selectItem noSelectionOption="true" itemLabel="Sokak Seç"
+												itemValue="" />
+											<f:selectItems value="#{firmaGirisi.sokakList}" var="sokak"
+												itemLabel="#{sokak.adi}" itemValue="#{sokak}" />
+											<p:column>
+												<h:outputText value="#{sk.adi}" />
+											</p:column>
+										</p:selectOneMenu>
+									</pm:field>
+									<pre />
+									<pm:field>
+										<p:outputLabel value="Daire No " />
+										<p:inputText id="daireNo" value="#{firmaGirisi.firma.daireNo}" />
+									</pm:field>
+									<pre />
+									<pm:field>
+										<p:outputLabel value="Kapı No " />
+										<p:inputText id="kapiNo" value="#{firmaGirisi.firma.kapiNo}" />
+									</pm:field>
+									<pre />
+								</p:column>
+							</p:panelGrid>
+						</p:column>
+						<pm:field>
+							<p:commandButton value="Kaydet" action="#{firmaGirisi.kaydet}" />
+							<p:button outcome="firmaList" value="Listele" />
+						</pm:field>
+					</p:panelGrid>
+				</h:form>
+			</pm:content>
+		</pm:view>
+	</pm:page>
+</f:view>

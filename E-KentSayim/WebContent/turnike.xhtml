@@ -1,0 +1,400 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form" style="padding-bottom:200px;">
+		<ui:include src="resources/composite/menu.xhtml" />
+
+		<p:panel header="e14-Turnike" style="text-align:center;">
+
+			<p:panelGrid columns="10">
+				<p:outputLabel value="Bölge :" />
+				<p:selectOneMenu var="b" filter="true"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{turnikeService.turnikeSearch.bolge}">
+					<f:selectItem noSelectionOption="true" itemLabel="Bölge Seç"
+						itemValue="" />
+					<f:selectItems value="#{turnikeService.bolgeList}" var="bolge"
+						itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+					<p:column>
+						<h:outputText value="#{b.ad}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Kullanıcı :" />
+				<p:selectOneMenu var="k" filter="true"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{turnikeService.turnikeSearch.kullanici}">
+					<f:selectItem noSelectionOption="true" itemLabel="Kullanıcı Seç"
+						itemValue="" />
+					<f:selectItems value="#{turnikeService.kullaniciList}"
+						var="kullanici" itemValue="#{kullanici}"
+						itemLabel="#{kullanici.kullaniciAdi}" />
+					<p:column>
+						<h:outputText value="#{k.kullaniciAdi}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Barkod :" />
+				<p:inputText value="#{turnikeService.turnikeSearch.barkod}"
+					placeholder="Barkod" />
+
+				<p:outputLabel value="Cihaz Seri No :" />
+				<p:inputText value="#{turnikeService.turnikeSearch.cihazSeriNo}"
+					placeholder="Cihaz Seri Numarası" />
+
+				<p:outputLabel value="Marka :" />
+				<p:selectOneMenu var="m" filter="true"
+					value="#{turnikeService.turnikeSearch.marka}">
+					<f:selectItem noSelectionOption="true" itemLabel="Marka Seç"
+						itemValue="" />
+					<f:selectItems value="#{turnikeService.markaList}" var="marka"
+						itemValue="#{marka}" itemLabel="#{marka.label}" />
+					<p:column>
+						<h:outputText value="#{m.valueOf}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Model :" />
+				<p:selectOneMenu var="md" filter="true"
+					value="#{turnikeService.turnikeSearch.model}">
+					<f:selectItem noSelectionOption="true" itemLabel="Model Seç"
+						itemValue="" />
+					<f:selectItems value="#{turnikeService.modelList}" var="model"
+						itemValue="#{model}" itemLabel="#{model.label}" />
+					<p:column>
+						<h:outputText value="#{md.valueOf}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="İstasyon/Durak Adı :" />
+				<p:inputText
+					value="#{turnikeService.turnikeSearch.istasyon_DurakAdi}"
+					placeholder="İstasyon/Durak Adı" />
+
+				<p:outputLabel value="Durum :" />
+				<p:selectOneMenu var="dr" filter="true"
+					value="#{turnikeService.turnikeSearch.durum}">
+					<f:selectItem noSelectionOption="true" itemLabel="Durum Seç"
+						itemValue="" />
+					<f:selectItems value="#{turnikeService.durumTipleri}"
+						var="durumTipi" itemValue="#{durumTipi}"
+						itemLabel="#{durumTipi.displayName}" />
+					<p:column>
+						<h:outputText value="#{dr.displayName}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:commandButton value="Ara" process="@parent" update=":form:turnikeTable"
+					action="#{turnikeService.ara}" />
+			</p:panelGrid>
+
+			<p:dataTable id="turnikeTable" var="turnike" paginator="true"
+				sortBy="#{turnike.barkod}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="10,20,50" rows="10"
+				value="#{turnikeService.turnikeList}" editable="true"
+				emptyMessage="Kayıt bulunamadı." style="margin-bottom:20px">
+
+				<p:ajax event="rowEdit" listener="#{turnikeService.guncelle}"
+					update=":form:turnikeTable" />
+
+				<p:column style="text-align:center;" sortBy="gununTarihi"
+					headerText="Günün Tarihi">
+					<p:outputLabel style="width:30px" value="#{turnike.gununTarihi}">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+					</p:outputLabel>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="barkod"
+					headerText="Barkod">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{turnike.barkod}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{turnike.barkod}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="cihazSeriNo"
+					headerText="Cihaz Seri No">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{turnike.cihazSeriNo}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{turnike.cihazSeriNo}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="marka"
+					headerText="Marka">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{turnike.marka}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="m" filter="true" style="width:185px;"
+								value="#{turnike.marka}">
+								<f:selectItem noSelectionOption="true" itemLabel="Marka Seç"
+									itemValue="" />
+								<f:selectItems value="#{turnikeService.markaList}" var="marka"
+									itemValue="#{marka}" itemLabel="#{marka.label}" />
+								<p:column>
+									<h:outputText value="#{m.valueOf}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="model"
+					headerText="Model">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{turnike.model}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="md" filter="true" style="width:185px;"
+								value="#{turnike.model}">
+								<f:selectItem noSelectionOption="true" itemLabel="Model Seç"
+									itemValue="" />
+								<f:selectItems value="#{turnikeService.modelList}" var="model"
+									itemValue="#{model}" itemLabel="#{model.label}" />
+								<p:column>
+									<h:outputText value="#{md.valueOf}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+
+
+				<p:column style="text-align:center;" sortBy="gpsKoordinati"
+					headerText="Gps Koordinatı">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{turnike.gpsKoordinati}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{turnike.gpsKoordinati}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="adres"
+					headerText="Adres">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{turnike.adres}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{turnike.adres}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+
+				<p:column style="text-align:center;" sortBy="istasyon_DurakAdi"
+					headerText="İstasyon/Durak Adı">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{turnike.istasyon_DurakAdi}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{turnike.istasyon_DurakAdi}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="durum"
+					headerText="Durum">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{turnike.durum}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="dr" filter="true" style="width:185px;"
+								value="#{turnike.durum}">
+								<f:selectItem noSelectionOption="true" itemLabel="Durum Seç"
+									itemValue="" />
+								<f:selectItems value="#{turnikeService.durumTipleri}"
+									var="durumTipi" itemValue="#{durumTipi}"
+									itemLabel="#{durumTipi.displayName}" />
+								<p:column>
+									<h:outputText value="#{dr.displayName}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="kullanici.kullaniciAdi"
+					headerText="Kullanıcı">
+					<p:outputLabel style="width:30px"
+						value="#{turnike.kullanici.kullaniciAdi}" />
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="bolge.ad"
+					headerText="Bölge">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{turnike.bolge.ad}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="b" filter="true" style="width:185px;"
+								converter="omnifaces.SelectItemsConverter"
+								value="#{turnike.bolge}">
+								<f:selectItem noSelectionOption="true" itemLabel="Bölge Seç"
+									itemValue="" />
+								<f:selectItems value="#{turnikeService.bolgeList}" var="bolge"
+									itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+								<p:column>
+									<h:outputText value="#{b.ad}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column exportable="false" style="width:14px;text-align: center">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column exportable="false" style="width:26px;text-align: center">
+					<p:commandButton update=":form:turnikeTable" process="@this"
+						action="#{turnikeService.sil}" icon="ui-icon-trash" title="Sil">
+						<f:setPropertyActionListener value="#{turnike}"
+							target="#{turnikeService.turnike}" />
+					</p:commandButton>
+				</p:column>
+
+				<f:facet name="footer">
+					<p:commandButton value="Yeni Turnike Ekle"
+						onclick="PF('dlg1').show();" />
+				</f:facet>
+
+				<f:facet name="footer">
+					<h:commandLink style="float:right" id="excel" immediate="true">
+						<h:graphicImage value="/resources/images/excel.png" width="25"
+							height="25" />
+						<p:dataExporter type="xls" target="turnikeTable"
+							fileName="turnikeRapor" />
+					</h:commandLink>
+				</f:facet>
+
+
+			</p:dataTable>
+
+			<p:dialog id="yeniturnike" header="Yeni Turnike" widgetVar="dlg1"
+				showEffect="size" hideEffect="scale" draggable="false"
+				resizable="false" modal="true">
+				<p:panel id="yeniturnikePanel"
+					style="text-align:center;border-style: none !important;">
+					<p:panelGrid columns="4">
+						<p:outputLabel value="Bölge :" />
+						<p:selectOneMenu var="b" filter="true"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{turnikeService.turnike.bolge}">
+							<f:selectItems value="#{turnikeService.bolgeList}" var="bolge"
+								itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+							<p:column>
+								<h:outputText value="#{b.ad}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Kullanıcı :" />
+						<p:selectOneMenu var="k" filter="true"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{turnikeService.turnike.kullanici}">
+							<f:selectItems value="#{turnikeService.kullaniciList}"
+								var="kullanici" itemValue="#{kullanici}"
+								itemLabel="#{kullanici.kullaniciAdi}" />
+							<p:column>
+								<h:outputText value="#{k.kullaniciAdi}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Barkod :" />
+						<p:inputText value="#{turnikeService.turnike.barkod}"
+							placeholder="Barkod" />
+
+						<p:outputLabel value="Cihaz Seri Numarası :" />
+						<p:inputText value="#{turnikeService.turnike.cihazSeriNo}"
+							placeholder="Cihaz Seri Numarası"
+							required="#{turnikeService.turnike.cihazSeriNo==null}"
+							requiredMessage="Cihaz Seri No Boş geçilemez" />
+
+
+						<p:outputLabel value="Marka :" />
+						<p:selectOneMenu var="m" filter="true"
+							value="#{turnikeService.turnike.marka}">
+							<f:selectItems value="#{turnikeService.markaList}" var="marka"
+								itemValue="#{marka}" itemLabel="#{marka.label}" />
+							<p:column>
+								<h:outputText value="#{m.valueOf}" />
+							</p:column>
+						</p:selectOneMenu>
+
+
+						<p:outputLabel value="Model :" />
+						<p:selectOneMenu var="md" filter="true"
+							value="#{turnikeService.turnike.model}">
+							<f:selectItems value="#{turnikeService.modelList}" var="model"
+								itemValue="#{model}" itemLabel="#{model.label}" />
+							<p:column>
+								<h:outputText value="#{md.valueOf}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Gps Koordinatı :" />
+						<p:inputText value="#{turnikeService.turnike.gpsKoordinati}"
+							placeholder="Gps Koordinatı"
+							required="#{turnikeService.turnike.gpsKoordinati==null}"
+							requiredMessage="Gps Koordinatı Boş geçilemez" />
+
+						<p:outputLabel value="Adres :" />
+						<p:inputText value="#{turnikeService.turnike.adres}"
+							placeholder="Adres"
+							required="#{turnikeService.turnike.adres==null}"
+							requiredMessage="Adres Boş geçilemez" />
+
+						<p:outputLabel value="İstasyon/Durak Adı :" />
+						<p:inputText value="#{turnikeService.turnike.istasyon_DurakAdi}"
+							placeholder="İstasyon/Durak Adı"
+							required="#{turnikeService.turnike.istasyon_DurakAdi==null}"
+							requiredMessage="İstasyon/Durak AdıF Boş geçilemez" />
+
+						<p:outputLabel value="Durum :" />
+						<p:selectOneMenu var="dr" filter="true"
+							value="#{turnikeService.turnike.durum}">
+							<f:selectItems value="#{turnikeService.durumTipleri}"
+								var="durumTipi" itemValue="#{durumTipi}"
+								itemLabel="#{durumTipi.displayName}" />
+							<p:column>
+								<h:outputText value="#{dr.displayName}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:commandButton value="Kaydet" process="@parent"
+							update=":form:yeniturnikePanel,:form:turnikeTable,:form:msgs"
+							oncomplete="if (args &amp;&amp; !args.validationFailed) PF('dlg1').hide()"
+							action="#{turnikeService.ekle}" />
+					</p:panelGrid>
+				</p:panel>
+			</p:dialog>
+
+		</p:panel>
+	</h:form>
+</f:view>
+
+

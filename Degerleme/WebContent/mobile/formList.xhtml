@@ -1,0 +1,56 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pm="http://primefaces.org/mobile" contentType="text/html"
+	renderKitId="PRIMEFACES_MOBILE">
+	<pm:page title="Mobile">
+
+		<pm:view>
+			<pm:header>
+
+			</pm:header>
+			<pm:content>
+				<h:form id="form1">
+					<pm:field>
+						<h:outputLabel value=" Form Giris : " />
+						<h:inputText value="#{formListesi.formSearch.id}" />
+					</pm:field>
+					<pm:field>
+						<h:outputLabel value=" Firma Adı : " />
+						<h:inputText value="#{formListesi.formSearch.name}" />
+					</pm:field>
+					<pm:field>
+						<p:commandButton value="Form Ara" action="#{formListesi.listele}"
+							update="form1" />
+					</pm:field>
+					<pm:field>
+						<h3>Form Listesi</h3>
+					</pm:field>
+					<pm:field>
+						<p:dataTable var="form" id="formtable" paginator="true" rows="10"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15" value="#{formListesi.formList}">
+
+							<p:column headerText="Guncelle">
+								<p:button outcome="formGiris" value="Guncelle">
+									<f:param name="formId" value="#{form.id}" />
+								</p:button>
+							</p:column>
+
+							<p:column headerText="id">
+								<h:outputText value="#{form.id}" />
+							</p:column>
+
+							<p:column headerText="Adı">
+								<h:outputText value="#{form.name}" />
+							</p:column>
+
+						</p:dataTable>
+					</pm:field>
+
+				</h:form>
+			</pm:content>
+		</pm:view>
+	</pm:page>
+</f:view>

@@ -1,0 +1,40 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form">
+		<p:panel header="Admin Kaydet" style="margin-bottom:10px;">
+			<h:panelGrid columns="2">
+				<p:outputLabel for="isletme" value="İşletme " />
+				<p:selectOneMenu id="isletme" value="#{adminService.admin.isletme}"
+					converter="omnifaces.SelectItemsConverter" var="i" filter="true"
+					filterMatchMode="contains">
+					<f:selectItem noSelectionOption="true" itemLabel="İşletme Seç"
+						itemValue="" />
+					<f:selectItems value="#{adminService.isletmeList}" var="isletme"
+						itemLabel="#{isletme.isletmeAdi}" itemValue="#{isletme}" />
+					<p:column>
+						<h:outputText value="#{i.isletmeAdi}" />
+					</p:column>
+				</p:selectOneMenu>
+				<p:outputLabel value="Ad "></p:outputLabel>
+				<p:inputText value="#{adminService.admin.ad}"></p:inputText>
+				<p:outputLabel value="Soyad "></p:outputLabel>
+				<p:inputText value="#{adminService.admin.soyad}"></p:inputText>
+				<p:outputLabel value="Kullanıcı Adı "></p:outputLabel>
+				<p:inputText value="#{adminService.admin.kullaniciAdi}"></p:inputText>
+				<p:outputLabel value="Şifre "></p:outputLabel>
+				<p:inputText value="#{adminService.admin.sifre}"></p:inputText>
+				<p:outputLabel value="Email "></p:outputLabel>
+				<p:inputText value="#{adminService.admin.email}"></p:inputText>
+			</h:panelGrid>
+			<p:separator />
+			<p:commandButton value="Kaydet"
+				actionListener="#{adminService.adminKaydet}" />
+				<p:button outcome="adminList" value="Listele" />
+		</p:panel>
+	</h:form>
+</f:view>

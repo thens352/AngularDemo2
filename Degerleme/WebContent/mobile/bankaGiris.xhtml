@@ -1,0 +1,39 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pm="http://primefaces.org/mobile" contentType="text/html"
+	renderKitId="PRIMEFACES_MOBILE">
+	<pm:page title="Mobile">
+
+		<pm:view>
+			<pm:header>
+
+			</pm:header>
+			<pm:content>
+
+				<h:form id="banka1">
+					<p:panelGrid columns="2">
+						<pm:field>
+							<p:outputLabel value=" Banka Adı : " />
+							<p:inputText value="#{bankaGirisi.banka.name}" />
+						</pm:field>
+						<pm:field>
+							<p:outputLabel value=" Banka Email : " />
+							<p:inputText value="#{bankaGirisi.banka.email}" />
+						</pm:field>
+						<pm:field>
+							<p:outputLabel value=" İlgili Kisi : " />
+							<p:inputText value="#{bankaGirisi.banka.ilgiliKisi}" />
+						</pm:field>
+						<pm:field>
+							<p:commandButton value="Kaydet" action="#{bankaGirisi.kaydet}" />
+							<p:button outcome="bankaList" value="Listele" />
+						</pm:field>
+					</p:panelGrid>
+				</h:form>
+
+			</pm:content>
+		</pm:view>
+	</pm:page>
+</f:view>

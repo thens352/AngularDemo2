@@ -1,0 +1,376 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form" style="padding-bottom:200px;">
+		<ui:include src="resources/composite/menu.xhtml" />
+
+		<p:panel header="E5-Kamera Sistemi-Kamera" style="text-align:center;">
+
+
+			<p:panelGrid columns="8">
+				<p:outputLabel value="Bölge :" />
+				<p:selectOneMenu var="b" filter="true"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{ksKameraService.ksKameraSearch.bolge}">
+					<f:selectItem noSelectionOption="true" itemLabel="Bölge Seç"
+						itemValue="" />
+					<f:selectItems value="#{ksKameraService.bolgeList}" var="bolge"
+						itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+					<p:column>
+						<h:outputText value="#{b.ad}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Kullanıcı :" />
+				<p:selectOneMenu var="k" filter="true"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{ksKameraService.ksKameraSearch.kullanici}">
+					<f:selectItem noSelectionOption="true" itemLabel="Kullanıcı Seç"
+						itemValue="" />
+					<f:selectItems value="#{ksKameraService.kullaniciList}"
+						var="kullanici" itemValue="#{kullanici}"
+						itemLabel="#{kullanici.kullaniciAdi}" />
+					<p:column>
+						<h:outputText value="#{k.kullaniciAdi}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Barkod :" />
+				<p:inputText value="#{ksKameraService.ksKameraSearch.barkod}"
+					placeholder="Barkod" />
+
+				<p:outputLabel value="Cihaz Seri No :" />
+				<p:inputText value="#{ksKameraService.ksKameraSearch.cihazSeriNo}"
+					placeholder="Cihaz Seri Numarası" />
+
+				<p:outputLabel value="Marka :" />
+				<p:selectOneMenu var="m" filter="true"
+					value="#{ksKameraService.ksKameraSearch.marka}">
+					<f:selectItem noSelectionOption="true" itemLabel="Marka Seç"
+						itemValue="" />
+					<f:selectItems value="#{ksKameraService.markaList}" var="marka"
+						itemValue="#{marka}" itemLabel="#{marka.label}" />
+					<p:column>
+						<h:outputText value="#{m.valueOf}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Otobüs Köşe No :" />
+				<p:inputText value="#{ksKameraService.ksKameraSearch.otobusKoseNo}"
+					placeholder="Otobüs Köşe Numarası" />
+
+				<p:outputLabel value="Durum :" />
+				<p:selectOneMenu var="dr" filter="true"
+					value="#{ksKameraService.ksKameraSearch.durum}">
+					<f:selectItem noSelectionOption="true" itemLabel="Durum Seç"
+						itemValue="" />
+					<f:selectItems value="#{ksKameraService.durumTipleri}"
+						var="durumTipi" itemValue="#{durumTipi}"
+						itemLabel="#{durumTipi.displayName}" />
+					<p:column>
+						<h:outputText value="#{dr.displayName}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:commandButton value="Ara" process="@parent"
+					update=":form:ksKameraTable" action="#{ksKameraService.ara}" />
+			</p:panelGrid>
+
+			<p:dataTable id="ksKameraTable" var="ksKamera" paginator="true"
+				sortBy="#{ksKamera.barkod}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="10,20,50" rows="10"
+				value="#{ksKameraService.ksKameraList}" editable="true"
+				emptyMessage="Kayıt bulunamadı." style="margin-bottom:20px">
+
+				<p:ajax event="rowEdit" listener="#{ksKameraService.guncelle}"
+					update=":form:ksKameraTable,:form:msgs" />
+
+
+				<p:column style="text-align:center;" sortBy="gununTarihi"
+					headerText="Günün Tarihi">
+					<p:outputLabel style="width:30px" value="#{ksKamera.gununTarihi}">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+					</p:outputLabel>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="otobusKoseNumarasi"
+					headerText="Otobüs Köşe Numarası">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{ksKamera.otobusKoseNo}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{ksKamera.otobusKoseNo}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="barkod"
+					headerText="Barkod">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{ksKamera.barkod}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{ksKamera.barkod}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="cihazSeriNo"
+					headerText="Cihaz Seri No">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{ksKamera.cihazSeriNo}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{ksKamera.cihazSeriNo}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+
+				<p:column style="text-align:center;" sortBy="marka"
+					headerText="Marka">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{ksKamera.marka}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="m" filter="true" style="width:185px;"
+								value="#{ksKamera.marka}">
+								<f:selectItem noSelectionOption="true" itemLabel="Marka Seç"
+									itemValue="" />
+								<f:selectItems value="#{ksKameraService.markaList}" var="marka"
+									itemValue="#{marka}" itemLabel="#{marka.label}" />
+								<p:column>
+									<h:outputText value="#{m.valueOf}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="kameraninYeri"
+					headerText="Kameranın Yeri">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{ksKamera.kameraninYeri}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="k" filter="true" style="width:185px;"
+								value="#{ksKamera.kameraninYeri}">
+								<f:selectItem noSelectionOption="true"
+									itemLabel="Kameranın Yerini Seç" itemValue="" />
+								<f:selectItems value="#{ksKameraService.kameraYerleri}"
+									var="kameraYeri" itemValue="#{kameraYeri}"
+									itemLabel="#{kameraYeri.displayName}" />
+								<p:column>
+									<h:outputText value="#{k.displayName}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="termId"
+					headerText="Term ID">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{ksKamera.termId}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{ksKamera.termId}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="durum"
+					headerText="Durum">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{ksKamera.durum}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="dr" filter="true" style="width:185px;"
+								value="#{ksKamera.durum}">
+								<f:selectItem noSelectionOption="true" itemLabel="Durum Seç"
+									itemValue="" />
+								<f:selectItems value="#{ksKameraService.durumTipleri}"
+									var="durumTipi" itemValue="#{durumTipi}"
+									itemLabel="#{durumTipi.displayName}" />
+								<p:column>
+									<h:outputText value="#{dr.displayName}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="kullanici.kullaniciAdi"
+					headerText="Kullanıcı">
+					<p:outputLabel style="width:30px"
+						value="#{ksKamera.kullanici.kullaniciAdi}" />
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="bolge.ad"
+					headerText="Bölge">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{ksKamera.bolge.ad}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="b" filter="true" style="width:185px;"
+								converter="omnifaces.SelectItemsConverter"
+								value="#{ksKamera.bolge}">
+								<f:selectItem noSelectionOption="true" itemLabel="Bölge Seç"
+									itemValue="" />
+								<f:selectItems value="#{ksKameraService.bolgeList}" var="bolge"
+									itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+								<p:column>
+									<h:outputText value="#{b.ad}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column exportable="false" style="width:14px;text-align: center">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column exportable="false" style="width:26px;text-align: center">
+					<p:commandButton update=":form:ksKameraTable,:form:msgs"
+						process="@this" action="#{ksKameraService.sil}"
+						icon="ui-icon-trash" title="Sil">
+						<f:setPropertyActionListener value="#{ksKamera}"
+							target="#{ksKameraService.ksKamera}" />
+					</p:commandButton>
+				</p:column>
+
+				<f:facet name="footer">
+					<p:commandButton value="Yeni Kamera Sistemi-Kamera Ekle"
+						onclick="PF('dlg1').show();" />
+				</f:facet>
+
+				<f:facet name="footer">
+					<h:commandLink style="float:right" id="excel" immediate="true">
+						<h:graphicImage value="/resources/images/excel.png" width="25"
+							height="25" />
+						<p:dataExporter type="xls" target="ksKameraTable"
+							fileName="ksKameraRapor" />
+					</h:commandLink>
+				</f:facet>
+
+			</p:dataTable>
+
+
+			<p:dialog id="yeniksKamera" header="Yeni Kamera Sistemi"
+				widgetVar="dlg1" showEffect="size" hideEffect="scale"
+				draggable="false" resizable="false" modal="true">
+				<p:panel id="yeniksKameraPanel"
+					style="text-align:center;border-style: none !important;">
+
+					<p:panelGrid columns="4">
+						<p:outputLabel value="Bölge :" />
+						<p:selectOneMenu var="b" filter="true"
+							required="#{ksKameraService.ksKamera.bolge==null}"
+							requiredMessage="Bölge boş geçilemez"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{ksKameraService.ksKamera.bolge}">
+							<f:selectItems value="#{ksKameraService.bolgeList}" var="bolge"
+								itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+							<p:column>
+								<h:outputText value="#{b.ad}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Kullanıcı :" />
+						<p:selectOneMenu var="k" filter="true"
+							required="#{ksKameraService.ksKamera.kullanici==null}"
+							requiredMessage="Kullanıcı boş geçilemez"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{ksKameraService.ksKamera.kullanici}">
+							<f:selectItems value="#{ksKameraService.kullaniciList}"
+								var="kullanici" itemValue="#{kullanici}"
+								itemLabel="#{kullanici.kullaniciAdi}" />
+							<p:column>
+								<h:outputText value="#{k.kullaniciAdi}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Otobüs Köşe No :" />
+						<p:inputText value="#{ksKameraService.ksKamera.otobusKoseNo}"
+							placeholder="Otobüs Köşe Numarası"
+							required="#{ksKameraService.ksKamera.otobusKoseNo==null and ksKameraService.durumStatu}"
+							requiredMessage="Otobüs Köşe No Boş geçilemez" />
+
+						<p:outputLabel value="Barkod :" />
+						<p:inputText required="#{ksKameraService.ksKamera.barkod==null}"
+							requiredMessage="Barkod boş geçilemez"
+							value="#{ksKameraService.ksKamera.barkod}" placeholder="Barkod" />
+
+						<p:outputLabel value="Cihaz Seri No :" />
+						<p:inputText value="#{ksKameraService.ksKamera.cihazSeriNo}"
+							placeholder="Cihaz Seri Numarası"
+							required="#{ksKameraService.ksKamera.cihazSeriNo==null}"
+							requiredMessage="Cihaz Seri No Boş geçilemez" />
+
+
+						<p:outputLabel value="Marka :" />
+						<p:selectOneMenu var="m" filter="true"
+							value="#{ksKameraService.ksKamera.marka}">
+							<f:selectItems value="#{ksKameraService.markaList}" var="marka"
+								itemValue="#{marka}" itemLabel="#{marka.label}" />
+							<p:column>
+								<h:outputText value="#{m.valueOf}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Kameranın Yeri :" />
+						<p:selectOneMenu var="k" filter="true"
+							required="#{ksKameraService.ksKamera.marka==null and ksKameraService.durumStatu}"
+							requiredMessage="Marka boş geçilemez"
+							value="#{ksKameraService.ksKamera.kameraninYeri}">
+							<f:selectItems value="#{ksKameraService.kameraYerleri}"
+								var="kameraYeri" itemValue="#{kameraYeri}"
+								itemLabel="#{kameraYeri.displayName}" />
+							<p:column>
+								<h:outputText value="#{k.displayName}" />
+							</p:column>
+						</p:selectOneMenu>
+
+
+						<p:outputLabel value="Durum :" />
+						<p:selectOneMenu var="dr" filter="true"
+							value="#{ksKameraService.ksKamera.durum}">
+							<f:selectItems value="#{ksKameraService.durumTipleri}"
+								var="durumTipi" itemValue="#{durumTipi}"
+								itemLabel="#{durumTipi.displayName}" />
+							<p:column>
+								<h:outputText value="#{dr.displayName}" />
+							</p:column>
+							<p:ajax event="change" update=":form:yeniksKameraPanel" />
+						</p:selectOneMenu>
+
+
+
+						<p:commandButton value="Kaydet" process="@parent"
+							update=":form:yeniksKameraPanel,:form:ksKameraTable,:form:msgs"
+							oncomplete="if (args &amp;&amp; !args.validationFailed) PF('dlg1').hide()"
+							action="#{ksKameraService.ekle}" />
+					</p:panelGrid>
+
+				</p:panel>
+			</p:dialog>
+
+		</p:panel>
+	</h:form>
+</f:view>

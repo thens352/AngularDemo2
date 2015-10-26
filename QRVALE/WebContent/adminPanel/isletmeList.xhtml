@@ -1,0 +1,117 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" contentType="text/html">
+
+	<h:head>
+	</h:head>
+
+	<h:form id="isletme1">
+
+		<p:panelGrid columns="1">
+			<p:panel>
+				<p:outputLabel value="İşletme Bilgileri" />
+				<pre />
+				<p:panelGrid id="isletmeAdresi" columns="1">
+					<p:column>
+						<p:outputLabel for="il" value="İl " />
+						<p:selectOneMenu id="il" value="#{isletmeList.secilenIl}"
+							converter="omnifaces.SelectItemsConverter" var="i" filter="true"
+							filterMatchMode="contains">
+							<f:selectItem noSelectionOption="true" itemLabel="İl Seç"
+								itemValue="" />
+							<f:selectItems value="#{isletmeList.ilList}" var="il"
+								itemLabel="#{il.adi}" itemValue="#{il}" />
+							<p:column>
+								<h:outputText value="#{i.adi}" />
+							</p:column>
+							<p:ajax update="ilce,mahalle,sokak"
+								listener="#{isletmeList.ilSecildi}" />
+						</p:selectOneMenu>
+
+						<pre />
+
+						<p:outputLabel for="ilce" value="İlçe " />
+						<p:selectOneMenu id="ilce" value="#{isletmeList.secilenIlce}"
+							converter="omnifaces.SelectItemsConverter" var="ic" filter="true"
+							filterMatchMode="contains">
+							<f:selectItem noSelectionOption="true" itemLabel="İlçe Seç"
+								itemValue="" />
+							<f:selectItems value="#{isletmeList.ilceList}" var="ilce"
+								itemLabel="#{ilce.adi}" itemValue="#{ilce}" />
+							<p:column>
+								<h:outputText value="#{ic.adi}" />
+							</p:column>
+							<p:ajax update="mahalle,sokak"
+								listener="#{isletmeList.ilceSecildi}" />
+						</p:selectOneMenu>
+
+						<pre />
+
+						<p:outputLabel for="mahalle" value="Mahalle " />
+						<p:selectOneMenu id="mahalle"
+							value="#{isletmeList.secilenMahalle}"
+							converter="omnifaces.SelectItemsConverter" var="m" filter="true"
+							filterMatchMode="contains">
+							<f:selectItem noSelectionOption="true" itemLabel="Mahalle Seç"
+								itemValue="" />
+							<f:selectItems value="#{isletmeList.mahalleList}" var="mahalle"
+								itemLabel="#{mahalle.adi}" itemValue="#{mahalle}" />
+							<p:column>
+								<h:outputText value="#{m.adi}" />
+							</p:column>
+							<p:ajax update="sokak" listener="#{isletmeList.mahalleSecildi}" />
+						</p:selectOneMenu>
+
+						<pre />
+
+						<p:outputLabel for="sokak" value="Sokak " />
+						<p:selectOneMenu id="sokak" value="#{isletmeList.isletme.sokak}"
+							converter="omnifaces.SelectItemsConverter" var="sk" filter="true"
+							filterMatchMode="contains">
+							<f:selectItem noSelectionOption="true" itemLabel="Sokak Seç"
+								itemValue="" />
+							<f:selectItems value="#{isletmeList.sokakList}" var="sokak"
+								itemLabel="#{sokak.adi}" itemValue="#{sokak}" />
+							<p:column>
+								<h:outputText value="#{sk.adi}" />
+							</p:column>
+							<p:ajax process="@parent" />
+						</p:selectOneMenu>
+						<pre />
+						<p:outputLabel value="İşletme Adı" />
+						<p:inputText value="#{isletmeList.isletmeSearch.isletmeAdi}" />
+					</p:column>
+				</p:panelGrid>
+			</p:panel>
+			<p:commandButton style="float:right" value="Ara"
+				action="#{isletmeList.isletmeAra}" update="isletme1" />
+		</p:panelGrid>
+
+		<h3>İşletme Listesi</h3>
+
+		<p:dataTable var="isletme" id="isletmetable" paginator="true"
+			rows="10"
+			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="5,10,15" value="#{isletmeList.isletmeList}">
+
+			<p:column headerText="İşletme Adı">
+				<h:outputText value="#{isletme.isletmeAdi}" />
+			</p:column>
+
+			<p:column headerText="Adres">
+				<h:outputText value="#{isletme.adres}" />
+			</p:column>
+
+			<p:column headerText="Güncelle">
+				<p:button outcome="isletmeKaydet" value="Guncelle">
+					<f:param name="isletmeId" value="#{isletme.id}" />
+				</p:button>
+			</p:column>
+			
+		</p:dataTable>
+
+	</h:form>
+
+</f:view>

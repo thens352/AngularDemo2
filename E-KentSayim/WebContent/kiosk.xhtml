@@ -1,0 +1,422 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+
+	<h:form id="form" style="padding-bottom:200px;">
+		<ui:include src="resources/composite/menu.xhtml" />
+
+		<p:panel header="E3-Kiosk" style="text-align:center;">
+
+
+			<p:panelGrid columns="8">
+
+				<p:outputLabel value="Bölge :" />
+				<p:selectOneMenu var="b" filter="true"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{kioskService.kioskSearch.bolge}">
+					<f:selectItem noSelectionOption="true" itemLabel="Bölge Seç"
+						itemValue="" />
+					<f:selectItems value="#{kioskService.bolgeList}" var="bolge"
+						itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+					<p:column>
+						<h:outputText value="#{b.ad}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Kullanıcı :" />
+				<p:selectOneMenu var="k" filter="true"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{kioskService.kioskSearch.kullanici}">
+					<f:selectItem noSelectionOption="true" itemLabel="Kullanıcı Seç"
+						itemValue="" />
+					<f:selectItems value="#{kioskService.kullaniciList}"
+						var="kullanici" itemValue="#{kullanici}"
+						itemLabel="#{kullanici.kullaniciAdi}" />
+					<p:column>
+						<h:outputText value="#{k.kullaniciAdi}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Barkod :" />
+				<p:inputText value="#{kioskService.kioskSearch.barkod}"
+					placeholder="Barkod" />
+
+				<p:outputLabel value="Cihaz Seri No" />
+				<p:inputText value="#{kioskService.kioskSearch.cihazSeriNo}"
+					placeholder="Cihaz Seri Numarası" />
+
+				<p:outputLabel value="Marka :" />
+				<p:selectOneMenu var="m" filter="true"
+					value="#{kioskService.kioskSearch.marka}">
+					<f:selectItem noSelectionOption="true" itemLabel="Marka Seç"
+						itemValue="" />
+					<f:selectItems value="#{kioskService.markaList}" var="marka"
+						itemValue="#{marka}" itemLabel="#{marka.label}" />
+					<p:column>
+						<h:outputText value="#{m.valueOf}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Model :" />
+				<p:selectOneMenu var="md" filter="true"
+					value="#{kioskService.kioskSearch.model}">
+					<f:selectItem noSelectionOption="true" itemLabel="Model Seç"
+						itemValue="" />
+					<f:selectItems value="#{kioskService.modelList}" var="model"
+						itemValue="#{model}" itemLabel="#{model.label}" />
+					<p:column>
+						<h:outputText value="#{md.valueOf}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Durak/İstasyon Adı" />
+				<p:inputText value="#{kioskService.kioskSearch.durak_IstasyonAdi}"
+					placeholder="Durak/İstasyon Adı" />
+
+				<p:outputLabel value="Durum :" />
+				<p:selectOneMenu var="dr" filter="true"
+					value="#{kioskService.kioskSearch.durum}">
+					<f:selectItem noSelectionOption="true" itemLabel="Durum Seç"
+						itemValue="" />
+					<f:selectItems value="#{kioskService.durumTipleri}" var="durumTipi"
+						itemValue="#{durumTipi}" itemLabel="#{durumTipi.displayName}" />
+					<p:column>
+						<h:outputText value="#{dr.displayName}" />
+					</p:column>
+				</p:selectOneMenu>
+				<p:commandButton value="Ara" process="@parent"
+					update=":form:kioskTable" action="#{kioskService.ara}" />
+
+			</p:panelGrid>
+
+			<p:dataTable id="kioskTable" var="kiosk" paginator="true"
+				sortBy="#{kiosk.barkod}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="10,20,50" rows="10"
+				value="#{kioskService.kioskList}" editable="true"
+				emptyMessage="Kayıt bulunamadı." style="margin-bottom:20px">
+
+
+				<p:ajax event="rowEdit" listener="#{kioskService.guncelle}"
+					update=":form:kioskTable,:form:msgs" />
+
+				<p:column style="text-align:center;" sortBy="#{kiosk.gununTarihi}"
+					headerText="Tarih">
+					<p:outputLabel value="#{kiosk.gununTarihi}">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+					</p:outputLabel>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="barkod"
+					headerText="Barkod">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{kiosk.barkod}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{kiosk.barkod}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="cihazSeriNo"
+					headerText="Cihaz Seri No">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{kiosk.cihazSeriNo}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{kiosk.cihazSeriNo}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="marka"
+					headerText="Marka">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{kiosk.marka}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="m" filter="true" style="width:185px;"
+								value="#{kiosk.marka}">
+								<f:selectItem noSelectionOption="true" itemLabel="Marka Seç"
+									itemValue="" />
+								<f:selectItems value="#{kioskService.markaList}" var="marka"
+									itemValue="#{marka}" itemLabel="#{marka.label}" />
+								<p:column>
+									<h:outputText value="#{m.valueOf}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="model"
+					headerText="Model">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{kiosk.model}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="md" filter="true" style="width:185px;"
+								value="#{kiosk.model}">
+								<f:selectItem noSelectionOption="true" itemLabel="Model Seç"
+									itemValue="" />
+								<f:selectItems value="#{kioskService.modelList}" var="model"
+									itemValue="#{model}" itemLabel="#{model.label}" />
+								<p:column>
+									<h:outputText value="#{md.valueOf}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="termId"
+					headerText="Term ID">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{kiosk.termId}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{kiosk.termId}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="adres"
+					headerText="Adres">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{kiosk.adres}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{kiosk.adres}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="gpsKoordinati"
+					headerText="Gps Koordinatı">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{kiosk.gpsKoordinati}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{kiosk.gpsKoordinati}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="durak_IstasyonAdi"
+					headerText="Duak/İstasyon Adı">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{kiosk.durak_IstasyonAdi}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{kiosk.durak_IstasyonAdi}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="durum"
+					headerText="Durum">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{kiosk.durum}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="k"
+								converter="omnifaces.SelectItemsConverter" filter="true"
+								style="width:185px;" value="#{kiosk.durum}">
+								<f:selectItem noSelectionOption="true" itemLabel="Durum Seç"
+									itemValue="" />
+								<f:selectItems value="#{kioskService.durumTipleri}"
+									var="durumTipi" itemValue="#{durumTipi}"
+									itemLabel="#{durumTipi.displayName}" />
+								<p:column>
+									<h:outputText value="#{k.displayName}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="kullanici.kullaniciAdi"
+					headerText="Kullanıcı">
+					<p:outputLabel style="width:30px"
+						value="#{kiosk.kullanici.kullaniciAdi}" />
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="bolge.ad"
+					headerText="Bölge">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{kiosk.bolge.ad}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="b"
+								converter="omnifaces.SelectItemsConverter" filter="true"
+								style="width:185px;" value="#{kiosk.bolge}">
+								<f:selectItem noSelectionOption="true" itemLabel="Bölge Seç"
+									itemValue="" />
+								<f:selectItems value="#{kioskService.bolgeList}" var="durumTipi"
+									itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+								<p:column>
+									<h:outputText value="#{b.ad}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column exportable="false" style="width:14px;text-align: center">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column exportable="false" style="width:26px;text-align: center">
+					<p:commandButton update=":form:kioskTable,:form:msgs"
+						process="@this" action="#{kioskService.sil}" icon="ui-icon-trash"
+						title="Sil">
+						<f:setPropertyActionListener value="#{kiosk}"
+							target="#{kioskService.kiosk}" />
+					</p:commandButton>
+
+				</p:column>
+				<f:facet name="footer">
+					<p:commandButton value="Yeni Kiosk Ekle"
+						onclick="PF('dlg1').show();" />
+				</f:facet>
+
+				<f:facet name="footer">
+					<h:commandLink style="float:right" id="excel" immediate="true">
+						<h:graphicImage value="/resources/images/excel.png" width="25"
+							height="25" />
+						<p:dataExporter type="xls" target="kioskTable"
+							fileName="kioskRapor" />
+					</h:commandLink>
+				</f:facet>
+
+			</p:dataTable>
+
+
+			<p:dialog id="yeniKiosk" header="Yeni Kiosk" widgetVar="dlg1"
+				showEffect="size" hideEffect="scale" draggable="false"
+				resizable="false" modal="true">
+				<p:panel id="yeniKioskPanel"
+					style="text-align:center;border-style: none !important;">
+					<p:panelGrid columns="4">
+
+						<p:outputLabel value="Bölge :" />
+						<p:selectOneMenu var="b" filter="true"
+							required="#{kioskService.kiosk.bolge==null}"
+							requiredMessage="Bölge boş geçilemez"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{kioskService.kiosk.bolge}">
+							<f:selectItems value="#{kioskService.bolgeList}" var="bolge"
+								itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+							<p:column>
+								<h:outputText value="#{b.ad}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Kullanıcı :" />
+						<p:selectOneMenu var="k" filter="true"
+							required="#{kioskService.kiosk.kullanici==null}"
+							requiredMessage="Kullanıcı boş geçilemez"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{kioskService.kiosk.kullanici}">
+							<f:selectItems value="#{kioskService.kullaniciList}"
+								var="kullanici" itemValue="#{kullanici}"
+								itemLabel="#{kullanici.kullaniciAdi}" />
+							<p:column>
+								<h:outputText value="#{k.kullaniciAdi}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Barkod :" />
+						<p:inputText required="#{kioskService.kiosk.barkod==null}"
+							requiredMessage="Barkod boş geçilemez"
+							value="#{kioskService.kiosk.barkod}" placeholder="Barkod" />
+
+						<p:outputLabel value="Cihaz Seri No :" />
+						<p:inputText value="#{kioskService.kiosk.cihazSeriNo}"
+							placeholder="Cihaz Seri Numarası"
+							required="#{kioskService.kiosk.cihazSeriNo==null}"
+							requiredMessage="Cihaz Seri No Boş geçilemez" />
+
+
+						<p:outputLabel value="Marka :" />
+						<p:selectOneMenu var="m" filter="true"
+							required="#{kioskService.kiosk.marka==null}"
+							requiredMessage="Marka boş geçilemez"
+							value="#{kioskService.kiosk.marka}">
+							<f:selectItems value="#{kioskService.markaList}" var="marka"
+								itemValue="#{marka}" itemLabel="#{marka.label}" />
+							<p:column>
+								<h:outputText value="#{m.valueOf}" />
+							</p:column>
+						</p:selectOneMenu>
+
+
+						<p:outputLabel value="Model :" />
+						<p:selectOneMenu var="md" filter="true"
+							required="#{kioskService.kiosk.model==null}"
+							requiredMessage="Model boş geçilemez"
+							value="#{kioskService.kiosk.model}">
+							<f:selectItems value="#{kioskService.modelList}" var="model"
+								itemValue="#{model}" itemLabel="#{model.label}" />
+							<p:column>
+								<h:outputText value="#{md.valueOf}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Adres :" />
+						<p:inputText value="#{kioskService.kiosk.adres}"
+							placeholder="Adres"
+							required="#{kioskService.kiosk.adres==null and kioskService.durumStatu}"
+							requiredMessage="Adres Boş geçilemez" />
+
+						<p:outputLabel value="Gps Koordinatı :" />
+						<p:inputText value="#{kioskService.kiosk.gpsKoordinati}"
+							placeholder="Gps Koorditanı"
+							required="#{kioskService.kiosk.gpsKoordinati==null and kioskService.durumStatu}"
+							requiredMessage="Gps Koordinatı Boş geçilemez" />
+
+						<p:outputLabel value="Durak/İstasyon Adı :" />
+						<p:inputText value="#{kioskService.kiosk.durak_IstasyonAdi}"
+							placeholder="Durak/İstasyon Adı"
+							required="#{kioskService.kiosk.durak_IstasyonAdi==null and kioskService.durumStatu}"
+							requiredMessage="Durak/İstasyon Adı Boş geçilemez" />
+
+						<p:outputLabel value="Durum :" />
+						<p:selectOneMenu var="dr" filter="true"
+							value="#{kioskService.kiosk.durum}">
+							<f:selectItems value="#{kioskService.durumTipleri}"
+								var="durumTipi" itemValue="#{durumTipi}"
+								itemLabel="#{durumTipi.displayName}" />
+							<p:column>
+								<h:outputText value="#{dr.displayName}" />
+							</p:column>
+							<p:ajax event="change" update=":form:yeniKioskPanel" />
+						</p:selectOneMenu>
+
+						<p:commandButton value="Kaydet" process="@parent"
+							update=":form:yeniKioskPanel,:form:kioskTable,:form:msgs"
+							oncomplete="if (args &amp;&amp; !args.validationFailed) PF('dlg1').hide()"
+							action="#{kioskService.ekle()}" />
+					</p:panelGrid>
+				</p:panel>
+			</p:dialog>
+		</p:panel>
+	</h:form>
+
+
+</f:view>

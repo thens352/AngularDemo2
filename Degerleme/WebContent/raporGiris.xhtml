@@ -1,0 +1,222 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" contentType="text/html">
+	<h:head>
+
+	</h:head>
+	<h:form id="form1">
+		<p:panel header="Rapor Girişi" style="text-align:center;">
+			<p:outputLabel rendered="#{!raporGirisi.kisi}" value=" Firma Adı  " />
+			<p:inputText rendered="#{!raporGirisi.kisi}" readonly="true"
+				value="#{raporGirisi.isEmri.firma.name}" />
+			<p:outputLabel rendered="#{raporGirisi.kisi}"
+				value=" Kisi Adı-Soyadı " />
+			<p:inputText rendered="#{raporGirisi.kisi}" readonly="true"
+				value="#{raporGirisi.isEmri.kisi.name} #{raporGirisi.isEmri.kisi.surName}" />
+			<pre />
+			<p:outputLabel value=" Sigorta Adı  " />
+			<p:inputText readonly="true" style="margin-left:35px;"
+				value="#{raporGirisi.isEmri.banka.name}/#{raporGirisi.isEmri.bankaSubesi.name}" />
+			<pre />
+			<p:outputLabel value=" Rapor Tarihi  " />
+			<p:calendar value="#{raporGirisi.rapor.raporTarihi}"
+				style="margin-left:23px;">
+				<p:ajax event="dateSelect" listener="#{raporGirisi.tarihSecildi}" />
+			</p:calendar>
+			<pre />
+			<p:outputLabel value="Bölüm" />
+			<p:selectOneMenu style="margin-left:50px;margin-top:15px;" id="city"
+				value="#{raporGirisi.seciliBolum}"
+				converter="omnifaces.SelectItemsConverter">
+				<f:selectItems value="#{raporGirisi.bolumList}" var="bolum"
+					itemValue="#{bolum}" itemLabel="#{bolum.name}" />
+				<p:ajax update=":form1:soruListesi" />
+			</p:selectOneMenu>
+			<pre />
+			<p:dataTable var="soru" id="soruListesi" paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15"
+				value="#{raporGirisi.seciliBolum.soruListesi}">
+				<f:facet name="header">Soru Listesi</f:facet>
+				<p:column width="25px;" style="text-align:center;"
+					headerText="Sıra No">
+					<p:outputLabel value="#{soru.siraNo}" />
+				</p:column>
+				<p:column headerText="Soru Metni">
+					<p:outputLabel value="#{soru.soruMetni}" />
+				</p:column>
+				<p:column headerText="Cevap Metni">
+					<ui:repeat value="#{raporGirisi.rapor.cevapList}" var="cevap">
+						<p:outputLabel rendered="#{cevap.soru.id==soru.id}"
+							value="#{cevap.metin}" />
+					</ui:repeat>
+				</p:column>
+				<p:column headerText="Cevapla" style="text-align:center;">
+					<p:commandButton value="Cevapla" onclick="PF('dlg1').show();"
+						update=":form1:cevaplaPanel" process="@this"
+						actionListener="#{raporGirisi.soruCevaplaHazirla(soru)}" />
+				</p:column>
+			</p:dataTable>
+			<pre />
+			<p:dataTable var="eksiklik" id="eksiklikListesi" paginator="true"
+				rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15"
+				value="#{raporGirisi.rapor.eksiklikList}">
+				<f:facet name="header">Eksiklikler</f:facet>
+				<p:column width="25px;" style="text-align:center;"
+					headerText="Sıra No">
+					<p:outputLabel value="#{eksiklik.siraNo}" />
+				</p:column>
+				<p:column headerText="Eksiklik">
+					<p:outputLabel value="#{eksiklik.metin}" />
+				</p:column>
+			</p:dataTable>
+			<p:commandButton value="Yeni Eksiklik" onclick="PF('dlg2').show();" />
+			<pre />
+			<p:dataTable var="onlem" id="onlemListesi" paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" value="#{raporGirisi.rapor.onlemList}">
+				<f:facet name="header">Önlemler</f:facet>
+				<p:column width="25px;" style="text-align:center;"
+					headerText="Sıra No">
+					<p:outputLabel value="#{onlem.siraNo}" />
+				</p:column>
+				<p:column headerText="Önlem">
+					<p:outputLabel value="#{onlem.metin}" />
+				</p:column>
+			</p:dataTable>
+			<p:commandButton value="Yeni Önlem" onclick="PF('dlg3').show();" />
+			<pre />
+			<p:button outcome="raporList"
+				style="float:left;margin-top:25px;margin-bottom:15px;"
+				value="Listele" />
+			<p:commandButton value="Kaydet"
+				style="float:right;margin-top:25px;margin-bottom:15px;"
+				process="@this" actionListener="#{raporGirisi.kaydet}" />
+		</p:panel>
+		<p:dialog position="top" modal="true" id="cevapla" widgetVar="dlg1"
+			header="Cevapla">
+			<p:panel id="cevaplaPanel">
+				<p:panelGrid columns="2">
+					<p:column>
+						<p:row>
+							<p:outputLabel value="Soru :#{raporGirisi.seciliSoru.soruMetni}" />
+						</p:row>
+						<pre />
+						<p:row
+							rendered="#{raporGirisi.seciliSoru.soruTipi.i18nKey=='Boşluk Doldurmalı Soru'}">
+							<p:outputLabel value="Metin :" />
+							<ui:repeat value="#{raporGirisi.seciliSoru.seceneklList}"
+								var="secenek">
+								<p:outputLabel value="#{secenek.metin}" />
+							</ui:repeat>
+						</p:row>
+						<pre />
+						<p:row>
+							<p:outputLabel rendered="#{raporGirisi.soruUyari}"
+								value="Soru Uyarısı :#{raporGirisi.seciliSoru.soruUyari}" />
+						</p:row>
+						<pre />
+						<p:row rendered="#{raporGirisi.cevapMetni}">
+							<p:outputLabel value="Cevap " />
+							<p:inputText value="#{raporGirisi.cevap.metin}" />
+						</p:row>
+						<p:row>
+							<p:dataTable rendered="#{raporGirisi.radioTable}"
+								id="radioSecenek" var="secenek"
+								value="#{raporGirisi.seciliSoru.seceneklList}"
+								rowKey="#{secenek.id}"
+								selection="#{raporGirisi.cevap.ekranCevapSecenek.secenek}">
+								<f:facet name="header">
+           							 Seçenek Listesi
+        						</f:facet>
+								<p:column selectionMode="single"
+									style="width:16px;text-align:center" />
+								<p:column headerText="Seçenek Metni">
+									<h:outputText value="#{secenek.metin}" />
+								</p:column>
+								<p:column style="text-align:center;" headerText="Açıklama">
+									<p:outputLabel value="Metin:#{secenek.aciklama}"
+										rendered="#{secenek.aciklamaVarmi=='Var'}" />
+									<pre />
+									<ui:repeat rendered="#{secenek.aciklamaVarmi=='Var'}"
+										value="#{raporGirisi.cevap.ekranCevapSecenek.boslukList}"
+										var="bosluk">
+										<p:outputLabel value="#{bosluk.param}. " />
+										<p:inputText value="#{bosluk.metin}" />
+										<pre />
+									</ui:repeat>
+									<p:outputLabel value="Yok"
+										rendered="#{secenek.aciklamaVarmi=='Yok'}" />
+								</p:column>
+							</p:dataTable>
+							<p:dataTable rendered="#{raporGirisi.checkTable}"
+								id="checkSecenek" var="secenek"
+								value="#{raporGirisi.seciliSoru.seceneklList}"
+								rowKey="#{secenek.id}"
+								selection="#{raporGirisi.secilenSecenekList}">
+								<f:facet name="header">
+            						Seçenek Listesi
+        						</f:facet>
+								<p:column selectionMode="multiple"
+									style="width:16px;text-align:center" />
+								<p:column headerText="Seçenek Metni">
+									<h:outputText value="#{secenek.metin}" />
+								</p:column>
+								<p:column style="text-align:center;" headerText="Açıklama">
+									<p:inputText rendered="#{secenek.aciklamaVarmi=='Var'}"
+										value="#{secenek.aciklama}" />
+									<p:outputLabel value="Yok"
+										rendered="#{secenek.aciklamaVarmi=='Yok'}" />
+								</p:column>
+							</p:dataTable>
+							<p:outputPanel rendered="#{raporGirisi.boslukDoldurma}"
+								id="boslukList" style="text-align:center;">
+								<ui:repeat
+									value="#{raporGirisi.cevap.ekranCevapSecenek.boslukList}"
+									var="bosluk">
+									<p:outputLabel value="#{bosluk.param}. " />
+									<p:inputText value="#{bosluk.metin}" />
+									<pre />
+								</ui:repeat>
+							</p:outputPanel>
+						</p:row>
+					</p:column>
+				</p:panelGrid>
+				<p:commandButton oncomplete="PF('dlg1').hide();" value="İptal" />
+				<p:commandButton oncomplete="PF('dlg1').hide();" value="Tamam"
+					update=":form1:soruListesi" process="@parent"
+					actionListener="#{raporGirisi.Cevapla}" style="float:right;" />
+			</p:panel>
+		</p:dialog>
+		<p:dialog position="top" modal="true" id="yeniEksiklik"
+			widgetVar="dlg2" header="Yeni Eksiklik">
+			<p:outputLabel value="Sıra No" />
+			<p:inputText value="#{raporGirisi.eksiklik.siraNo}" />
+			<pre />
+			<p:outputLabel value="Eksiklik" />
+			<p:inputTextarea value="#{raporGirisi.eksiklik.metin}" />
+			<pre />
+			<p:commandButton value="Ekle" style="float:right;" process="@parent"
+				oncomplete="PF('dlg2').hide();"
+				update=":form1:eksiklikListesi,:form1:yeniEksiklik"
+				actionListener="#{raporGirisi.eksiklikEkle}" />
+		</p:dialog>
+		<p:dialog modal="true" position="top" id="yeniOnlem" widgetVar="dlg3"
+			header="Yeni Önlem">
+			<p:outputLabel value="Sıra No" />
+			<p:inputText value="#{raporGirisi.onlem.siraNo}" />
+			<pre />
+			<p:outputLabel value="Önlem" />
+			<p:inputTextarea value="#{raporGirisi.onlem.metin}" />
+			<pre />
+			<p:commandButton value="Ekle" style="float:right;" process="@parent"
+				update=":form1:onlemListesi,:form1:yeniOnlem"
+				oncomplete="PF('dlg3').hide();"
+				actionListener="#{raporGirisi.onlemEkle}" />
+		</p:dialog>
+	</h:form>
+</f:view>

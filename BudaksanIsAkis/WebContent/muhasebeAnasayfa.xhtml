@@ -1,0 +1,186 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form" style="padding-bottom:200px;">
+		<ui:include src="resources/composite/menu.xhtml" />
+		<p:panel header="Muhasebe Anasayfa" style="text-align:center;">
+			<p:tabView dynamic="true" id="tabView" cache="true" effect="blind">
+				<p:tab title="Tarih Bazlı Listeleme">
+					<p:calendar onchange="PF('faturaTable').filter()"
+						value="#{muhasabeService.search.minDuzenlemeTarihi}"
+						showOn="button" placeholder="Başlangıç Düzenleme Tarihi" />
+					<p:spacer width="20" />
+					<p:calendar onchange="PF('faturaTable').filter()"
+						value="#{muhasabeService.search.maxDuzenlemeTarihi}"
+						showOn="button" placeholder="Bitiş Düzenleme Tarihi" />
+					<pre />
+					<p:calendar onchange="PF('faturaTable').filter()"
+						value="#{muhasabeService.search.minFiiliSevkTarihi}"
+						showOn="button" placeholder="Başlangıç Fiili Sevk Tarihi" />
+					<p:spacer width="20" />
+					<p:calendar onchange="PF('faturaTable').filter()"
+						value="#{muhasabeService.search.maxFiiliSevkTarihi}"
+						showOn="button" placeholder="Bitiş Fiili Sevk Tarihi" />
+					<pre />
+					<p:commandButton update=":form:faturaTable" value="Ara"
+						action="#{muhasabeService.ara}" />
+				</p:tab>
+				<p:tab title="Proje Bazlı Listeleme">
+					<p:selectOneMenu style="width:100px;"
+						value="#{muhasabeService.search.proje}"
+						converter="omnifaces.SelectItemsConverter" var="p" filter="true"
+						filterMatchMode="contains">
+						<f:selectItem noSelectionOption="true" itemLabel="Proje Seç"
+							itemValue="" />
+						<f:selectItems value="#{muhasabeService.projeList}" var="proje"
+							itemLabel="#{proje.ad}" itemValue="#{proje}" />
+						<p:column>
+							<h:outputText value="#{p.ad}" />
+						</p:column>
+					</p:selectOneMenu>
+					<pre />
+					<p:commandButton update=":form:faturaTable" value="Ara"
+						action="#{muhasabeService.ara}" />
+				</p:tab>
+				<p:tab title="Şoför Bazlı Listeleme">
+					<p:selectOneMenu style="width:100px;"
+						value="#{muhasabeService.sofor}"
+						converter="omnifaces.SelectItemsConverter" var="s" filter="true"
+						filterMatchMode="contains">
+						<p:ajax listener="#{muhasabeService.araBySofor}"
+							update=":form:faturaTable" />
+						<f:selectItem noSelectionOption="true" itemLabel="Şoför Seç"
+							itemValue="" />
+						<f:selectItems value="#{muhasabeService.soforList}" var="sofor"
+							itemLabel="#{sofor.ad} #{sofor.soyad}" itemValue="#{sofor}" />
+						<p:column>
+							<h:outputText value="#{s.ad} #{s.soyad}" />
+						</p:column>
+					</p:selectOneMenu>
+				</p:tab>
+				<p:tab title="Araç Bazlı Listeleme">
+					<p:selectOneMenu style="width:100px;"
+						value="#{muhasabeService.arac}"
+						converter="omnifaces.SelectItemsConverter" var="a" filter="true"
+						filterMatchMode="contains">
+						<p:ajax listener="#{muhasabeService.araByArac}"
+							update=":form:faturaTable" />
+						<f:selectItem noSelectionOption="true" itemLabel="Araç Seç"
+							itemValue="" />
+						<f:selectItems value="#{muhasabeService.aracList}" var="arac"
+							itemLabel="#{arac.plaka}" itemValue="#{arac}" />
+						<p:column>
+							<h:outputText value="#{a.plaka}" />
+						</p:column>
+					</p:selectOneMenu>
+				</p:tab>
+				<p:tab title="Malzeme Bazlı Listeleme">
+					<p:selectOneMenu style="width:100px;"
+						value="#{muhasabeService.malzeme}"
+						converter="omnifaces.SelectItemsConverter" var="m" filter="true"
+						filterMatchMode="contains">
+						<p:ajax listener="#{muhasabeService.araByMalzeme}"
+							update=":form:faturaTable" />
+						<f:selectItem noSelectionOption="true" itemLabel="Malzeme Seç"
+							itemValue="" />
+						<f:selectItems value="#{muhasabeService.malzemeList}"
+							var="malzeme" itemLabel="#{malzeme.ad}" itemValue="#{malzeme}" />
+						<p:column>
+							<h:outputText value="#{m.ad}" />
+						</p:column>
+					</p:selectOneMenu>
+				</p:tab>
+			</p:tabView>
+			<pre />
+			<p:dataTable id="faturaTable" var="fatura" paginator="true"
+				sortBy="#{fatura.id}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" summary="true"
+				emptyMessage="Arama kriterlerine uyan herhangi bir fatura bulunamadı."
+				value="#{muhasabeService.faturaList}" editable="true"
+				filteredValue="#{muhasabeService.filtrelenenFaturaList}"
+				filterDelay="100">
+
+				<p:ajax event="filter" update=":form:toplamTutar,:form:faturaTable"
+					listener="#{muhasabeService.filterListener}" />
+
+				<f:facet name="header">
+					<p:commandButton icon="ui-icon-refresh" update=":form:faturaTable"
+						style="float:right;" action="#{muhasabeService.init}" />
+						<p:spacer height="26px"/>
+				</f:facet>
+
+				<p:column filterBy="#{fatura.seri}" style="text-align:center;"
+					sortBy="#{fatura.seri}" headerText="Seri"
+					filterMatchMode="contains">
+					<p:outputLabel style="width:30px" value="#{fatura.seri}" />
+				</p:column>
+
+				<p:column filterBy="#{fatura.siraNo}" style="text-align:center;"
+					sortBy="#{fatura.siraNo}" headerText="Sıra No"
+					filterMatchMode="contains">
+					<h:outputText value="#{fatura.siraNo}" />
+				</p:column>
+
+				<p:column filterBy="#{fatura.musteriVergiDairesi}"
+					sortBy="#{fatura.musteriVergiDairesi}" style="text-align:center;"
+					headerText="Müşteri Vergi Dairesi" filterMatchMode="contains">
+					<h:outputText value="#{fatura.musteriVergiDairesi}" />
+				</p:column>
+
+				<p:column filterBy="#{fatura.musteriVergiNo}"
+					sortBy="#{fatura.musteriVergiNo}" style="text-align:center;"
+					headerText="Müşteri Vergi No" filterMatchMode="contains">
+					<h:outputText value="#{fatura.musteriVergiNo}" />
+				</p:column>
+
+				<p:column filterBy="#{fatura.duzenlemeTarihi}"
+					sortBy="#{fatura.duzenlemeTarihi}" style="text-align:center;"
+					headerText="Düzenleme Tarihi" filterMatchMode="contains">
+					<h:outputText value="#{fatura.duzenlemeTarihi}" />
+				</p:column>
+
+				<p:column filterBy="#{fatura.fiiliSevkTarihi}"
+					sortBy="#{fatura.fiiliSevkTarihi}" style="text-align:center;"
+					headerText="Müşteri Fiili Sevk Tarihi" filterMatchMode="contains">
+					<h:outputText value="#{fatura.fiiliSevkTarihi}" />
+				</p:column>
+
+				<p:column filterBy="#{fatura.aliciAdi}" style="text-align:center;"
+					sortBy="#{fatura.aliciAdi}" headerText="Alıcı Adı"
+					filterMatchMode="contains">
+					<h:outputText value="#{fatura.aliciAdi}" />
+				</p:column>
+
+				<p:column filterBy="#{fatura.teslimAlan}" style="text-align:center;"
+					sortBy="#{fatura.teslimAlan}" headerText="Teslim Alan"
+					filterMatchMode="contains">
+					<h:outputText value="#{fatura.teslimAlan}" />
+				</p:column>
+
+				<p:column filterBy="#{fatura.teslimEden}" style="text-align:center;"
+					sortBy="#{fatura.teslimEden}" headerText="Teslim Eden"
+					filterMatchMode="contains">
+					<h:outputText value="#{fatura.teslimEden}" />
+				</p:column>
+
+				<p:column filterBy="#{fatura.toplamTutar}"
+					sortBy="#{fatura.toplamTutar}" style="text-align:center;"
+					headerText="Toplam Tutar" filterMatchMode="contains">
+					<h:outputText value="#{fatura.toplamTutar}">
+						<f:convertNumber type="currency" currencySymbol="₺" />
+					</h:outputText>
+				</p:column>
+			</p:dataTable>
+			<pre />
+			<p:outputLabel style="float:right;" id="toplamTutar"
+				value="Toplam Fatura Tutar :#{muhasabeService.toplamTutar}" />
+			<p:spacer height="20px" />
+		</p:panel>
+	</h:form>
+</f:view>

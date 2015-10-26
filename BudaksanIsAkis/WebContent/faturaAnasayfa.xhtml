@@ -1,0 +1,843 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form" style="padding-bottom:200px;">
+		<ui:include src="resources/composite/menu.xhtml" />
+		<p:panel header="Fatura Anasayfa"
+			style="text-align:center;font-size:14px;">
+			<p:dataTable id="faturaTable" var="fatura" paginator="true"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15"
+				emptyMessage="Arama kriterlerine uyan herhangi bir araç bulunamadı."
+				filteredValue="#{faturaService.filtrelenenFaturaList}"
+				value="#{faturaService.faturaList}" editable="true"
+				style="margin-bottom:20px;font-size:14px;">
+
+				<f:facet name="header">
+					<p:outputPanel>
+						<h:outputText value="Tüm alanlarda ara " />
+						<p:inputText id="globalFilter"
+							onkeyup="PF('faturaTable').filter()" style="width:150px"
+							placeholder="Anahtar kelime gir" />
+					</p:outputPanel>
+				</f:facet>
+
+				<f:facet name="footer">
+					<p:commandButton value="Yeni Fatura Ekle"
+						action="#{faturaService.faturaYenile}"
+						update=":form:urunler,:form:stokHareketleri,:form:yakitHareketleri"
+						onclick="PF('dlg7').show();" />
+				</f:facet>
+
+				<p:column filterBy="#{fatura.seri}" style="text-align:center;"
+					sortBy="seri" headerText="Seri" filterMatchMode="contains">
+					<p:outputLabel style="width:30px" value="#{fatura.seri}" />
+				</p:column>
+
+				<p:column filterBy="#{fatura.siraNo}" style="text-align:center;"
+					sortBy="siraNo" headerText="Sıra No" filterMatchMode="contains">
+					<h:outputText value="#{fatura.siraNo}" />
+				</p:column>
+
+				<p:column filterBy="#{fatura.musteriVergiDairesi}"
+					sortBy="musteriVergiDairesi" style="text-align:center;"
+					headerText="Müşteri Vergi Dairesi" filterMatchMode="contains">
+					<h:outputText value="#{fatura.musteriVergiDairesi}" />
+				</p:column>
+
+				<p:column filterBy="#{fatura.musteriVergiNo}"
+					sortBy="musteriVergiNo" style="text-align:center;"
+					headerText="Müşteri Vergi No" filterMatchMode="contains">
+					<h:outputText value="#{fatura.musteriVergiNo}" />
+				</p:column>
+
+				<p:column filterBy="#{fatura.duzenlemeTarihi}"
+					sortBy="duzenlemeTarihi" style="text-align:center;"
+					headerText="Düzenleme Tarihi" filterMatchMode="contains">
+					<h:outputText value="#{fatura.duzenlemeTarihi}" />
+				</p:column>
+
+				<p:column filterBy="#{fatura.fiiliSevkTarihi}"
+					sortBy="fiiliSevkTarihi" style="text-align:center;"
+					headerText="Müşteri Fiili Sevk Tarihi" filterMatchMode="contains">
+					<h:outputText value="#{fatura.fiiliSevkTarihi}" />
+				</p:column>
+
+				<p:column filterBy="#{fatura.aliciAdi}" style="text-align:center;"
+					sortBy="aliciAdi" headerText="Alıcı Adı" filterMatchMode="contains">
+					<h:outputText value="#{fatura.aliciAdi}" />
+				</p:column>
+
+				<p:column filterBy="#{fatura.teslimAlan}" style="text-align:center;"
+					sortBy="teslimAlan" headerText="Teslim Alan"
+					filterMatchMode="contains">
+					<h:outputText value="#{fatura.teslimAlan}" />
+				</p:column>
+				<p:column filterBy="#{fatura.teslimEden}" style="text-align:center;"
+					sortBy="teslimEden" headerText="Teslim Eden"
+					filterMatchMode="contains">
+					<h:outputText value="#{fatura.teslimEden}" />
+				</p:column>
+
+				<p:column filterBy="#{fatura.toplamTutar}" sortBy="toplamTutar"
+					style="text-align:center;" headerText="Toplam Tutar"
+					filterMatchMode="contains">
+					<h:outputText value="#{fatura.toplamTutar}" />
+				</p:column>
+
+				<p:column style="width:32px;text-align: center">
+					<p:commandButton
+						update=":form:faturaGuncelle,:form:urunler,:form:stokHareketleri"
+						process="@this" oncomplete="PF('dlg8').show()"
+						icon="ui-icon-pencil" title="Güncelle">
+						<f:setPropertyActionListener value="#{fatura}"
+							target="#{faturaService.fatura}" />
+						<f:setPropertyActionListener
+							value="#{faturaService.fatura.urunList}"
+							target="#{faturaService.urunList}" />
+						<f:setPropertyActionListener
+							value="#{faturaService.fatura.stokHareketList}"
+							target="#{faturaService.stokHareketList}" />
+					</p:commandButton>
+				</p:column>
+
+				<p:column style="width:32px;text-align: center">
+					<p:commandButton update=":form:faturaTable,:form:msgs"
+						process="@this" action="#{faturaService.sil}" icon="ui-icon-trash"
+						title="Sil">
+						<f:setPropertyActionListener value="#{fatura}"
+							target="#{faturaService.fatura}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+			<p:dialog id="yeniMalzeme" header="Yeni Malzeme Ekle"
+				onHide="PF('dlg2').show();" showEffect="size" hideEffect="scale"
+				draggable="false" resizable="false" widgetVar="dlg9" modal="true">
+				<p:panel id="yeniMalzemePanel" style="border-style:none !important;">
+					<p:inputText value="#{faturaService.malzeme.ad}"
+						required="#{faturaService.malzeme.ad==null}"
+						requiredMessage="Malzeme Adı boş geçilemez" style="width:185px;"
+						placeholder="Malzeme Adı" />
+					<pre />
+					<p:selectOneMenu var="mt" filter="true" filterMatchMode="contains"
+						required="#{faturaService.malzeme.malzemeTipi==null}"
+						requiredMessage="Malzeme Tipi boş geçilemez" style="width:185px;"
+						value="#{faturaService.malzeme.malzemeTipi}">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Malzeme Tipi Seç" itemValue="" />
+						<f:selectItems value="#{faturaService.malzemeTipleri}"
+							var="malzemeTipi" itemValue="#{hareketTipi}"
+							itemLabel="#{malzemeTipi.displayName}" />
+						<p:column>
+							<h:outputText value="#{mt.displayName}" />
+						</p:column>
+					</p:selectOneMenu>
+					<pre />
+					<pe:inputNumber value="#{faturaService.malzeme.mevcutMiktar}"
+						style="width:185px;" placeholder="Mevcut Miktar" />
+					<pre />
+					<p:inputText value="#{faturaService.malzeme.birim}"
+						required="#{faturaService.malzeme.birim==null}"
+						requiredMessage="Malzeme Birimi boş geçilemez"
+						style="width:185px;" placeholder="Birim" />
+					<pre />
+					<p:commandButton value="Kaydet"
+						update=":form:yeniUrun,:form:yeniMalzemePanel,:form:msgs"
+						process="@parent"
+						oncomplete="if (args &amp;&amp; !args.validationFailed) PF('dlg9').hide()"
+						action="#{faturaService.malzemeKaydet}" />
+				</p:panel>
+			</p:dialog>
+			<p:dialog id="faturaGuncelle" header="Fatura Güncelle"
+				showEffect="size" hideEffect="scale" draggable="false"
+				resizable="false" widgetVar="dlg8" modal="true">
+				<p:panel id="faturaGuncellePanel"
+					style="border-style:none !important;">
+					<p:inputText value="#{faturaService.fatura.seri}"
+						style="width:185px;" placeholder="Seri" />
+					<p:spacer width="20px" />
+					<pe:inputNumber value="#{faturaService.fatura.siraNo}"
+						style="width:185px;" placeholder="Sıra No" />
+					<pre />
+					<p:inputText value="#{faturaService.fatura.musteriVergiDairesi}"
+						style="width:185px;" placeholder="Müşteri Vergi Dairesi" />
+					<p:spacer width="20px" />
+					<pe:inputNumber value="#{faturaService.fatura.musteriVergiNo}"
+						style="width:185px;" placeholder="Müşteri Vergi No" />
+					<pre />
+					<p:calendar value="#{faturaService.fatura.duzenlemeTarihi}"
+						readonlyInput="true" showOn="button" locale="tr"
+						pattern="MM/dd/yyyy HH:mm:ss" placeholder="Düzenleme Tarihi" />
+					<p:spacer width="20px" />
+					<p:calendar value="#{faturaService.fatura.fiiliSevkTarihi}"
+						readonlyInput="true" showOn="button" locale="tr"
+						placeholder="Fiili Sevk Tarihi" />
+					<pre />
+					<p:inputText value="#{faturaService.fatura.aliciAdi}"
+						style="width:390px;" placeholder="Alıcı Adı" />
+					<pre />
+					<p:inputTextarea autoResize="true" style="width:390px;"
+						value="#{faturaService.fatura.aliciAdresi}"
+						placeholder="Alıcı Adresi" />
+					<pre />
+					<p:inputText value="#{faturaService.fatura.teslimAlan}"
+						style="width:185px;" placeholder="Teslim Alan" />
+					<p:spacer width="20px" />
+					<p:inputText value="#{faturaService.fatura.teslimEden}"
+						style="width:185px;" placeholder="Teslim Eden" />
+					<pre />
+					<p:commandButton value="Ürünler" type="button" style="width:185px;"
+						onclick="PF('dlg1').show();" />
+					<p:spacer width="20px" />
+					<p:commandButton value="Stok Hareketleri" type="button"
+						style="width:185px;" onclick="PF('dlg3').show();" />
+					<pre />
+					<p:selectOneMenu value="#{faturaService.fatura.proje}"
+						style="width:390px;" converter="omnifaces.SelectItemsConverter"
+						var="p" filter="true" filterMatchMode="contains">
+						<f:selectItem noSelectionOption="true" itemLabel="Proje Seç"
+							itemValue="" />
+						<f:selectItems value="#{faturaService.projeList}" var="proje"
+							itemLabel="#{proje.ad}" itemValue="#{proje}" />
+						<p:column>
+							<h:outputText value="#{p.ad}" />
+						</p:column>
+					</p:selectOneMenu>
+					<pre />
+					<p:commandButton value="Güncelle" process="@parent"
+						style="width:185px;" onclick="PF('dlg8').hide();"
+						update=":form:faturaTable,:form:msgs"
+						action="#{faturaService.guncelle}" />
+				</p:panel>
+			</p:dialog>
+			<p:dialog id="yeniFatura" header="Yeni Fatura Ekle" widgetVar="dlg7"
+				showEffect="size" hideEffect="scale" draggable="false"
+				resizable="false" modal="true">
+				<p:panel id="yeniFaturaPanel" style="border-style:none !important;">
+					<p:inputText value="#{faturaService.fatura.seri}"
+						required="#{faturaService.fatura.seri==null}"
+						requiredMessage="Seri boş geçilemez" style="width:185px;"
+						placeholder="Seri" />
+					<p:spacer width="20px" />
+					<pe:inputNumber value="#{faturaService.fatura.siraNo}"
+						required="#{faturaService.fatura.siraNo ==null}"
+						requiredMessage="Seri Sıra No boş geçilemez" style="width:185px;"
+						placeholder="Sıra No" />
+					<pre />
+					<p:inputText value="#{faturaService.fatura.musteriVergiDairesi}"
+						required="#{faturaService.fatura.musteriVergiDairesi==null}"
+						requiredMessage="Müşteri Vergi Dairesi boş geçilemez"
+						style="width:185px;" placeholder="Müşteri Vergi Dairesi" />
+					<p:spacer width="20px" />
+					<pe:inputNumber value="#{faturaService.fatura.musteriVergiNo}"
+						required="#{faturaService.fatura.musteriVergiNo==0}"
+						requiredMessage="Müşteri Vergi Numarası boş geçilemez"
+						style="width:185px;" placeholder="Müşteri Vergi No" />
+					<pre />
+					<p:calendar value="#{faturaService.fatura.duzenlemeTarihi}"
+						readonlyInput="true"
+						required="#{faturaService.fatura.duzenlemeTarihi==null}"
+						requiredMessage="Düzenleme Tarihi boş geçilemez" showOn="button"
+						pattern="MM/dd/yyyy HH:mm:ss" placeholder="Düzenleme Tarihi" />
+					<p:spacer width="20px" />
+					<p:calendar value="#{faturaService.fatura.fiiliSevkTarihi}"
+						readonlyInput="true"
+						required="#{faturaService.fatura.fiiliSevkTarihi==null}"
+						requiredMessage="Fiili Sevk Tarihi boş geçilemez" showOn="button"
+						placeholder="Fiili Sevk Tarihi" />
+					<pre />
+					<p:inputText value="#{faturaService.fatura.teslimAlan}"
+						required="#{faturaService.fatura.teslimAlan==null}"
+						requiredMessage="Teslim Alan Adı boş geçilemez"
+						style="width:185px;" placeholder="Teslim Alan" />
+					<p:spacer width="20px" />
+					<p:inputText value="#{faturaService.fatura.teslimEden}"
+						required="#{faturaService.fatura.teslimEden==null}"
+						requiredMessage="Teslim Eden Adı boş geçilemez"
+						style="width:185px;" placeholder="Teslim Eden" />
+					<pre />
+					<p:inputText value="#{faturaService.fatura.aliciAdi}"
+						required="#{faturaService.fatura.aliciAdi==null}"
+						requiredMessage="Alıcı Adı boş geçilemez" style="width:390px;"
+						placeholder="Alıcı Adı" />
+					<pre />
+					<p:inputTextarea autoResize="true" style="width:390px;"
+						required="#{faturaService.fatura.aliciAdresi==null}"
+						requiredMessage="Alıcı Adresi boş geçilemez"
+						value="#{faturaService.fatura.aliciAdresi}"
+						placeholder="Alıcı Adresi" />
+					<pre />
+					<p:selectOneMenu value="#{faturaService.fatura.proje}"
+						style="width:390px;" converter="omnifaces.SelectItemsConverter"
+						var="p" filter="true" filterMatchMode="contains">
+						<f:selectItem noSelectionOption="true" itemLabel="Proje Seç"
+							style="width:185px;" itemValue="" />
+						<f:selectItems value="#{faturaService.projeList}" var="proje"
+							itemLabel="#{proje.ad}" itemValue="#{proje}" />
+						<p:column>
+							<h:outputText value="#{p.ad}" />
+						</p:column>
+					</p:selectOneMenu>
+					<pre />
+					<p:commandButton value="Ürünler" type="button" style="width:185px;"
+						onclick="PF('dlg1').show();" />
+					<p:spacer width="20px" />
+					<p:commandButton value="Stok Hareketleri" type="button"
+						style="width:185px;" onclick="PF('dlg3').show();" />
+					<pre />
+					<p:commandButton value="Kaydet" process="@parent"
+						style="width:185px;"
+						oncomplete="if (args &amp;&amp; !args.validationFailed) PF('dlg7').hide()"
+						update=":form:faturaTable,:form:msgs,:form:yeniFaturaPanel"
+						action="#{faturaService.kaydet}" />
+				</p:panel>
+			</p:dialog>
+			<p:dialog id="urunler" header="Ürünler" widgetVar="dlg1" modal="true"
+				width="75%" showEffect="size" hideEffect="scale" draggable="false"
+				resizable="false">
+				<p:panel id="urunlerPanel" style="border-style:none !important;">
+					<p:dataTable var="urun" id="urunTable" paginator="true" rows="10"
+						sortBy="id"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						emptyMessage="Herhangi bir ürün bulunamadı." editable="true"
+						rowsPerPageTemplate="5,10,15" value="#{faturaService.urunList}">
+
+						<p:ajax event="rowEdit" listener="#{faturaService.urunGuncelle}"
+							update=":form:urunTable,:form:msgs" />
+
+						<f:facet name="footer">
+							<p:commandButton value="Yeni Ürün Ekle" type="button"
+								onclick="PF('dlg2').show();PF('dlg1').hide();" />
+						</f:facet>
+
+						<p:column headerText="Malzeme" sortBy="#{urun.malzeme.ad}"
+							filterMatchMode="exact" filterBy="#{urun.malzeme}">
+							<f:facet name="filter">
+								<p:selectOneMenu var="m" filter="true"
+									filterMatchMode="contains"
+									onchange="PF('stokHareketTable').filter()">
+									<f:selectItem noSelectionOption="true" itemLabel="Malzeme Seç"
+										itemValue="" />
+									<f:selectItems value="#{faturaService.malzemeList}"
+										var="malzeme" itemLabel="#{malzeme.ad}"
+										itemValue="#{stokHareket.malzeme}" />
+									<p:column>
+										<h:outputText value="#{m.ad}" />
+									</p:column>
+								</p:selectOneMenu>
+							</f:facet>
+							<p:cellEditor>
+								<f:facet name="output">
+									<p:outputLabel value="#{urun.malzeme.ad}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:selectOneMenu style="width:100%" id="malzemeler"
+										value="#{urun.malzeme}"
+										converter="omnifaces.SelectItemsConverter" var="m"
+										filter="true" filterMatchMode="contains">
+										<f:selectItem noSelectionOption="true" itemLabel="Malzeme Seç"
+											itemValue="" />
+										<f:selectItems value="#{faturaService.malzemeList}"
+											var="malzeme" itemLabel="#{malzeme.ad}"
+											itemValue="#{malzeme}" />
+										<p:column>
+											<h:outputText value="#{m.ad}" />
+										</p:column>
+									</p:selectOneMenu>
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+						<p:column headerText="Miktar" sortBy="#{urun.miktar}"
+							filterBy="#{urun.miktar}" filterMatchMode="contains">
+							<p:cellEditor>
+								<f:facet name="output">
+									<p:outputLabel value="#{urun.miktar}" />
+								</f:facet>
+								<f:facet name="input">
+									<pe:inputNumber value="#{urun.miktar}" style="width:100%" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+						<p:column headerText="Birim Tutar" sortBy="#{urun.birimTutar}"
+							filterBy="#{urun.birimTutar}" filterMatchMode="contains">
+							<p:cellEditor>
+								<f:facet name="output">
+									<p:outputLabel value="#{urun.birimTutar}" />
+								</f:facet>
+								<f:facet name="input">
+									<pe:inputNumber value="#{urun.birimTutar}" style="width:100%" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+						<p:column headerText="Toplam Tutar" sortBy="#{urun.toplamTutar}"
+							filterBy="#{urun.toplamTutar}" filterMatchMode="contains">
+							<h:outputText value="#{urun.toplamTutar}" />
+						</p:column>
+
+						<p:column style="width:14px;">
+							<p:rowEditor />
+						</p:column>
+
+						<p:column style="width:26px">
+							<p:commandButton update=":form:urunTable,:form:msgs"
+								process="@this" action="#{faturaService.urunSil}"
+								icon="ui-icon-trash" title="Sil">
+								<f:setPropertyActionListener value="#{urun}"
+									target="#{faturaService.urun}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</p:dialog>
+			<p:dialog id="yeniUrun" header="Yeni Ürün" widgetVar="dlg2"
+				showEffect="size" hideEffect="scale" draggable="false"
+				onHide="PF('dlg1').show();" resizable="false" modal="true">
+				<p:panel id="yeniUrunPanel" style="border-style:none !important;">
+					<p:panelGrid columns="2">
+						<p:selectOneMenu id="malzemeler"
+							value="#{faturaService.urun.malzeme}"
+							converter="omnifaces.SelectItemsConverter" var="m" filter="true"
+							filterMatchMode="contains">
+							<f:selectItem noSelectionOption="true" itemLabel="Malzeme Seç"
+								itemValue="" />
+							<f:selectItems value="#{faturaService.malzemeList}" var="malzeme"
+								itemLabel="#{malzeme.ad}" itemValue="#{malzeme}" />
+							<p:column>
+								<h:outputText value="#{m.ad}" />
+							</p:column>
+						</p:selectOneMenu>
+						<p:commandButton icon="ui-icon-plus" type="button"
+							onclick="PF('dlg9').show();" />
+					</p:panelGrid>
+					<pre />
+					<pe:inputNumber value="#{faturaService.urun.miktar}"
+						placeholder="Miktar" />
+					<pre />
+					<pe:inputNumber value="#{faturaService.urun.birimTutar}"
+						placeholder="Birim Tutar" />
+					<pre />
+					<p:commandButton value="Kaydet" process="@parent"
+						update=":form:urunlerPanel,:form:yeniUrunPanel,:form:msgs"
+						oncomplete="PF('dlg2').hide();" action="#{faturaService.urunEkle}" />
+				</p:panel>
+			</p:dialog>
+			<p:dialog id="stokHareketleri" header="Stok Hareketleri" width="75%"
+				showEffect="size" hideEffect="scale" draggable="false"
+				resizable="false" widgetVar="dlg3" modal="true">
+				<p:panel id="stokHareketleriPanel"
+					style="border-style:none !important;">
+					<p:dataTable var="stokHareket" id="stokHareketTable"
+						paginator="true" rows="10"
+						emptyMessage="Herhangi bir hareket bulunamadı."
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15" editable="true"
+						value="#{faturaService.stokHareketList}">
+
+						<p:ajax event="rowEdit" update=":form:stokHareketTable,:form:msgs" />
+
+						<f:facet name="footer">
+							<p:commandButton value="Yeni Stok Hareketi Ekle" type="button"
+								onclick="PF('dlg3').hide();PF('dlg4').show()" />
+						</f:facet>
+
+						<p:column headerText="Değişim Tarihi" filterBy="degisimTarihi"
+							filterMatchMode="contains" sortBy="degisimTarihi">
+							<p:cellEditor>
+								<f:facet name="output">
+									<p:outputLabel value="#{stokHareket.degisimTarihi}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:calendar value="#{stokHareket.degisimTarihi}" locale="tr"
+										readonlyInput="true" showOn="button"
+										pattern="MM/dd/yyyy HH:mm:ss" placeholder="Değişim Tarihi" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+						<p:column headerText="Malzeme" sortBy="#{stokHareket.malzeme.ad}"
+							filterBy="#{stokHareket.malzeme}" filterMatchMode="exact">
+							<f:facet name="filter">
+								<p:selectOneMenu var="m" filter="true"
+									filterMatchMode="contains"
+									onchange="PF('stokHareketTable').filter()">
+									<f:selectItem noSelectionOption="true" itemLabel="Malzeme Seç"
+										itemValue="" />
+									<f:selectItems value="#{faturaService.malzemeList}"
+										var="malzeme" itemLabel="#{malzeme.ad}"
+										itemValue="#{stokHareket.malzeme}" />
+									<p:column>
+										<h:outputText value="#{m.ad}" />
+									</p:column>
+								</p:selectOneMenu>
+							</f:facet>
+							<p:cellEditor>
+								<f:facet name="output">
+									<p:outputLabel value="#{stokHareket.malzeme.ad}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{stokHareket.malzeme.ad}"
+										style="width:100%" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+						<p:column headerText="Gelen Miktar" sortBy="gelenMiktar"
+							filterBy="gelenMiktar" filterMatchMode="contains">
+							<p:cellEditor>
+								<f:facet name="output">
+									<p:outputLabel value="#{stokHareket.gelenMiktar}" />
+								</f:facet>
+								<f:facet name="input">
+									<pe:inputNumber value="#{stokHareket.gelenMiktar}"
+										style="width:100%" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+						<p:column headerText="Giden Miktar" sortBy="gidenMiktar"
+							filterBy="gidenMiktar" filterMatchMode="contains">
+							<p:cellEditor>
+								<f:facet name="output">
+									<p:outputLabel value="#{stokHareket.gidenMiktar}" />
+								</f:facet>
+								<f:facet name="input">
+									<pe:inputNumber value="#{stokHareket.gidenMiktar}"
+										style="width:100%" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+						<p:column>
+							<p:commandButton update=":form:yakitHareketTable" style=""
+								process="@this" onclick="PF('dlg5').show();"
+								value="Yakıt Hareketleri">
+								<f:setPropertyActionListener
+									value="#{stokHareket.yakitHareketList}"
+									target="#{faturaService.yakitHareketList}" />
+							</p:commandButton>
+						</p:column>
+
+						<p:column style="width:32px">
+							<p:rowEditor />
+							<pre />
+							<p:commandButton update=":form:stokHareketTable,:form:msgs"
+								process="@this" action="#{faturaService.stokHareketSil}"
+								icon="ui-icon-trash" title="Sil">
+								<f:setPropertyActionListener value="#{stokHareket}"
+									target="#{faturaService.stokHareket}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</p:dialog>
+			<p:dialog id="yeniStokHareket" header="Yeni Stok Hareket"
+				onHide="PF('dlg3').show();" showEffect="size" hideEffect="scale"
+				draggable="false" resizable="false" widgetVar="dlg4" modal="true">
+				<p:panel id="yeniStokHareketPanel"
+					style="border-style:none !important;">
+					<p:calendar value="#{faturaService.stokHareket.degisimTarihi}"
+						required="#{faturaService.stokHareket.degisimTarihi==null}"
+						requiredMessage="Değişim Tarihi boş geçilemez"
+						readonlyInput="true" showOn="button" locale="tr"
+						pattern="MM/dd/yyyy HH:mm:ss" placeholder="Değişim Tarihi" />
+					<pre />
+					<p:selectOneMenu value="#{faturaService.stokHareket.malzeme}"
+						required="#{faturaService.stokHareket.malzeme==null}"
+						requiredMessage="Malzeme boş geçilemez" style="width:185px;"
+						converter="omnifaces.SelectItemsConverter" var="m" filter="true"
+						filterMatchMode="contains">
+						<f:selectItem noSelectionOption="true" itemLabel="Malzeme Seç"
+							itemValue="" />
+						<f:selectItems value="#{faturaService.malzemeList}" var="malzeme"
+							itemLabel="#{malzeme.ad}" itemValue="#{malzeme}" />
+						<p:column>
+							<h:outputText value="#{m.ad}" />
+						</p:column>
+					</p:selectOneMenu>
+					<pre />
+					<pe:inputNumber value="#{faturaService.stokHareket.gelenMiktar}"
+						style="width:185px;" placeholder="Gelen Miktar" />
+					<pre />
+					<pe:inputNumber value="#{faturaService.stokHareket.gidenMiktar}"
+						style="width:185px;" placeholder="Giden Miktar" />
+					<pre />
+					<p:commandButton value="Yakıt Hareketleri" style="width:185px;"
+						update=":form:yakitHareketTable" onclick="PF('dlg5').show();">
+						<f:setPropertyActionListener
+							target="#{faturaService.yakitHareketList}"
+							value="#{faturaService.stokHareket.yakitHareketList}" />
+					</p:commandButton>
+					<pre />
+					<p:commandButton value="Kaydet" style="width:92.5px;"
+						process="@parent"
+						update=":form:stokHareketleri,:form:yeniStokHareketPanel,:form:yakitHareketleri,:form:msgs"
+						oncomplete="if (args &amp;&amp; !args.validationFailed) PF('dlg4').hide()"
+						action="#{faturaService.stokHareketEkle}" />
+				</p:panel>
+			</p:dialog>
+			<p:dialog id="yakitHareketleri" header="Yakıt Hareketleri"
+				width="75%" showEffect="size" hideEffect="scale" draggable="false"
+				resizable="false" widgetVar="dlg5" modal="true">
+				<p:panel id="yakitHareketleriPanel"
+					style="border-style:none !important;">
+					<p:dataTable var="yakitHareket" id="yakitHareketTable"
+						paginator="true" rows="10" editable="true"
+						emptyMessage="Herhangi bir hareket bulunamadı."
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15"
+						value="#{faturaService.yakitHareketList}">
+
+						<p:ajax event="rowEdit"
+							update=":form:yakitHareketTable,:form:msgs" />
+
+						<f:facet name="footer">
+							<p:commandButton value="Yeni Yakıt Hareketi Ekle" type="button"
+								onclick="PF('dlg6').show();PF('dlg5').hide();" />
+						</f:facet>
+
+						<p:column headerText="Araç" filterBy="#{yakitHareket.arac}"
+							sortBy="#{yakitHareket.arac.plaka}" filterMatchMode="exact">
+							<f:facet name="filter">
+								<p:selectOneMenu var="a" filter="true"
+									filterMatchMode="contains"
+									onchange="PF('yakitHareketTable').filter()">
+									<f:selectItem noSelectionOption="true" itemLabel="Araç Seç"
+										itemValue="" />
+									<f:selectItems value="#{faturaService.aracList}" var="arac"
+										itemLabel="#{arac.plaka}" itemValue="#{yakitHareket.arac}" />
+									<p:column>
+										<h:outputText value="#{a.plaka}" />
+									</p:column>
+								</p:selectOneMenu>
+							</f:facet>
+							<p:cellEditor>
+								<f:facet name="output">
+									<p:outputLabel value="#{yakitHareket.arac.plaka}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:selectOneMenu style="width:100%"
+										value="#{yakitHareket.arac}"
+										converter="omnifaces.SelectItemsConverter" var="a"
+										filter="true" filterMatchMode="contains">
+										<f:selectItem noSelectionOption="true" itemLabel="Araç Seç"
+											itemValue="" />
+										<f:selectItems value="#{faturaService.aracList}" var="arac"
+											itemLabel="#{arac.plaka}" itemValue="#{arac}" />
+										<p:column>
+											<h:outputText value="#{a.plaka}" />
+										</p:column>
+									</p:selectOneMenu>
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+						<p:column headerText="Şoför" filterBy="#{yakitHareket.sofor}"
+							sortBy="#{yakitHareket.sofor.ad} #{yakitHareket.sofor.soyad}"
+							filterMatchMode="exact">
+							<f:facet name="filter">
+								<p:selectOneMenu var="a" filter="true"
+									filterMatchMode="contains"
+									onchange="PF('yakitHareketTable').filter()">
+									<f:selectItem noSelectionOption="true" itemLabel="Şoför Seç"
+										itemValue="" />
+									<f:selectItems value="#{faturaService.soforList}" var="sofor"
+										itemLabel="#{sofor.ad} #.sofor.soyad}"
+										itemValue="#{yakitHareket.sofor}" />
+									<p:column>
+										<h:outputText value="#{a.ad} #{a.soyad}" />
+									</p:column>
+								</p:selectOneMenu>
+							</f:facet>
+							<p:cellEditor>
+								<f:facet name="output">
+									<p:outputLabel
+										value="#{yakitHareket.sofor.ad} #{yakitHareket.sofor.soyad}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:selectOneMenu style="width:100%"
+										value="#{yakitHareket.sofor}"
+										converter="omnifaces.SelectItemsConverter" var="s"
+										filter="true" filterMatchMode="contains">
+										<f:selectItem noSelectionOption="true" itemLabel="Şoför Seç"
+											itemValue="" />
+										<f:selectItems value="#{faturaService.soforList}" var="sofor"
+											itemLabel="#{sofor.ad} #{sofor.soyad}" itemValue="#{sofor}" />
+										<p:column>
+											<h:outputText value="#{s.ad} #{s.soyad}" />
+										</p:column>
+									</p:selectOneMenu>
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+						<p:column headerText="Gidiş Tarihi" filterBy="gidisTarihi"
+							sortBy="gidisTarihi" filterMatchMode="contains">
+							<p:cellEditor>
+								<f:facet name="output">
+									<p:outputLabel value="#{yakitHareket.gidisTarihi}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:calendar style="width:100%" showOn="button"
+										readonlyInput="true" value="#{yakitHareket.gidisTarihi}"
+										locale="tr" pattern="MM/dd/yyyy HH:mm:ss"
+										placeholder="Gidiş Tarihi" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+						<p:column headerText="Dönüş Tarihi" filterBy="donusTarihi"
+							sortBy="donusTarihi" filterMatchMode="contains">
+							<p:cellEditor>
+								<f:facet name="output">
+									<p:outputLabel value="#{yakitHareket.donusTarihi}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:calendar style="width:100%" showOn="button"
+										readonlyInput="true" value="#{yakitHareket.donusTarihi}"
+										locale="tr" pattern="MM/dd/yyyy HH:mm:ss"
+										placeholder="Dönüş Tarihi" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+						<p:column style="width:14px">
+							<p:rowEditor />
+						</p:column>
+
+						<p:column style="width:26px;text-align: center">
+							<p:commandButton update=":form:yakitHareketTable,:form:msgs"
+								action="#{faturaService.yakitHareketSil}" icon="ui-icon-trash"
+								title="Sil">
+								<f:setPropertyActionListener value="#{yakitHareket}"
+									target="#{faturaService.yakitHareket}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</p:dialog>
+			<p:dialog id="yeniYakitHareket" header="Yeni Yakıt Hareketi"
+				onHide="PF('dlg5').show()" showEffect="size" hideEffect="scale"
+				draggable="false" resizable="false" widgetVar="dlg6" modal="true">
+				<p:panel id="yeniYakitHareketPanel"
+					style="border-style:none !important;">
+					<p:panelGrid columns="2">
+						<p:selectOneMenu value="#{faturaService.yakitHareket.arac}"
+							style="width:135px;"
+							required="#{faturaService.yakitHareket.arac==null}"
+							requiredMessage="Araç boş geçilemez"
+							converter="omnifaces.SelectItemsConverter" var="a" filter="true"
+							filterMatchMode="contains">
+							<f:selectItem noSelectionOption="true" itemLabel="Araç Seç"
+								itemValue="" />
+							<f:selectItems value="#{faturaService.aracList}" var="arac"
+								itemLabel="#{arac.plaka}" itemValue="#{arac}" />
+							<p:column>
+								<h:outputText value="#{a.plaka}" />
+							</p:column>
+						</p:selectOneMenu>
+						<p:commandButton icon="ui-icon-plus" type="button"
+							onclick="PF('dlg10').show();" />
+						<p:selectOneMenu value="#{faturaService.yakitHareket.sofor}"
+							style="width:135px;"
+							required="#{faturaService.yakitHareket.sofor==null}"
+							requiredMessage="Şoför boş geçilemez"
+							converter="omnifaces.SelectItemsConverter" var="s" filter="true"
+							filterMatchMode="contains">
+							<f:selectItem noSelectionOption="true" itemLabel="Şoför Seç"
+								itemValue="" />
+							<f:selectItems value="#{faturaService.soforList}" var="sofor"
+								itemLabel="#{sofor.ad} #{sofor.soyad}" itemValue="#{sofor}" />
+							<p:column>
+								<h:outputText value="#{s.ad} #{s.soyad}" />
+							</p:column>
+						</p:selectOneMenu>
+						<p:commandButton icon="ui-icon-plus" type="button"
+							onclick="PF('dlg11').show();" />
+					</p:panelGrid>
+					<pre />
+					<p:calendar value="#{faturaService.yakitHareket.gidisTarihi}"
+						required="#{faturaService.yakitHareket.gidisTarihi==null}"
+						requiredMessage="Gidiş Tarihi boş geçilemez" readonlyInput="true"
+						showOn="button" locale="tr" pattern="MM/dd/yyyy HH:mm:ss"
+						placeholder="Gidiş Tarihi" />
+					<pre />
+					<p:inputTextarea value="#{faturaService.yakitHareket.gidisAdresi}"
+						style="width:185px;" placeholder="Gidiş Adresi" />
+					<pre />
+					<p:calendar value="#{faturaService.yakitHareket.donusTarihi}"
+						required="#{faturaService.yakitHareket.donusTarihi==null}"
+						requiredMessage="Dönüş Tarihi boş geçilemez" readonlyInput="true"
+						showOn="button" locale="tr" placeholder="Dönüş Tarihi" />
+					<pre />
+					<pe:inputNumber value="#{faturaService.yakitHareket.yakitMiktari}"
+						style="width:185px;" placeholder="Harcanan Yakıt Miktarı" />
+					<pre />
+					<pe:inputNumber value="#{faturaService.yakitHareket.katedilenKM}"
+						style="width:185px;" placeholder="Katedilen KM" />
+					<pre />
+					<p:selectOneMenu var="ht" filter="true" filterMatchMode="contains"
+						style="width:185px;"
+						required="#{faturaService.yakitHareket.hareketTipi==null}"
+						requiredMessage="Hareket Tipi boş geçilemez"
+						value="#{faturaService.yakitHareket.hareketTipi}">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Hareket Tipi Seç" itemValue="" />
+						<f:selectItems value="#{faturaService.hareketTipleri}"
+							var="hareketTipi" itemValue="#{hareketTipi}"
+							itemLabel="#{hareketTipi.displayName}" />
+						<p:column>
+							<h:outputText value="#{ht.displayName}" />
+						</p:column>
+					</p:selectOneMenu>
+					<pre />
+					<p:commandButton value="Kaydet" style="width:92.5px;"
+						process="@parent"
+						update=":form:yakitHareketleriPanel,:form:yeniYakitHareketPanel,:form:msgs"
+						oncomplete="if (args &amp;&amp; !args.validationFailed) PF('dlg6').hide()"
+						action="#{faturaService.yakitHareketEkle}" />
+				</p:panel>
+			</p:dialog>
+			<p:dialog id="yeniArac" header="Yeni Araç Ekle" widgetVar="dlg10"
+				onHide="PF('dlg6').show();" showEffect="size" hideEffect="scale"
+				draggable="false" resizable="false" modal="true">
+				<p:panel id="yeniAracPanel" style="border-style:none !important;">
+					<p:inputText value="#{faturaService.arac.plaka}"
+						required="#{faturaService.arac.plaka==null}"
+						requiredMessage="Plaka boş geçilemez" placeholder="Araç Plakası" />
+					<p:spacer width="20px" />
+					<p:commandButton value="Kaydet"
+						update=":form:yeniYakitHareketPanel,:form:yeniAracPanel,:form:msgs"
+						process="@parent"
+						oncomplete="if (args &amp;&amp; !args.validationFailed) PF('dlg10').hide()"
+						action="#{faturaService.aracKaydet}" />
+				</p:panel>
+			</p:dialog>
+			<p:dialog id="yeniSofor" header="Yeni Şoför Ekle" widgetVar="dlg11"
+				onHide="PF('dlg6').show();" showEffect="size" hideEffect="scale"
+				draggable="false" resizable="false" modal="true">
+				<p:panel id="yeniSoforPanel" style="border-style:none !important;">
+					<p:inputText value="#{faturaService.sofor.ad}"
+						required="#{faturaService.sofor.ad==null}" placeholder="Ad"
+						requiredMessage="Ad boş geçilemez" />
+					<pre />
+					<p:inputText value="#{faturaService.sofor.soyad}"
+						required="#{faturaService.sofor.soyad==null}"
+						requiredMessage="Soyad boş geçilemez" placeholder="Soyad" />
+					<pre />
+					<p:commandButton value="Kaydet" process="@parent"
+						update=":form:yeniYakitHareketPanel,:form:yeniSoforPanel,:form:msgs"
+						oncomplete="if (args &amp;&amp; !args.validationFailed) PF('dlg11').hide()"
+						action="#{faturaService.soforKaydet}" />
+				</p:panel>
+			</p:dialog>
+		</p:panel>
+	</h:form>
+</f:view>

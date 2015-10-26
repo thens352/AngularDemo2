@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1_subreport4" pageWidth="530" pageHeight="802" columnWidth="530" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="7347db26-73b5-4c71-bd17-c1ca455585ae">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString language="SQL">
+		<![CDATA[select  tipi,
+       metin,
+       sirano,bolumno from(
+SELECT tipi,
+       metin,
+       sirano,
+       1 bolumno
+  FROM (  SELECT tipi, metin, sirano
+            FROM (SELECT 'Eksiklikler' tipi, '' metin, -1 sirano FROM DUAL
+                  UNION ALL
+                  SELECT 'Eksiklikler' tipi, metin, sirano FROM eksiklik)
+        ORDER BY sirano)
+UNION ALL
+SELECT tipi,
+       metin,
+       sirano,
+       2 bolumno
+  FROM (  SELECT tipi, metin, sirano
+            FROM (SELECT 'Tavsiyeler ve alınması gerekli önlemler' tipi,
+                         '' metin,
+                         -1 sirano
+                    FROM DUAL
+                  UNION ALL
+                  SELECT 'Tavsiyeler ve alınması gerekli önlemler' tipi,
+                         metin,
+                         sirano
+                    FROM ONLEM)
+        ORDER BY sirano))
+        order by bolumno,sirano]]>
+	</queryString>
+	<field name="TIPI" class="java.lang.String"/>
+	<field name="METIN" class="java.lang.String"/>
+	<field name="SIRANO" class="java.math.BigDecimal"/>
+	<field name="BOLUMNO" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="58">
+			<staticText>
+				<reportElement x="0" y="38" width="530" height="20" uuid="abe5ec0c-d529-41b8-baaa-ef83d493ef4a"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[G) EKSİKLİKLER, TAVSİYELER ve SONUÇ]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="0" width="530" height="20" uuid="79d065fa-8bdc-4ccc-bdf7-7d0bc7abb387">
+					<printWhenExpression><![CDATA[$F{SIRANO}.intValue()==-1]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font pdfEncoding="Cp1254" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TIPI}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="0" width="530" height="20" uuid="f7c17750-d961-423c-bc29-2a8d43f148e5">
+					<printWhenExpression><![CDATA[$F{SIRANO}.intValue()!=-1]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["   "+$F{METIN}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

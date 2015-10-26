@@ -1,0 +1,120 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+		<h:outputStylesheet name="css/style.css" />
+	</h:head>
+	<h:form id="form">
+		<p:menubar autoDisplay="false">
+			<p:menuitem process="@parent" value="ÇIKIŞ"
+				action="#{loginAuthenticator.logout}" icon="ui-icon-power" />
+		</p:menubar>
+		<p:panelGrid columns="1" style="text-align:center">
+			<f:facet name="header">
+				<p:outputLabel value=" Envanter Ekranları "></p:outputLabel>
+			</f:facet>
+			<p:panelGrid columns="4">
+				<f:facet name="header">
+					<p:outputLabel value=" Saha Operasyon Envanteri "></p:outputLabel>
+				</f:facet>
+				<p:button outcome="validatorOtobusTipi" style="width:300"
+					value="E1-Validator Otobus Tipi" icon="ui-icon-star" />
+				<p:button outcome="validatorTurnikeTipi" style="width:300"
+					value="E2-Validator Turnike Tipi" icon="ui-icon-star" />
+				<p:button outcome="kiosk" style="width:300" value="E3-Kiosk"
+					icon="ui-icon-star" />
+				<p:button outcome="aracIciEkran" style="width:300"
+					value="E4-Arac Ici Ekran" icon="ui-icon-star" />
+				<p:button outcome="ksKamera" style="width:300"
+					value="E5-Kamera Sistemi-Kamera" icon="ui-icon-star" />
+				<p:button outcome="ksNVR" style="width:300"
+					value="E6-Kamera Sistemi-NVR" icon="ui-icon-star" />
+				<p:button outcome="ksGucUnitesi" style="width:300"
+					value="E7-Kamera Sistemi-Güç Ünitesi" icon="ui-icon-star" />
+				<p:button outcome="ksSwitch" style="width:300"
+					value="E8-Kamera Sistemi-Switch" icon="ui-icon-star" />
+				<p:button outcome="otobusGuzergahPanosu" style="width:300"
+					value="E9-Otobus Guzergah Panosu" icon="ui-icon-star" />
+				<p:button outcome="aracTakipSistemi" style="width:300"
+					value="E10-Arac Takip Sistemi" icon="ui-icon-star" />
+				<p:button outcome="akilliDurak" style="width:300"
+					value="E11-Akilli Durak" icon="ui-icon-star" />
+				<p:button outcome="parkomat" style="width:300" value="E12-Parkomat"
+					icon="ui-icon-star" />
+				<p:button outcome="mufettisElTerminali" style="width:300"
+					value="E13-Mufettis El Terminali" icon="ui-icon-star" />
+				<p:button outcome="turnike" style="width:300" value="E14-Turnike"
+					icon="ui-icon-star" />
+				<p:button outcome="pos" style="width:300" value="E15-Pos"
+					icon="ui-icon-star" />
+				<p:button outcome="ups" style="width:300" value="E16-Ups"
+					icon="ui-icon-star" />
+			</p:panelGrid>
+			<br />
+
+			<p:panelGrid columns="4">
+				<f:facet name="header">
+					<p:outputLabel value=" BT Operasyon Envanteri "></p:outputLabel>
+				</f:facet>
+				<p:button outcome="sunucu" style="width:300" value="E17-Sunucu"
+					icon="ui-icon-star" />
+				<p:button outcome="lcd" style="width:300" value="E18-LCD"
+					icon="ui-icon-star" />
+				<p:button outcome="kabinet" style="width:300" value="E19-Kabinet"
+					icon="ui-icon-star" />
+				<p:button outcome="ncRouter" style="width:300"
+					value="E20-Network Cihazi-Router" icon="ui-icon-star" />
+				<p:button outcome="ncModem" style="width:300"
+					value="E21-Network Cihazi-Modem" icon="ui-icon-star" />
+				<p:button outcome="ncSwitch" style="width:300"
+					value="E22-Network Cihazi-Switch" icon="ui-icon-star" />
+				<p:button outcome="printerScannerKartYazicisi" style="width:300"
+					value="E23-Printer Scanner KartYazicisi" icon="ui-icon-star" />
+				<p:button outcome="noteBookMasaustuPCMonitor" style="width:300"
+					value="E24-NoteBook Masaustu PC Monitor" icon="ui-icon-star" />
+
+
+			</p:panelGrid>
+			<br />
+			<p:panelGrid columns="4">
+
+				<f:facet name="header">
+					<p:outputLabel value=" İdari Hizmetler Envanteri "></p:outputLabel>
+				</f:facet>
+				<p:button outcome="cepTelefonu" style="width:300"
+					value="E25-Cep Telefonu" icon="ui-icon-star" />
+				<p:button outcome="telefonSantrali" style="width:300"
+					value="E26-Telefon Santrali" icon="ui-icon-star" />
+				<p:button outcome="masaSandalyeDolapYanginTupu" style="width:300"
+					value="E27-Masa Sandalye Dolap Yangin Tupu" icon="ui-icon-star" />
+				<p:button outcome="masaTelefonu" style="width:300"
+					value="E28-Masa Telefonu" icon="ui-icon-star" />
+				<p:button outcome="cctvAlarmKlimaTV." style="width:300"
+					value="E29-CCTV Alarm Klima TV Para Sayma Cihazı"
+					icon="ui-icon-star" />
+				<p:button outcome="pdks" style="width:300" value="E30-PDKS"
+					icon="ui-icon-star" />
+
+
+			</p:panelGrid>
+			<br />
+			<p:panelGrid columns="4">
+				<f:facet name="header">
+					<p:outputLabel value=" Admin Ekranları "></p:outputLabel>
+				</f:facet>
+
+				<p:button outcome="bolge" style="width:300" value="Bölge"
+					icon="ui-icon-star" />
+				<p:button outcome="kullanici" style="width:300" value="Kullanici"
+					icon="ui-icon-star" />
+				<p:button outcome="parametre" style="width:300" value="Parametre"
+					icon="ui-icon-star" />
+
+			</p:panelGrid>
+		</p:panelGrid>
+	</h:form>
+
+
+</f:view>

@@ -1,0 +1,77 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form">
+		<p:panel header="İşletme Kaydet" style="margin-bottom:10px;">
+			<h:panelGrid columns="2">
+				<p:outputLabel for="il" value="İl " />
+				<p:selectOneMenu id="il" value="#{isletmeService.secilenIl}"
+					converter="omnifaces.SelectItemsConverter" var="i" filter="true"
+					filterMatchMode="contains">
+					<f:selectItem noSelectionOption="true" itemLabel="İl Seç"
+						itemValue="" />
+					<f:selectItems value="#{isletmeService.ilList}" var="il"
+						itemLabel="#{il.adi}" itemValue="#{il}" />
+					<p:column>
+						<h:outputText value="#{i.adi}" />
+					</p:column>
+					<p:ajax update="ilce,mahalle,sokak"
+						listener="#{isletmeService.ilSecildi}" />
+				</p:selectOneMenu>
+				<p:outputLabel for="ilce" value="İlçe " />
+				<p:selectOneMenu id="ilce" value="#{isletmeService.secilenIlce}"
+					converter="omnifaces.SelectItemsConverter" var="ic" filter="true"
+					filterMatchMode="contains">
+					<f:selectItem noSelectionOption="true" itemLabel="İlçe Seç"
+						itemValue="" />
+					<f:selectItems value="#{isletmeService.ilceList}" var="ilce"
+						itemLabel="#{ilce.adi}" itemValue="#{ilce}" />
+					<p:column>
+						<h:outputText value="#{ic.adi}" />
+					</p:column>
+					<p:ajax update="mahalle,sokak"
+						listener="#{isletmeService.ilceSecildi}" />
+				</p:selectOneMenu>
+				<p:outputLabel for="mahalle" value="Mahalle " />
+				<p:selectOneMenu id="mahalle"
+					value="#{isletmeService.secilenMahalle}"
+					converter="omnifaces.SelectItemsConverter" var="m" filter="true"
+					filterMatchMode="contains">
+					<f:selectItem noSelectionOption="true" itemLabel="Mahalle Seç"
+						itemValue="" />
+					<f:selectItems value="#{isletmeService.mahalleList}" var="mahalle"
+						itemLabel="#{mahalle.adi}" itemValue="#{mahalle}" />
+					<p:column>
+						<h:outputText value="#{m.adi}" />
+					</p:column>
+					<p:ajax update="sokak" listener="#{isletmeService.mahalleSecildi}" />
+				</p:selectOneMenu>
+				<p:outputLabel for="sokak" value="Sokak " />
+				<p:selectOneMenu id="sokak" value="#{isletmeService.isletme.sokak}"
+					converter="omnifaces.SelectItemsConverter" var="sk" filter="true"
+					filterMatchMode="contains">
+					<f:selectItem noSelectionOption="true" itemLabel="Sokak Seç"
+						itemValue="" />
+					<f:selectItems value="#{isletmeService.sokakList}" var="sokak"
+						itemLabel="#{sokak.adi}" itemValue="#{sokak}" />
+					<p:column>
+						<h:outputText value="#{sk.adi}" />
+					</p:column>
+				</p:selectOneMenu>
+				<p:outputLabel value="İşletme Adı " />
+				<p:inputText id="isletmeAdi"
+					value="#{isletmeService.isletme.isletmeAdi}" />
+				<p:outputLabel value="Açık Adres " />
+				<p:inputText id="acikAdres" value="#{isletmeService.isletme.adres}" />
+			</h:panelGrid>
+			<p:separator />
+			<p:commandButton value="Kaydet"
+				action="#{isletmeService.isletmeKaydet}" />
+				<p:button outcome="isletmeList" value="Listele" />
+		</p:panel>
+	</h:form>
+</f:view>

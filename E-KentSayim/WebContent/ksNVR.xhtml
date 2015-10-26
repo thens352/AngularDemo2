@@ -1,0 +1,338 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form" style="padding-bottom:200px;">
+		<ui:include src="resources/composite/menu.xhtml" />
+
+		<p:panel header="E6-Kamera Sistemi-NVR" style="text-align:center;">
+
+
+			<p:panelGrid columns="8">
+
+				<p:outputLabel value="Bölge :" />
+				<p:selectOneMenu var="b" filter="true"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{ksNVRService.ksNVRSearch.bolge}">
+					<f:selectItem noSelectionOption="true" itemLabel="Bölge Seç"
+						itemValue="" />
+					<f:selectItems value="#{ksNVRService.bolgeList}" var="bolge"
+						itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+					<p:column>
+						<h:outputText value="#{b.ad}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Kullanıcı :" />
+				<p:selectOneMenu var="k" filter="true"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{ksNVRService.ksNVRSearch.kullanici}">
+					<f:selectItem noSelectionOption="true" itemLabel="Kullanıcı Seç"
+						itemValue="" />
+					<f:selectItems value="#{ksNVRService.kullaniciList}"
+						var="kullanici" itemValue="#{kullanici}"
+						itemLabel="#{kullanici.kullaniciAdi}" />
+					<p:column>
+						<h:outputText value="#{k.kullaniciAdi}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Barkod :" />
+				<p:inputText value="#{ksNVRService.ksNVRSearch.barkod}"
+					placeholder="Barkod" />
+
+				<p:outputLabel value="Cihaz Seri No :" />
+				<p:inputText value="#{ksNVRService.ksNVRSearch.cihazSeriNo}"
+					placeholder="Cihaz Seri Numarası" />
+
+				<p:outputLabel value="Marka :" />
+				<p:selectOneMenu var="m" filter="true"
+					value="#{ksNVRService.ksNVRSearch.marka}">
+					<f:selectItem noSelectionOption="true" itemLabel="Marka Seç"
+						itemValue="" />
+					<f:selectItems value="#{ksNVRService.markaList}" var="marka"
+						itemValue="#{marka}" itemLabel="#{marka.label}" />
+					<p:column>
+						<h:outputText value="#{m.valueOf}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Otobus Köşe No :" />
+				<p:inputText value="#{ksNVRService.ksNVRSearch.otobusKoseNo}"
+					placeholder="Otobüs Köşe Numarası" />
+
+				<p:outputLabel value="Durum :" />
+				<p:selectOneMenu var="dr" filter="true"
+					value="#{ksNVRService.ksNVRSearch.durum}">
+					<f:selectItem noSelectionOption="true" itemLabel="Durum Seç"
+						itemValue="" />
+					<f:selectItems value="#{ksNVRService.durumTipleri}" var="durumTipi"
+						itemValue="#{durumTipi}" itemLabel="#{durumTipi.displayName}" />
+					<p:column>
+						<h:outputText value="#{dr.displayName}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:commandButton value="Ara" process="@parent"
+					update=":form:ksNVRTable" action="#{ksNVRService.ara}" />
+			</p:panelGrid>
+
+			<p:dataTable id="ksNVRTable" var="ksNVR" paginator="true"
+				sortBy="#{ksNVR.barkod}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="10,20,50" rows="10"
+				value="#{ksNVRService.ksNVRSList}" editable="true"
+				emptyMessage="Kayıt bulunamadı." style="margin-bottom:20px">
+
+				<p:ajax event="rowEdit" listener="#{ksNVRService.guncelle}"
+					update=":form:ksNVRTable,:form:msgs" />
+
+
+				<p:column style="text-align:center;" sortBy="gununTarihi"
+					headerText="Günün Tarihi">
+					<p:outputLabel style="width:30px" value="#{ksNVR.gununTarihi}">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+					</p:outputLabel>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="otobusKoseNumarasi"
+					headerText="Otobüs Köşe Numarası">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{ksNVR.otobusKoseNo}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{ksNVR.otobusKoseNo}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="barkod"
+					headerText="Barkod">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{ksNVR.barkod}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{ksNVR.barkod}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="cihazSeriNo"
+					headerText="Cihaz Seri No">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{ksNVR.cihazSeriNo}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{ksNVR.cihazSeriNo}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+
+				<p:column style="text-align:center;" sortBy="marka"
+					headerText="Marka">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{ksNVR.marka}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="m" filter="true" style="width:185px;"
+								value="#{ksNVR.marka}">
+								<f:selectItem noSelectionOption="true" itemLabel="Marka Seç"
+									itemValue="" />
+								<f:selectItems value="#{ksNVRService.markaList}" var="marka"
+									itemValue="#{marka}" itemLabel="#{marka.label}" />
+								<p:column>
+									<h:outputText value="#{m.valueOf}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="termId"
+					headerText="Term ID">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{ksNVR.termId}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{ksNVR.termId}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="durum"
+					headerText="Durum">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{ksNVR.durum}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="dr" filter="true" style="width:185px;"
+								value="#{ksNVR.durum}">
+								<f:selectItem noSelectionOption="true" itemLabel="Durum Seç"
+									itemValue="" />
+								<f:selectItems value="#{ksNVRService.durumTipleri}"
+									var="durumTipi" itemValue="#{durumTipi}"
+									itemLabel="#{durumTipi.displayName}" />
+								<p:column>
+									<h:outputText value="#{dr.displayName}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="kullanici.kullaniciAdi"
+					headerText="Kullanıcı">
+					<p:outputLabel style="width:30px"
+						value="#{ksNVR.kullanici.kullaniciAdi}" />
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="bolge.ad"
+					headerText="Bölge">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{ksNVR.bolge.ad}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="b" filter="true" style="width:185px;"
+								converter="omnifaces.SelectItemsConverter"
+								value="#{ksNVR.bolge}">
+								<f:selectItem noSelectionOption="true" itemLabel="Bölge Seç"
+									itemValue="" />
+								<f:selectItems value="#{ksNVRService.bolgeList}" var="bolge"
+									itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+								<p:column>
+									<h:outputText value="#{b.ad}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column exportable="false" style="width:14px;text-align: center">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column exportable="false" style="width:26px;text-align: center">
+					<p:commandButton update=":form:ksNVRTable,:form:msgs"
+						process="@this" action="#{ksNVRService.sil}" icon="ui-icon-trash"
+						title="Sil">
+						<f:setPropertyActionListener value="#{ksNVR}"
+							target="#{ksNVRService.ksNVR}" />
+					</p:commandButton>
+				</p:column>
+
+				<f:facet name="footer">
+					<p:commandButton value="Yeni Kamera Sistemi-NVR Ekle"
+						onclick="PF('dlg1').show();" />
+				</f:facet>
+
+				<f:facet name="footer">
+					<h:commandLink style="float:right" id="excel" immediate="true">
+						<h:graphicImage value="/resources/images/excel.png" width="25"
+							height="25" />
+						<p:dataExporter type="xls" target="ksNVRTable"
+							fileName="ksNVRRapor" />
+					</h:commandLink>
+				</f:facet>
+
+			</p:dataTable>
+
+
+			<p:dialog id="yeniksNVR" header="Yeni Kamera Sistemi"
+				widgetVar="dlg1" showEffect="size" hideEffect="scale"
+				draggable="false" resizable="false" modal="true">
+				<p:panel id="yeniksNVRPanel"
+					style="text-align:center;border-style: none !important;">
+
+					<p:panelGrid columns="4">
+						<p:outputLabel value="Bölge :" />
+						<p:selectOneMenu var="b" filter="true"
+							required="#{ksNVRService.ksNVR.bolge==null}"
+							requiredMessage="Bölge boş geçilemez"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{ksNVRService.ksNVR.bolge}">
+							<f:selectItems value="#{ksNVRService.bolgeList}" var="bolge"
+								itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+							<p:column>
+								<h:outputText value="#{b.ad}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Kullanıcı :" />
+						<p:selectOneMenu var="k" filter="true"
+							required="#{ksNVRService.ksNVR.kullanici==null}"
+							requiredMessage="Kullanıcı boş geçilemez"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{ksNVRService.ksNVR.kullanici}">
+							<f:selectItems value="#{ksNVRService.kullaniciList}"
+								var="kullanici" itemValue="#{kullanici}"
+								itemLabel="#{kullanici.kullaniciAdi}" />
+							<p:column>
+								<h:outputText value="#{k.kullaniciAdi}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Otobüs Köşe No :" />
+						<p:inputText value="#{ksNVRService.ksNVR.otobusKoseNo}"
+							placeholder="Otobüs Köşe Numarası"
+							required="#{ksNVRService.ksNVR.otobusKoseNo==null and ksNVRService.durumStatu}"
+							requiredMessage="Otobüs Köşe No Boş geçilemez" />
+
+						<p:outputLabel value="Barkod :" />
+						<p:inputText required="#{ksNVRService.ksNVR.barkod==null}"
+							requiredMessage="Barkod boş geçilemez"
+							value="#{ksNVRService.ksNVR.barkod}" placeholder="Barkod" />
+
+						<p:outputLabel value="Cihaz Seri No :" />
+						<p:inputText value="#{ksNVRService.ksNVR.cihazSeriNo}"
+							placeholder="Cihaz Seri Numarası"
+							required="#{ksNVRService.ksNVR.cihazSeriNo==null}"
+							requiredMessage="Cihaz Seri No No Boş geçilemez" />
+
+
+						<p:outputLabel value="Marka :" />
+						<p:selectOneMenu var="m" filter="true"
+							required="#{ksNVRService.ksNVR.marka==null}"
+							requiredMessage="Marka boş geçilemez"
+							value="#{ksNVRService.ksNVR.marka}">
+							<f:selectItems value="#{ksNVRService.markaList}" var="marka"
+								itemValue="#{marka}" itemLabel="#{marka.label}" />
+							<p:column>
+								<h:outputText value="#{m.valueOf}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Durum :" />
+						<p:selectOneMenu var="dr" filter="true"
+							value="#{ksNVRService.ksNVR.durum}">
+							<f:selectItems value="#{ksNVRService.durumTipleri}"
+								var="durumTipi" itemValue="#{durumTipi}"
+								itemLabel="#{durumTipi.displayName}" />
+							<p:column>
+								<h:outputText value="#{dr.displayName}" />
+							</p:column>
+							<p:ajax event="change" update=":form:yeniksNVRPanel" />
+						</p:selectOneMenu>
+
+						<p:commandButton value="Kaydet" process="@parent"
+							update=":form:yeniksNVRPanel,:form:ksNVRTable,:form:msgs"
+							oncomplete="if (args &amp;&amp; !args.validationFailed) PF('dlg1').hide()"
+							action="#{ksNVRService.ekle}" />
+					</p:panelGrid>
+
+				</p:panel>
+			</p:dialog>
+
+		</p:panel>
+	</h:form>
+</f:view>

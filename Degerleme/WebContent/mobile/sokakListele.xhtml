@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile">
+
+<f:view />
+
+<h:head>
+</h:head>
+
+<h:body>
+	<pm:page>
+		<pm:content>
+			<h:form id="form">
+				<p:panel id="menu">
+					<pm:field>
+						<p:menubar autoDisplay="false">
+							<p:submenu label="İl Seçenekleri" icon="ui-icon-document">
+								<p:menuitem value="Yeni İl Oluştur" url="ilKaydet.jsf"
+									icon="ui-icon-disk" />
+							</p:submenu>
+
+							<p:submenu label="İlçe Seçenekleri" icon="ui-icon-document">
+								<p:menuitem value="Yeni İlçe Oluştur" url="ilceKaydet.jsf"
+									icon="ui-icon-disk" />
+								<p:menuitem value="Kayıtlı İlçeler" url="ilceListele.jsf"
+									icon="ui-icon-folder-collapsed" />
+							</p:submenu>
+
+							<p:submenu label="Mahalle Seçenekleri" icon="ui-icon-document">
+								<p:menuitem value="Yeni Mahalle Oluştur" url="mahalleKaydet.jsf"
+									icon="ui-icon-disk" />
+								<p:menuitem value="Kayıtlı Mahalleler" url="mahalleListele.jsf"
+									icon="ui-icon-folder-collapsed" />
+							</p:submenu>
+
+							<p:submenu label="Sokak Seçenekleri" icon="ui-icon-document">
+								<p:menuitem value="Yeni Sokak Oluştur" url="sokakKaydet.jsf"
+									icon="ui-icon-disk" />
+								<p:menuitem value="Kayıtlı Sokaklar" url="sokakListele.jsf"
+									icon="ui-icon-folder-collapsed" />
+							</p:submenu>
+
+						</p:menubar>
+					</pm:field>
+				</p:panel>
+
+				<p:panel id="pnlsokak" header="Sokak Kaydet">
+					<h:panelGrid>
+						<pm:field>
+							<p:outputLabel value="Sokak id " />
+							<p:inputText value="#{sokakListService.sokakSearch.id}" />
+						</pm:field>
+						<pm:field>
+							<p:outputLabel value="Sokak adı " />
+							<p:inputText value="#{sokakListService.sokakSearch.adi}" />
+						</pm:field>
+					</h:panelGrid>
+					<p:separator />
+					<pm:field>
+						<p:commandButton value="Ara" update="sokaklar"
+							action="#{sokakListService.init()}" />
+					</pm:field>
+					<pm:field>
+						<p:button value="Yeni Sokak Oluştur" icon="ui-icon-disk"
+							href="sokakKaydet.jsf" />
+					</pm:field>
+				</p:panel>
+				<pm:field>
+					<p:dataTable id="sokaklar" var="sokak"
+						value="#{sokakListService.sokakList}">
+						<p:column headerText="Düzenleme" style="width:150px">
+							<p:commandButton value="Güncelle" icon="ui-icon-refresh"
+								action="#{sokakListService.goToEdit(sokak)}" />
+							<p:commandButton value="Sil" icon="ui-icon-trash"
+								update=":form:pnlsokak,sokaklar"
+								actionListener="#{sokakListService.sokakSil(sokak)}" />
+						</p:column>
+						<p:column id="sokakId" headerText="Sokak Numarası"
+							style="width:30px">
+							<h:outputText value="#{sokak.id}" />
+						</p:column>
+						<p:column id="sokakAdi" headerText="Sokak Adı" style="width:150px">
+							<h:outputText value="#{sokak.adi}" />
+						</p:column>
+						<p:column headerText="Kayıtlı Olduğu Mahalle Adı"
+							style="width:150px">
+							<h:outputText value="#{sokak.mahalle.adi}" />
+						</p:column>
+						<p:column headerText="Kayıtlı Olduğu İlçe Adı" style="width:150px">
+							<h:outputText value="#{sokak.mahalle.ilce.adi}" />
+						</p:column>
+						<p:column headerText="Kayıtlı Olduğu İl Adı" style="width:150px">
+							<h:outputText value="#{sokak.mahalle.ilce.il.adi}" />
+						</p:column>
+
+					</p:dataTable>
+				</pm:field>
+			</h:form>
+		</pm:content>
+	</pm:page>
+</h:body>
+
+</html>

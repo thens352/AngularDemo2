@@ -1,0 +1,146 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form" style="padding-bottom:200px;">
+		<ui:include src="resources/composite/menu.xhtml" />
+		<p:panel header="Kullanıcı Anasayfa" style="text-align:center;">
+			<p:panelGrid columns="9">
+
+				<p:inputText value="#{kullaniciService.kullaniciSearch.ad}"
+					placeholder="Ad" />
+				<p:inputText value="#{kullaniciService.kullaniciSearch.soyAd}"
+					placeholder="Soyad" />
+				<p:inputText
+					value="#{kullaniciService.kullaniciSearch.kullaniciAdi}"
+					placeholder="Kullanıcı adı" />
+				<p:commandButton value="Ara" process="@parent" update=":form:kullaniciTable"
+					action="#{kullaniciService.ara}" />
+			</p:panelGrid>
+
+			<p:dataTable id="kullaniciTable" var="kullanici" paginator="true" 
+				sortBy="#{kullanici.id}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="10,20,50" rows="10"
+				value="#{kullaniciService.kullaniciList}" editable="true"
+				emptyMessage="Kayıt bulunamadı." style="margin-bottom:20px">
+
+				<p:ajax event="rowEdit" listener="#{kullaniciService.guncelle}"
+					update=":form:kullaniciTable" />
+
+				<p:column style="text-align:center;" sortBy="kullaniciAdi"
+					headerText="Kullanıcı adı">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{kullanici.kullaniciAdi}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{kullanici.kullaniciAdi}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				
+				<p:column style="text-align:center;" sortBy="sifre"
+					headerText="Şifre">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{kullanici.sifre}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{kullanici.sifre}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="ad" headerText="Ad">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{kullanici.ad}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{kullanici.ad}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="soyAd"
+					headerText="Soyad">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{kullanici.soyAd}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{kullanici.soyAd}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				
+				<p:column style="text-align:center;" sortBy="statu.displayName"
+					headerText="Statu">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{kullanici.statu.displayName}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="s" filter="true" style="width:185px;"
+								value="#{kullanici.statu}">
+								<f:selectItem noSelectionOption="true" itemLabel="Statu Seç"
+									itemValue="" />
+								<f:selectItems value="#{kullaniciService.status}" var="statu"
+									itemValue="#{statu}" itemLabel="#{statu.displayName}" />
+								<p:column>
+									<h:outputText value="#{s.displayName}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="width:14px;text-align: center">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column style="width:26px;text-align: center">
+					<p:commandButton update=":form:kullaniciTable" process="@this"
+						action="#{kullaniciService.sil}" icon="ui-icon-trash" title="Sil">
+						<f:setPropertyActionListener value="#{kullanici}"
+							target="#{kullaniciService.kullanici}" />
+					</p:commandButton>
+				</p:column>
+
+				<f:facet name="footer">
+					<p:commandButton value="Yeni Kullanıcı Ekle"
+						onclick="PF('dlg1').show();" />
+				</f:facet>
+			</p:dataTable>
+
+			<p:dialog id="kullanici" header="Yeni Validatör-Otobüs Tipi"
+				widgetVar="dlg1" showEffect="size" hideEffect="scale"
+				draggable="false" resizable="false" modal="true">
+				<p:panel id="kullaniciPanel"
+					style="text-align:center;border-style: none !important;">
+					<p:inputText value="#{kullaniciService.kullanici.ad}"
+						placeholder="Ad" />
+					<p:spacer width="20px" />
+					<p:inputText value="#{kullaniciService.kullanici.soyAd}"
+						placeholder="Soyad" />
+					<pre />
+					<p:inputText value="#{kullaniciService.kullanici.kullaniciAdi}"
+						placeholder="Kullanıcı Adı" />
+					<p:spacer width="20px" />
+					<p:password value="#{kullaniciService.kullanici.sifre}"
+						placeholder="Şifre" />
+					<pre />
+					<p:commandButton value="Kaydet" process="@parent"
+						update=":form:kullaniciPanel,:form:kullaniciTable"
+						oncomplete="PF('dlg1').hide()" action="#{kullaniciService.kaydet}" />
+				</p:panel>
+			</p:dialog>
+		</p:panel>
+	</h:form>
+</f:view>

@@ -1,0 +1,57 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" contentType="text/html">
+
+	<h:head>
+	</h:head>
+	
+	<h:form id="bolum1">
+				<p:outputLabel value=" Bolum id  " />
+				<p:inputText value="#{bolumListesi.bolumSearch.id}" />
+				<pre />
+				<p:outputLabel value=" Bolum Adı  " />
+				<p:inputText value="#{bolumListesi.bolumSearch.name}" />
+				<pre />
+				<p:outputLabel value="Bulunduğu Form" />
+				<p:selectOneMenu converter="omnifaces.SelectItemsConverter"
+					id="formSec" var="f" filter="true" filterMatchMode="contains"
+					value="#{bolumListesi.bolumSearch.form}">
+					<f:selectItem itemLabel="Form Seç" noSelectionOption="true" />
+					<f:selectItems value="#{bolumListesi.formList}" var="form"
+						itemValue="#{form}" itemLabel="#{form.name}" />
+					<p:column>
+						<h:outputText value="#{f.name}" />
+					</p:column>
+				</p:selectOneMenu>
+				<pre />
+				<p:commandButton value="Bolum Ara" action="#{bolumListesi.listele}"
+					update="bolum1" />
+
+				<h3>Bolum Listesi</h3>
+
+				<p:dataTable var="bolum" id="bolumtable" paginator="true" rows="10"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,15" value="#{bolumListesi.bolumList}">
+					<p:column headerText="Guncelle">
+						<p:button outcome="bolumGiris" value="Guncelle">
+							<f:param name="bolumId" value="#{bolum.id}" />
+						</p:button>
+					</p:column>
+					<p:column headerText="id">
+						<p:outputLabel value="#{bolum.id}" />
+					</p:column>
+					<p:column headerText="Sıra No">
+						<p:outputLabel value="#{bolum.sira}" />
+					</p:column>
+					<p:column headerText="Adı">
+						<p:outputLabel value="#{bolum.name}" />
+					</p:column>
+					<p:column headerText="Bulunduğu Form">
+						<p:outputLabel value="#{bolum.form.name}" />
+					</p:column>
+				</p:dataTable>
+			</h:form>
+
+</f:view>

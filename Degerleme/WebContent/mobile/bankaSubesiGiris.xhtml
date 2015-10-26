@@ -1,0 +1,54 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pm="http://primefaces.org/mobile" contentType="text/html"
+	renderKitId="PRIMEFACES_MOBILE">
+	<pm:page title="Mobile">
+
+		<pm:view>
+			<pm:header>
+
+			</pm:header>
+			<pm:content>
+				<h:form id="bankaSubesi1">
+					<p:panelGrid columns="2">
+						<pm:field>
+							<p:outputLabel value="Banka Adı : " />
+							<p:selectOneMenu id="banka"
+								value="#{bankaSubesiGirisi.secilenBanka}"
+								converter="bankaConverter" effect="blind">
+								<f:selectItem noSelectionOption="true" itemLabel="Banka seç"
+									itemValue="" />
+								<f:selectItems value="#{bankaSubesiGirisi.bankaList}"
+									itemLabel="#{banka.name}" var="banka" itemValue="#{banka}" />
+							</p:selectOneMenu>
+						</pm:field>
+						<pm:field>
+							<p:outputLabel value=" Banka Subesi Adı : " />
+							<p:inputText value="#{bankaSubesiGirisi.bankaSubesi.name}" />
+						</pm:field>
+						<pm:field>
+							<p:outputLabel value=" İlgili Kisi : " />
+							<p:inputText value="#{bankaSubesiGirisi.bankaSubesi.ilgiliKisi}" />
+						</pm:field>
+						<pm:field>
+							<p:outputLabel value=" Banka Subesi Telefon Numarası : " />
+							<p:inputText value="#{bankaSubesiGirisi.bankaSubesi.telNo}" />
+						</pm:field>
+						<pm:field>
+							<p:outputLabel value=" Banka Subesi Adresi : " />
+							<p:inputTextarea value="#{bankaSubesiGirisi.bankaSubesi.adres}" />
+						</pm:field>
+						<pm:field>
+
+							<p:commandButton value="Kaydet"
+								action="#{bankaSubesiGirisi.kaydet}" />
+							<p:button outcome="bankaSubesiList" value="Listele" />
+						</pm:field>
+					</p:panelGrid>
+				</h:form>
+			</pm:content>
+		</pm:view>
+	</pm:page>
+</f:view>

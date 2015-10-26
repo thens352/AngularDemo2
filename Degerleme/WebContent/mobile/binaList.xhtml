@@ -1,0 +1,135 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pm="http://primefaces.org/mobile" contentType="text/html"
+	renderKitId="PRIMEFACES_MOBILE">
+	<pm:page title="Mobile">
+
+		<pm:view>
+			<pm:header>
+
+			</pm:header>
+			<pm:content>
+				<h:form id="bina1">
+
+					<p:panelGrid columns="1">
+						<p:panel>
+							<pm:field>
+								<p:outputLabel value="Bina Bilgileri" />
+							</pm:field>
+							<pre />
+							<p:panelGrid id="binaAdresi" columns="1">
+								<p:column>
+									<pm:field>
+										<p:outputLabel for="il" value="İl " />
+										<p:selectOneMenu id="il" value="#{binaListesi.secilenIl}"
+											converter="omnifaces.SelectItemsConverter" var="i"
+											filter="true" filterMatchMode="contains">
+											<f:selectItem noSelectionOption="true" itemLabel="İl Seç"
+												itemValue="" />
+											<f:selectItems value="#{binaListesi.ilList}" var="il"
+												itemLabel="#{il.adi}" itemValue="#{il}" />
+											<p:column>
+												<h:outputText value="#{i.adi}" />
+											</p:column>
+											<p:ajax update="ilce,mahalle,sokak"
+												listener="#{binaListesi.ilSecildi}" />
+										</p:selectOneMenu>
+									</pm:field>
+									<pre />
+									<pm:field>
+										<p:outputLabel for="ilce" value="İlçe " />
+										<p:selectOneMenu id="ilce" value="#{binaListesi.secilenIlce}"
+											converter="omnifaces.SelectItemsConverter" var="ic"
+											filter="true" filterMatchMode="contains">
+											<f:selectItem noSelectionOption="true" itemLabel="İlçe Seç"
+												itemValue="" />
+											<f:selectItems value="#{binaListesi.ilceList}" var="ilce"
+												itemLabel="#{ilce.adi}" itemValue="#{ilce}" />
+											<p:column>
+												<h:outputText value="#{ic.adi}" />
+											</p:column>
+											<p:ajax update="mahalle,sokak"
+												listener="#{binaListesi.ilceSecildi}" />
+										</p:selectOneMenu>
+									</pm:field>
+
+									<pre />
+									<pm:field>
+										<p:outputLabel for="mahalle" value="Mahalle " />
+										<p:selectOneMenu id="mahalle"
+											value="#{binaListesi.secilenMahalle}"
+											converter="omnifaces.SelectItemsConverter" var="m"
+											filter="true" filterMatchMode="contains">
+											<f:selectItem noSelectionOption="true"
+												itemLabel="Mahalle Seç" itemValue="" />
+											<f:selectItems value="#{binaListesi.mahalleList}"
+												var="mahalle" itemLabel="#{mahalle.adi}"
+												itemValue="#{mahalle}" />
+											<p:column>
+												<h:outputText value="#{m.adi}" />
+											</p:column>
+											<p:ajax update="sokak"
+												listener="#{binaListesi.mahalleSecildi}" />
+										</p:selectOneMenu>
+									</pm:field>
+									<pre />
+									<pm:field>
+										<p:outputLabel for="sokak" value="Sokak " />
+										<p:selectOneMenu id="sokak" value="#{binaListesi.bina.sokak}"
+											converter="omnifaces.SelectItemsConverter" var="sk"
+											filter="true" filterMatchMode="contains">
+											<f:selectItem noSelectionOption="true" itemLabel="Sokak Seç"
+												itemValue="" />
+											<f:selectItems value="#{binaListesi.sokakList}" var="sokak"
+												itemLabel="#{sokak.adi}" itemValue="#{sokak}" />
+											<p:column>
+												<h:outputText value="#{sk.adi}" />
+											</p:column>
+											<p:ajax process="@parent" />
+										</p:selectOneMenu>
+									</pm:field>
+									<pre />
+								</p:column>
+							</p:panelGrid>
+						</p:panel>
+						<pm:field>
+							<p:commandButton style="float:right" value="Bina Ara"
+								action="#{binaListesi.binaAra}" update="bina1" />
+						</pm:field>
+					</p:panelGrid>
+
+
+
+					<h3>Bina Listesi</h3>
+
+
+
+					<p:dataTable var="bina" id="binatable" paginator="true" rows="10"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15" value="#{binaListesi.binaList}">
+
+						<p:column headerText="Guncelle">
+							<p:button outcome="binaGiris" value="Guncelle">
+								<f:param name="binaId" value="#{bina.id}" />
+							</p:button>
+						</p:column>
+
+						<p:column headerText="id">
+							<h:outputText value="#{bina.id}" />
+						</p:column>
+
+						<p:column headerText="Adres">
+							<h:outputText value="#{bina.adres}" />
+						</p:column>
+
+					</p:dataTable>
+
+
+
+				</h:form>
+			</pm:content>
+		</pm:view>
+	</pm:page>
+</f:view>

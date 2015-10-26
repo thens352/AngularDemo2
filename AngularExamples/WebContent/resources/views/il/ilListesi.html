@@ -1,0 +1,14 @@
+<meta charset="UTF-8">
+<p>İl Listesi</p>
+<table>
+	<thead>
+		<tr>
+			<th>Ad</th>
+		</tr>
+	</thead>
+	<tbody id="search-results-body">
+		<tr ng-repeat="il in ilList">
+			<td><a href="#/duzenleIl/{{il.id}}">{{il.ad}}</a></td>
+		</tr>
+	</tbody>
+</table>

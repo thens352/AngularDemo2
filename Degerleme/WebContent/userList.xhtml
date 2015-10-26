@@ -1,0 +1,55 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" contentType="text/html">
+
+	<h:head>
+	</h:head>
+
+	<h:form id="user1">
+		<h:outputLabel value=" User id : " />
+		<h:inputText value="#{userListesi.userSearch.id}" />
+		<h:outputLabel value=" User Adı : " />
+		<h:inputText value="#{userListesi.userSearch.name}" />
+		<h:outputLabel value=" User Soyadı : " />
+		<h:inputText value="#{userListesi.userSearch.surName}" />
+		<p:commandButton value=" User Ara" action="#{userListesi.listele}"
+			update="user1" />
+
+
+		<h3>User Listesi</h3>
+
+
+
+		<p:dataTable var="user" id="usertable" paginator="true"
+			rows="10"
+			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="5,10,15"
+			value="#{userListesi.userList}">
+
+			<p:column headerText="Guncelle">
+				<p:button outcome="userGiris" value="Guncelle">
+					<f:param name="userId" value="#{user.id}" />
+				</p:button>
+			</p:column>
+
+			<p:column headerText="id">
+				<h:outputText value="#{user.id}" />
+			</p:column>
+
+			<p:column headerText="Adı">
+				<h:outputText value="#{user.name}" />
+			</p:column>
+			<p:column headerText="Soyadı">
+				<h:outputText value="#{user.surName}" />
+			</p:column>
+
+
+		</p:dataTable>
+
+
+
+	</h:form>
+
+</f:view>

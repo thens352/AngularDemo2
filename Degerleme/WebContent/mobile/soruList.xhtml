@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile">
+
+<f:view />
+
+<h:head>
+</h:head>
+
+<h:body>
+	<pm:page>
+		<pm:content>
+			<h:form id="soru1">
+
+				<p:panel>
+
+					<p:panelGrid columns="1">
+						<pm:field>
+							<p:outputLabel value=" Soru Giris : " />
+							<p:inputText value="#{soruListesi.soruSearch.id}" />
+						</pm:field>
+						<pm:field>
+							<p:outputLabel value=" Sira No : " />
+							<p:inputText value="#{soruListesi.soruSearch.siraNo}" />
+						</pm:field>
+						<pm:field>
+							<p:outputLabel value=" Parametre Sayısı : " />
+							<p:inputText value="#{soruListesi.soruSearch.parametreSayisi}" />
+						</pm:field>
+						<pm:field>
+							<p:outputLabel value="Bulunduğu Bölüm " />
+							<p:selectOneMenu style="margin-left:50px;margin-top:15px;"
+								id="city" value="#{soruListesi.soruSearch.bolum}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true" itemLabel="Bölüm seç"
+									itemValue="" />
+								<f:selectItems value="#{soruListesi.bolumList}" var="bolum"
+									itemValue="#{bolum}" itemLabel="#{bolum.name}" />
+							</p:selectOneMenu>
+						</pm:field>
+						<pm:field>
+							<p:commandButton value="Soru Ara" action="#{soruListesi.listele}"
+								update="soru1" />
+						</pm:field>
+					</p:panelGrid>
+
+				</p:panel>
+
+				<pm:field>
+					<h3>Soru Listesi</h3>
+				</pm:field>
+				<pm:field>
+					<p:dataTable var="soru" id="sorutable" paginator="true" rows="10"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15" value="#{soruListesi.soruList}">
+
+						<p:column headerText="Guncelle">
+							<p:button outcome="soruGiris" value="Guncelle">
+								<f:param name="soruId" value="#{soru.id}" />
+							</p:button>
+						</p:column>
+
+						<p:column headerText="id">
+							<h:outputText value="#{soru.id}" />
+						</p:column>
+
+						<p:column headerText="SiraNo">
+							<h:outputText value="#{soru.siraNo}" />
+						</p:column>
+
+						<p:column headerText="DefaultCevap">
+							<h:outputText value="#{soru.defaultCevap}" />
+						</p:column>
+
+						<p:column headerText="SoruMetni">
+							<h:outputText value="#{soru.soruMetni}" />
+						</p:column>
+
+						<p:column headerText="SoruUyarı">
+							<h:outputText value="#{soru.soruUyari}" />
+						</p:column>
+
+						<p:column headerText="Bulunduğu Bölüm">
+							<h:outputText value="#{soru.bolum.name}" />
+						</p:column>
+
+					</p:dataTable>
+				</pm:field>
+			</h:form>
+		</pm:content>
+	</pm:page>
+</h:body>
+
+</html>

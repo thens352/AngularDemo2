@@ -1,0 +1,120 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" contentType="text/html">
+
+	<h:head>
+	
+	<link type="text/css" rel="stylesheet" href="WebContent/WEB-INF/Styles/Style.css?ln=css"/>
+	
+	</h:head>
+
+	<h:form id="form1">
+	<h:outputStylesheet library="css" name="Style.css"/>
+		<p:panel style="width:350px;" id="kisiFirma">
+			<p:row>
+				<p:selectOneRadio id="console" value="#{raporListesi.kisiFirma}">
+					<f:selectItem itemLabel="Kişi" itemValue="kisi" />
+					<f:selectItem itemLabel="Firma" itemValue="firma" />
+					<p:ajax update=":form1:kisiFirma" />
+				</p:selectOneRadio>
+			</p:row>
+			<pre />
+			<p:row>
+				<p:outputLabel value=" Rapor No  " />
+				<p:inputText value="#{raporListesi.raporSearch.raporNo}" />
+			</p:row>
+			<pre />
+			<p:row id="firmaBilgisi"
+				rendered="#{raporListesi.kisiFirma=='firma'}">
+				<p:outputLabel value=" Firma Adı  " />
+				<p:inputText value="#{raporListesi.raporSearch.firmaAdi}" />
+			</p:row>
+			<pre />
+			<p:row id="kisiBilgisi" rendered="#{raporListesi.kisiFirma=='kisi'}">
+				<p:outputLabel value=" Kişi Adı  " />
+				<p:inputText style="margin-left:28px;"
+					value="#{raporListesi.raporSearch.kisiAdi}" />
+				<pre />
+				<p:outputLabel value=" Kişi Soyadı  " />
+				<p:inputText value="#{raporListesi.raporSearch.kisiSoyadi}" />
+			</p:row>
+			<pre />
+			<p:row>
+				<p:outputLabel value=" Sigorta Adı  " />
+				<p:inputText value="#{raporListesi.raporSearch.sigortaAdi}" />
+			</p:row>
+			<pre />
+			<p:row>
+				<p:outputLabel value=" Rapor Tarihi  " />
+				<p:calendar value="#{raporListesi.raporSearch.raporTarihi}"
+					pattern="dd/MM/yyyy" />
+			</p:row>
+			<pre />
+			<p:row>
+				<p:outputLabel value=" İş Emri Tarihi  " />
+				<p:calendar value="#{raporListesi.raporSearch.isEmriTarihi}"
+					pattern="dd/MM/yyyy" />
+			</p:row>
+		</p:panel>
+		<p:commandButton value="Rapor Ara" action="#{raporListesi.listele}"
+			update=":form1:raportable" />
+
+
+		<p:dataTable style="text-align:center;" var="rapor" id="raportable"
+			paginator="true" rows="10"
+			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="5,10,15" value="#{raporListesi.raporList}">
+
+			<f:facet name="header">Rapor Listesi</f:facet>
+
+			<p:column headerText="Guncelle">
+				<p:button outcome="raporGiris" value="Guncelle">
+					<f:param name="raporId" value="#{rapor.id}" />
+				</p:button>
+			</p:column>
+			<p:column headerText="Rapor">
+				<h:commandLink value="raporla"
+					action="#{raporListesi.raporla(rapor.id)}" target="_blank">
+				</h:commandLink>
+			</p:column>
+
+			<p:column headerText="Rapor No">
+				<h:outputText value="#{rapor.id}" />
+			</p:column>
+
+			<p:column
+				rendered="#{raporListesi.kisiFirma=='firma' || raporListesi.kisiFirma!='kisi'}"
+				headerText="Firma Adı">
+				<h:outputText value="#{rapor.isEmri.firma.name}" />
+			</p:column>
+
+			<p:column
+				rendered="#{raporListesi.kisiFirma=='kisi' || raporListesi.kisiFirma!='firma'}"
+				headerText="Kişi Adı-Soyadı">
+				<h:outputText
+					value="#{rapor.isEmri.kisi.name} #{rapor.isEmri.kisi.surName}" />
+			</p:column>
+
+			<p:column headerText="Sigorta Adi">
+				<h:outputText
+					value="#{rapor.isEmri.banka.name}/#{rapor.isEmri.bankaSubesi.name}" />
+			</p:column>
+
+			<p:column headerText="İş Emri Tarihi">
+				<h:outputText value="#{rapor.isEmri.tarih}" />
+			</p:column>
+
+			<p:column headerText="Rapor Tarihi">
+				<h:outputText value="#{rapor.raporTarihi}" />
+			</p:column>
+
+
+		</p:dataTable>
+
+
+
+	</h:form>
+
+</f:view>

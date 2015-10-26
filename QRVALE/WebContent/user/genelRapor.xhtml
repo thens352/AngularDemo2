@@ -1,0 +1,166 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" contentType="text/html">
+
+	<h:head>
+	</h:head>
+
+	<h:form id="genelRapor">
+		<p:panel id="menu">
+			<p:menubar autoDisplay="false">
+				<p:submenu label="Vale İşlemleri" icon="ui-icon-document">
+					<p:menuitem value="Yeni Vale Kaydı" url="valeKaydet.jsf"
+						icon="ui-icon-disk" />
+					<p:menuitem value="Kayıtlı Vale Listesi" url="valeList.jsf"
+						icon="ui-icon-folder-collapsed" />
+				</p:submenu>
+
+				<p:submenu label="Hareket İşlemleri" icon="ui-icon-document">
+					<p:menuitem value="Kayıtlı Hareket Listesi" url="hareketList.jsf"
+						icon="ui-icon-folder-collapsed" />
+				</p:submenu>
+
+				<p:submenu label="Araç İşlemleri" icon="ui-icon-document">
+					<p:menuitem value="Kayıtlı Araç Listesi" url="aracList.jsf"
+						icon="ui-icon-folder-collapsed" />
+				</p:submenu>
+
+				<p:submenu label="Raporlama İşlemleri" icon="ui-icon-document">
+					<p:menuitem value="Genel Hareket Raporu" url="genelRapor.jsf"
+						icon="ui-icon-folder-collapsed" />
+					<p:menuitem value="Araç-Hareket Raporu" url="aracHareketRapor.jsf"
+						icon="ui-icon-folder-collapsed" />
+					<p:menuitem value="Vale-Hareket Raporu" url="valeHareketRapor.jsf"
+						icon="ui-icon-folder-collapsed" />
+				</p:submenu>
+			</p:menubar>
+		</p:panel>
+		<div style="position: absolute; top: 15%; right: 4%;">
+			<p:outputLabel rendered="#{sessionScope.ad != null}"
+				value="Hoşgeldiniz #{sessionScope.ad} #{sessionScope.soyad}" />
+			<br />
+			<p:commandButton value="Logout" rendered="#{sessionScope.ad != null}"
+				actionListener="#{loginService.logout}" />
+		</div>
+		<p:panel header="Genel Rapor" style="padding-bottom:50px;">
+			<p:panelGrid columns="4">
+				<p:outputLabel for="minAlisTarihi" value="Minimum Alış Tarihi "></p:outputLabel>
+				<p:calendar id="minAlisTarihi"
+					value="#{raporlamaService.hareketSearch.minAlisTarihi}"
+					pattern="MM/dd/yyyy HH:mm:ss" />
+
+				<p:outputLabel for="maxAlisTarihi" value="Maximum Alış Tarihi "></p:outputLabel>
+				<p:calendar id="maxAlisTarihi"
+					value="#{raporlamaService.hareketSearch.maxAlisTarihi}"
+					pattern="MM/dd/yyyy HH:mm:ss" />
+
+				<p:outputLabel for="minIstekTarihi" value="Minimum İstek Tarihi "></p:outputLabel>
+				<p:calendar id="minIstekTarihi"
+					value="#{raporlamaService.hareketSearch.minIstekTarihi}"
+					pattern="MM/dd/yyyy HH:mm:ss" />
+
+				<p:outputLabel for="maxIstekTarihi" value="Maximum İstek Tarihi "></p:outputLabel>
+				<p:calendar id="maxIstekTarihi"
+					value="#{raporlamaService.hareketSearch.maxIstekTarihi}"
+					pattern="MM/dd/yyyy HH:mm:ss" />
+
+				<p:outputLabel for="minVerisTarihi" value="Minimum Veriş Tarihi "></p:outputLabel>
+				<p:calendar id="minVerisTarihi"
+					value="#{raporlamaService.hareketSearch.minVerisTarihi}"
+					pattern="MM/dd/yyyy HH:mm:ss" />
+
+				<p:outputLabel for="maxVerisTarihi" value="Maximum Veriş Tarihi "></p:outputLabel>
+				<p:calendar id="maxVerisTarihi"
+					value="#{raporlamaService.hareketSearch.maxVerisTarihi}"
+					pattern="MM/dd/yyyy HH:mm:ss" />
+
+				<p:outputLabel for="minTamamlanmaTarihi"
+					value="Minimum Tamamlanma Tarihi "></p:outputLabel>
+				<p:calendar id="minTamamlanmaTarihi"
+					value="#{raporlamaService.hareketSearch.minTamamlanmaTarihi}"
+					pattern="MM/dd/yyyy HH:mm:ss" />
+
+				<p:outputLabel for="maxTamamlanmaTarihi"
+					value="Maximum Tamamlanma Tarihi "></p:outputLabel>
+				<p:calendar id="maxTamamlanmaTarihi"
+					value="#{raporlamaService.hareketSearch.maxTamamlanmaTarihi}"
+					pattern="MM/dd/yyyy HH:mm:ss" />
+			</p:panelGrid>
+			<p:commandButton style="float:right" value="Ara"
+				action="#{raporlamaService.genelRaporla}" update="genelRapor" />
+		</p:panel>
+
+		<p:panel header="Rapor Sonucu" style="padding-bottom:50px;">
+			<p:dataTable id="hareket" var="hareket"
+				value="#{raporlamaService.hareketList}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+				paginator="true" rows="10" style="margin-bottom:20px">
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText style="font-weight:bold" value="Araç Plakası" />
+					</f:facet>
+					<h:outputText value="#{hareket.arac.plaka}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText style="font-weight:bold" value="Alan Vale" />
+					</f:facet>
+					<h:outputText
+						value="#{hareket.alanVale.ad} #{hareket.alanVale.soyad}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText style="font-weight:bold" value="Alış Tarihi" />
+					</f:facet>
+					<h:outputText value="#{hareket.alisTarihi}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText style="font-weight:bold" value="İstek Tarihi" />
+					</f:facet>
+					<h:outputText value="#{hareket.istekTarihi}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText style="font-weight:bold" value="Veren Vale" />
+					</f:facet>
+					<h:outputText
+						value="#{hareket.verenVale.ad} #{hareket.verenVale.soyad}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText style="font-weight:bold" value="Veriş Tarihi" />
+					</f:facet>
+					<h:outputText value="#{hareket.verisTarihi}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText style="font-weight:bold" value="Tamamlanma Tarihi" />
+					</f:facet>
+					<h:outputText value="#{hareket.tamamlanmaTarihi}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText style="font-weight:bold" value="İşletme Adı" />
+					</f:facet>
+					<h:outputText value="#{hareket.isletme.isletmeAdi}" />
+				</p:column>
+			</p:dataTable>
+			<h:commandLink style="float:right; text-style:none;">
+						Raporu İndir
+						<p:dataExporter type="xls" target="hareket" fileName="genelRapor" />
+			</h:commandLink>
+		</p:panel>
+	</h:form>
+
+</f:view>

@@ -1,0 +1,93 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form" style="padding-bottom:200px;">
+		<ui:include src="resources/composite/menu.xhtml" />
+		<p:panel header="Yakıt Şoför Anasayfa" style="text-align:center;">
+			<p:dataTable id="soforTable" var="sofor" paginator="true"
+				sortBy="#{sofor.id}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15"
+				emptyMessage="Arama kriterlerine uyan herhangi bir şoför bulunamadı."
+				filteredValue="#{soforService.filtrelenenSoforList}"
+				value="#{soforService.soforList}" editable="true"
+				style="margin-bottom:20px">
+
+				<f:facet name="header">
+					<p:outputLabel value="Şoförler" />
+				</f:facet>
+
+				<f:facet name="footer">
+					<p:commandButton value="Yeni Şoför Ekle"
+						onclick="PF('dlg1').show();" />
+				</f:facet>
+
+				<p:ajax event="rowEdit" listener="#{soforService.guncelle}"
+					update=":form:soforTable,:form:msgs" />
+
+				<p:column filterBy="#{sofor.ad}" style="text-align:center;"
+					sortBy="#{sofor.ad}" headerText="Ad" filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel value="#{sofor.ad}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{sofor.ad}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column filterBy="#{sofor.soyad}" style="text-align:center;"
+					sortBy="#{sofor.soyad}" headerText="Soyad"
+					filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel value="#{sofor.soyad}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{sofor.soyad}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="width:14px">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column style="width:26px;text-align: center">
+					<p:commandButton update=":form:soforTable,:form:msgs"
+						process="@this" action="#{soforService.sil}" icon="ui-icon-trash"
+						title="Sil">
+						<f:setPropertyActionListener value="#{sofor}"
+							target="#{soforService.sofor}" />
+					</p:commandButton>
+				</p:column>
+
+			</p:dataTable>
+			<p:dialog id="yeniSofor" header="Yeni Şoför" widgetVar="dlg1"
+				showEffect="size" hideEffect="scale" draggable="false"
+				resizable="false" modal="true">
+				<p:panel id="yeniSoforPanel"
+					style="text-align:center;border-style: none !important;">
+					<p:inputText value="#{soforService.sofor.ad}" placeholder="Ad"
+						required="#{soforService.sofor.ad==null}"
+						requiredMessage="Ad boş geçilemez" />
+					<pre />
+					<p:inputText value="#{soforService.sofor.soyad}"
+						placeholder="Soyad" required="#{soforService.sofor.soyad==null}"
+						requiredMessage="Soyad boş geçilemez" />
+					<pre />
+					<p:commandButton value="Kaydet" process="@parent"
+						update=":form:soforTable,:form:msgs,:form:yeniSoforPanel"
+						oncomplete="if (args &amp;&amp; !args.validationFailed) PF('dlg1').hide()"
+						action="#{soforService.ekle}" />
+				</p:panel>
+			</p:dialog>
+		</p:panel>
+	</h:form>
+</f:view>

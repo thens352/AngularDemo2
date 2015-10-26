@@ -1,0 +1,22 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form">
+		<p:panel header="Login" style="margin-bottom:10px;">
+			<h:panelGrid columns="2">
+				<p:outputLabel value="Kullanıcı Adı " for="kullaniciAdi" />
+				<p:inputText id="kullaniciAdi" value="#{loginService.kullaniciAdi}" />
+				<p:outputLabel value="Şifre " for="sifre" />
+				<p:inputText id="sifre" type="password" value="#{loginService.sifre}" />
+				<p:outputLabel value="Kullanıcı adı yanlış ya da kayıtlı değil" rendered="#{loginService.yKullaniciAdi}"/>
+				<p:outputLabel value="Şifre yanlış" rendered="#{loginService.ySifre}"/>
+			</h:panelGrid>
+			<p:separator />
+			<p:commandButton value="Login" actionListener="#{loginService.login}" />
+		</p:panel>
+	</h:form>
+</f:view>

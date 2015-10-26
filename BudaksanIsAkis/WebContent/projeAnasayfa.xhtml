@@ -1,0 +1,213 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form" style="padding-bottom:200px;">
+		<ui:include src="resources/composite/menu.xhtml" />
+		<p:panel header="Proje Anasayfa" style="text-align: center">
+			<p:dataTable var="proje" id="projeTable" widgetVar="projeTable"
+				paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" editable="true"
+				emptyMessage="Herhangi bir proje bulunamadı."
+				value="#{projeService.projeList}">
+
+				<p:ajax event="rowEdit" listener="#{projeService.guncelle}"
+					update=":form:projeTable,:form:msgs" />
+
+				<f:facet name="header">
+					<p:outputLabel value="Projeler" />
+				</f:facet>
+
+				<f:facet name="footer">
+					<p:commandButton value="Yeni Proje Ekle"
+						onclick="PF('dlg1').show()" />
+				</f:facet>
+
+				<p:column headerText="Proje Adı" filterBy="#{proje.ad}"
+					sortBy="#{proje.ad}" style="text-align: center"
+					filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel value="#{proje.ad}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{proje.ad}" placeholder="Proje Adı"
+								style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Proje Başlama Tarihi"
+					sortBy="#{proje.baslamaTarihi}" style="text-align: center"
+					filterBy="#{proje.baslamaTarihi}" filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel value="#{proje.baslamaTarihi}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:calendar value="#{proje.baslamaTarihi}" locale="tr"
+								placeholder="Başlama Tarihi" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Proje Bitiş Tarihi" style="text-align: center"
+					sortBy="#{proje.bitisTarihi}" filterBy="#{proje.bitisTarihi}"
+					filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel value="#{proje.bitisTarihi}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:calendar value="#{proje.bitisTarihi}" locale="tr"
+								placeholder="Bitiş Tarihi" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Proje Adresi" filterBy="#{proje.adres}"
+					sortBy="#{proje.adres}" style="text-align: center"
+					filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel value="#{proje.adres}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputTextarea autoResize="true" placeholder="Proje Adresi"
+								value="#{proje.adres}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="width:100px;text-align: center">
+					<p:commandButton style="width:100px;" value="Krokiler"
+						oncomplete="PF('dlg2').show()" process="@this"
+						update=":form:krokiTable,:form:msgs">
+						<f:setPropertyActionListener target="#{projeService.proje}"
+							value="#{proje}" />
+						<f:setPropertyActionListener target="#{projeService.krokiList}"
+							value="#{proje.krokiList}" />
+					</p:commandButton>
+				</p:column>
+
+				<p:column style="width:14px;text-align: center">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column style="width:26px;text-align: center">
+					<p:commandButton update=":form" action="#{projeService.sil}"
+						process="@this" icon="ui-icon-trash" title="Sil">
+						<f:setPropertyActionListener value="#{proje}"
+							target="#{projeService.proje}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+			<p:dialog id="yeniProje" widgetVar="dlg1" header="Yeni Proje"
+				showEffect="size" hideEffect="scale" draggable="false" modal="true"
+				resizable="false">
+				<p:panel id="yeniProjePanel" style="border-style: none !important;">
+					<p:inputText value="#{projeService.proje.ad}"
+						required="#{projeService.proje.ad==null}"
+						requiredMessage="Proje Adı boş geçilemez" placeholder="Proje Adı" />
+					<pre />
+					<p:calendar value="#{projeService.proje.baslamaTarihi}"
+						required="#{projeService.proje.baslamaTarihi==null}"
+						requiredMessage="Başlama Tarihi boş geçilemez"
+						placeholder="Başlama Tarihi" />
+					<pre />
+					<p:calendar value="#{projeService.proje.bitisTarihi}"
+						placeholder="Bitiş Tarihi" />
+					<pre />
+					<p:inputTextarea value="#{projeService.proje.adres}"
+						placeholder="Adres" />
+					<pre />
+					<p:commandButton value="Kaydet" process="@parent"
+						update=":form:projeTable,:form:yeniProjePanel,:form:msgs"
+						oncomplete="if (args &amp;&amp; !args.validationFailed) PF('dlg1').hide()"
+						action="#{projeService.kaydet}" />
+				</p:panel>
+			</p:dialog>
+			<p:dialog id="krokiler" widgetVar="dlg2" header="Krokiler"
+				width="75%" showEffect="size" hideEffect="scale" draggable="false"
+				modal="true" resizable="false">
+				<p:dataTable var="kroki" id="krokiTable" widgetVar="krokiTable"
+					paginator="true" rows="10"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,15" editable="true"
+					emptyMessage="Herhangi bir kroki bulunamadı."
+					value="#{projeService.krokiList}">
+
+					<p:ajax event="rowEdit" listener="#{projeService.krokiGuncelle}"
+						update=":form:krokiTable,:form:msgs" />
+
+					<f:facet name="header">
+						<p:outputLabel value="Krokiler" />
+					</f:facet>
+
+					<f:facet name="footer">
+						<p:commandButton value="Yeni Kroki Ekle"
+							oncomplete="PF('dlg3').show();PF('dlg2').hide();" />
+					</f:facet>
+
+					<p:column headerText="Kroki" filterBy="#{kroki.ad}"
+						filterMatchMode="contains">
+						<p:cellEditor>
+							<f:facet name="output">
+								<p:outputLabel value="#{kroki.ad}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:fileUpload auto="false" multiple="false" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+									widgetVar="updateKroki" mode="advanced" cancelLabel="Vazgeç"
+									uploadLabel="Yükle" label="Seç" dragDropSupport="true"
+									fileUploadListener="#{projeService.update}" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column headerText="Yükleme Tarihi"
+						filterBy="#{kroki.yuklemeTarihi}" filterMatchMode="contains">
+						<p:outputLabel value="#{kroki.yuklemeTarihi}">
+							<f:convertDateTime dateStyle="full" locale="tr" />
+						</p:outputLabel>
+					</p:column>
+
+					<p:column style="width:100px">
+						<p:commandButton id="downloadLink" value="İndir" ajax="false"
+							actionListener="#{projeService.indir(kroki)}" style="width:100px">
+							<p:fileDownload value="#{projeService.download}" />
+						</p:commandButton>
+					</p:column>
+
+					<p:column style="width:14px;text-align: center">
+						<p:rowEditor />
+					</p:column>
+
+					<p:column style="width:26px;text-align: center">
+						<p:commandButton update=":form:krokiTable,:form:msgs" process="@this"
+							action="#{projeService.krokiSil}" icon="ui-icon-trash"
+							title="Sil">
+							<f:setPropertyActionListener value="#{kroki}"
+								target="#{projeService.kroki}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</p:dialog>
+			<p:dialog id="yeniKroki" widgetVar="dlg3" header="Yeni Kroki"
+				onHide="PF('dlg2').show()" style="text-align:Center;"
+				showEffect="size" hideEffect="scale" draggable="false" modal="true"
+				resizable="false">
+				<p:fileUpload auto="false" multiple="false" mode="advanced"
+					cancelLabel="Vazgeç" uploadLabel="Yükle" label="Seç"
+					dragDropSupport="true" update=":form:krokiTable,:form:msgs"
+					fileUploadListener="#{projeService.upload}"
+					oncomplete="PF('dlg3').hide();PF('dlg2').show()" />
+			</p:dialog>
+		</p:panel>
+	</h:form>
+</f:view>

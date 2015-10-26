@@ -1,0 +1,57 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" contentType="text/html">
+
+	<h:head>
+	</h:head>
+
+	<h:form id="banka1">
+		<h:outputLabel value=" Banka id : " />
+		<h:inputText value="#{bankaListesi.bankaSearch.id}" />
+		<h:outputLabel value=" Banka Adı : " />
+		<h:inputText value="#{bankaListesi.bankaSearch.name}" />
+		<p:commandButton value="Banka Ara" action="#{bankaListesi.listele}"
+			update="banka1" />
+
+
+		<h3>Banka Listesi</h3>
+
+
+
+		<p:dataTable var="banka" id="bankatable" paginator="true" rows="10"
+			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="5,10,15" value="#{bankaListesi.bankaList}">
+
+			<p:column headerText="Guncelle">
+				<p:button outcome="bankaGiris" value="Guncelle">
+					<f:param name="bankaId" value="#{banka.id}" />
+				</p:button>
+			</p:column>
+
+			<p:column headerText="id">
+				<h:outputText value="#{banka.id}" />
+			</p:column>
+
+			<p:column headerText="Adı">
+				<h:outputText value="#{banka.name}" />
+			</p:column>
+			
+			<p:column headerText="İlgili Kişi">
+				<h:outputText value="#{banka.ilgiliKisi}" />
+			</p:column>
+			
+			<p:column headerText="E-mail ">
+				<h:outputText value="#{banka.email}" />
+			</p:column>
+
+
+
+		</p:dataTable>
+
+
+
+	</h:form>
+
+</f:view>

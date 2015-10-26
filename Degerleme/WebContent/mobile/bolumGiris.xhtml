@@ -1,0 +1,61 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pm="http://primefaces.org/mobile" contentType="text/html"
+	renderKitId="PRIMEFACES_MOBILE">
+	<pm:page title="Mobile">
+
+		<pm:view>
+			<pm:header>
+
+			</pm:header>
+			<pm:content>
+
+				<h:form id="form1">
+					<p:panelGrid columns="2">
+						<p:column>
+							<p:row>
+								<pm:field>
+									<p:outputLabel value="Form" />
+									<p:selectOneMenu converter="omnifaces.SelectItemsConverter"
+										id="form" var="f" filter="true" filterMatchMode="contains"
+										value="#{bolumGirisi.form}">
+										<f:selectItem itemLabel="Form Seç" itemValue=""
+											noSelectionOption="true" />
+										<f:selectItems value="#{bolumGirisi.formList}" var="form"
+											itemValue="#{form}" itemLabel="#{form.name}" />
+										<p:column>
+											<h:outputText value="#{f.name}" />
+										</p:column>
+									</p:selectOneMenu>
+								</pm:field>
+							</p:row>
+							<pre />
+							<p:row>
+								<pm:field>
+									<p:outputLabel value="Bölüm Adı" />
+									<p:inputText value="#{bolumGirisi.bolum.name}" />
+								</pm:field>
+								<pre />
+								<pm:field>
+									<p:outputLabel value="Bölüm Sırası" />
+									<p:inputText value="#{bolumGirisi.bolum.sira}"
+										style="float:right;" />
+								</pm:field>
+							</p:row>
+							<pre />
+							<p:row>
+								<pm:field>
+									<p:button value="Listele" outcome="bolumList" />
+									<p:commandButton value="Kaydet" style="float:right;"
+										actionListener="#{bolumGirisi.kaydet}" />
+								</pm:field>
+							</p:row>
+						</p:column>
+					</p:panelGrid>
+				</h:form>
+			</pm:content>
+		</pm:view>
+	</pm:page>
+</f:view>

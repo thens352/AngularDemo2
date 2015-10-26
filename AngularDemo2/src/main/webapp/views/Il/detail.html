@@ -1,0 +1,26 @@
+<header ng-switch on="$location.path().indexOf('/Ils/new') > -1">
+    <h3 ng-switch-when="true">Create a new Il</h3>
+    <h3 ng-switch-when="false">View or edit Il</h3>
+</header>
+<form id="IlForm" name="IlForm" class="form-horizontal" role="form">
+    <div ng-show="displayError" class="alert alert-danger">
+        <strong>Error!</strong> Something broke. Retry, or cancel and start afresh.
+    </div>
+    
+
+    <div class="form-group" ng-class="{'has-error': IlForm.ad.$invalid}">
+        <label for="ad" class="col-sm-2 control-label">Ad</label>
+        <div id="adControls" class="col-sm-10">
+            <input id="ad" name="ad" type="text" class="form-control" ng-model="il.ad" placeholder="Enter the Il Ad"></input>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button id="saveIl" name="saveIl" class="btn btn-primary" ng-disabled="isClean() || IlForm.$invalid" ng-click="save()"><span class="glyphicon glyphicon-ok-sign"></span> Save</button>
+            <button id="cancel" name="cancel" class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove-sign"></span> Cancel</button>
+            <button id="deleteIl" name="deleteIl" class="btn btn-danger" ng-show="il.id" ng-click="remove()"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+        </div>
+    </div>
+</form>

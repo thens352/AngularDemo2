@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="angularDemo2">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angular Demo 2</title>
+<link href="styles/bootstrap.css" rel="stylesheet" media="screen">
+<link href="styles/bootstrap-theme.css" rel="stylesheet" media="screen">
+<link href="styles/main.css" rel="stylesheet" media="screen">
+</head>
+<body>
+	<div id="wrap">
+
+		<div class="navbar navbar-inverse navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="offcanvas">
+						<span class="sr-only">Toggle navigation</span> <span
+							class="icon-bar"></span> <span class="icon-bar"></span> <span
+							class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">Angular Demo 2</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="container">
+			<div class="row row-offcanvas row-offcanvas-left">
+				<!-- sidebar -->
+				<div class="col-xs-6 col-sm-3 well sidebar-offcanvas">
+					<nav class="sidebar-nav" ng-controller="NavController"
+						role="navigation">
+						<div id="sidebar-entries" class="list-group">
+							<a class="list-group-item"
+								ng-class="{active: matchesRoute('Ils')}" href="#/Ils"
+								data-toggle="offcanvas">Ils</a> <a class="list-group-item"
+								ng-class="{active: matchesRoute('Ilces')}" href="#/Ilces"
+								data-toggle="offcanvas">Ilces</a> <a class="list-group-item"
+								ng-class="{active: matchesRoute('Mahalles')}" href="#/Mahalles"
+								data-toggle="offcanvas">Mahalles</a> <a class="list-group-item"
+								ng-class="{active: matchesRoute('Sokaks')}" href="#/Sokaks"
+								data-toggle="offcanvas">Sokaks</a>
+						</div>
+					</nav>
+				</div>
+				<!-- main area-->
+				<div class="col-sm-offset-1 col-xs-12 col-sm-8 well mainarea">
+					<div id="main" ng-view></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="scripts/vendor/modernizr-2.8.3.min.js"></script>
+	<script src="scripts/vendor/jquery-2.0.3.js"></script>
+	<script src="scripts/vendor/bootstrap.js"></script>
+	<script src="scripts/vendor/angular.js"></script>
+	<script src="scripts/vendor/angular-route.js"></script>
+	<script src="scripts/vendor/angular-resource.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+	<script src="scripts/vendor/restangular.js"></script>
+	<script src="scripts/app.js"></script>
+	<script src="scripts/offcanvas.js"></script>
+	<script src="scripts/directives/datepicker.js"></script>
+	<script src="scripts/directives/timepicker.js"></script>
+	<script src="scripts/directives/datetimepicker.js"></script>
+	<script src="scripts/filters/startFromFilter.js"></script>
+	<script src="scripts/filters/genericSearchFilter.js"></script>
+	<script src="scripts/services/locationParser.js"></script>
+	<script src="scripts/services/IlFactory.js"></script>
+	<script src="scripts/controllers/newIlController.js"></script>
+	<script src="scripts/controllers/searchIlController.js"></script>
+	<script src="scripts/controllers/editIlController.js"></script>
+	<script src="scripts/services/IlceFactory.js"></script>
+	<script src="scripts/controllers/newIlceController.js"></script>
+	<script src="scripts/controllers/searchIlceController.js"></script>
+	<script src="scripts/controllers/editIlceController.js"></script>
+	<script src="scripts/services/MahalleFactory.js"></script>
+	<script src="scripts/controllers/newMahalleController.js"></script>
+	<script src="scripts/controllers/searchMahalleController.js"></script>
+	<script src="scripts/controllers/editMahalleController.js"></script>
+	<script src="scripts/services/SokakFactory.js"></script>
+	<script src="scripts/controllers/newSokakController.js"></script>
+	<script src="scripts/controllers/searchSokakController.js"></script>
+	<script src="scripts/controllers/editSokakController.js"></script>
+</body>
+</html>

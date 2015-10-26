@@ -1,0 +1,63 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:outputStylesheet name="css/style.css" />
+	<p:menubar autoDisplay="false" style="margin:25px 0px 20px 0px">
+		<p:menuitem url="anasayfa.jsf" icon="ui-icon-home"
+			style="margin-right:0px;margin-left:10px;padding-left:10px;" />
+		<p:submenu label="Stok İşlemleri"
+			style="margin-right:10px;margin-left:15px">
+			<p:menuitem value="Stok Hareket Anasayfa"
+				url="stokHareketAnasayfa.jsf" />
+			<p:menuitem value="Stok Malzeme Anasayfa"
+				url="stokMalzemeAnasayfa.jsf" />
+		</p:submenu>
+		<p:menuitem value="Proje Anasayfa" url="projeAnasayfa.jsf"
+			style="margin-right:10px;margin-left:10px" />
+		<p:submenu label="Yakıt İşlemleri"
+			style="margin-right:10px;margin-left:10px">
+			<p:menuitem value="Araç Anasayfa" url="arac.jsf" />
+			<p:menuitem value="Şoför Anasayfa" url="sofor.jsf" />
+			<p:menuitem value="Yakıt Hareket Anasayfa" url="yakitHareket.jsf" />
+		</p:submenu>
+		<p:menuitem value="Fatura Anasayfa" url="faturaAnasayfa.jsf"
+			style="margin-right:10px;margin-left:10px" />
+		<p:menuitem value="Muhasebe Anasayfa" url="muhasebeAnasayfa.jsf"
+			style="margin-right:10px;margin-left:10px" />
+	</p:menubar>
+	<p:growl id="msgs" showDetail="false" />
+	<script type="text/javascript">
+		PrimeFaces.locales['tr'] = {
+			closeText : 'kapat',
+			prevText : 'geri',
+			nextText : 'ileri',
+			currentText : 'bugün',
+			monthNames : [ 'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs',
+					'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım',
+					'Aralık' ],
+			monthNamesShort : [ 'Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz',
+					'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara' ],
+			dayNames : [ 'Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe',
+					'Cuma', 'Cumartesi' ],
+			dayNamesShort : [ 'Pz', 'Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct' ],
+			dayNamesMin : [ 'Pz', 'Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct' ],
+			weekHeader : 'Hf',
+			firstDay : 1,
+			isRTL : false,
+			showMonthAfterYear : false,
+			yearSuffix : '',
+			timeOnlyTitle : 'Zaman Seçiniz',
+			timeText : 'Zaman',
+			hourText : 'Saat',
+			minuteText : 'Dakika',
+			secondText : 'Saniye',
+			ampm : false,
+			month : 'Ay',
+			week : 'Hafta',
+			day : 'Gün',
+			allDayText : 'Tüm Gün'
+		};
+	</script>
+</ui:composition>

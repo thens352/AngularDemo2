@@ -1,0 +1,77 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form">
+		<p:panel id="menu">
+			<p:menubar autoDisplay="false">
+				<p:submenu label="İl Seçenekleri" icon="ui-icon-document">
+					<p:menuitem value="Yeni İl Oluştur" url="ilKaydet.jsf"
+						icon="ui-icon-disk" />
+				</p:submenu>
+
+				<p:submenu label="İlçe Seçenekleri" icon="ui-icon-document">
+					<p:menuitem value="Yeni İlçe Oluştur" url="ilceKaydet.jsf"
+						icon="ui-icon-disk" />
+					<p:menuitem value="Kayıtlı İlçeler" url="ilceListele.jsf"
+						icon="ui-icon-folder-collapsed" />
+				</p:submenu>
+
+				<p:submenu label="Mahalle Seçenekleri" icon="ui-icon-document">
+					<p:menuitem value="Yeni Mahalle Oluştur" url="mahalleKaydet.jsf"
+						icon="ui-icon-disk" />
+					<p:menuitem value="Kayıtlı Mahalleler" url="mahalleListele.jsf"
+						icon="ui-icon-folder-collapsed" />
+				</p:submenu>
+
+				<p:submenu label="Sokak Seçenekleri" icon="ui-icon-document">
+					<p:menuitem value="Yeni Sokak Oluştur" url="sokakKaydet.jsf"
+						icon="ui-icon-disk" />
+					<p:menuitem value="Kayıtlı Sokaklar" url="sokakListele.jsf"
+						icon="ui-icon-folder-collapsed" />
+				</p:submenu>
+
+			</p:menubar>
+		</p:panel>
+		<p:panel header="Mahalle Kaydet" id="pnlmahalle"
+			style="margin-bottom:10px;">
+			<h:panelGrid columns="2" cellpadding="5">
+				<p:outputLabel value="Mahalle id "></p:outputLabel>
+				<p:inputText value="#{mahalleListService.mahalleSearch.id}"></p:inputText>
+				<p:outputLabel value="Mahalle adı "></p:outputLabel>
+				<p:inputText value="#{mahalleListService.mahalleSearch.adi}"></p:inputText>
+			</h:panelGrid>
+			<p:separator />
+			<p:commandButton value="Ara" update="mahalleler"
+				action="#{mahalleListService.init()}" />
+			<p:button value="Yeni Mahalle Oluştur" icon="ui-icon-disk"
+				href="mahalleKaydet.jsf" />
+		</p:panel>
+		<p:dataTable id="mahalleler" var="mahalle"
+			value="#{mahalleListService.mahalleList}">
+			<p:column headerText="Düzenleme" style="width:120px">
+				<p:commandButton value="Güncelle" icon="ui-icon-refresh"
+					action="#{mahalleListService.goToEdit(mahalle)}" />
+				<p:commandButton value="Sil" icon="ui-icon-trash"
+					update=":form:pnlmahalle,mahalleler"
+					actionListener="#{mahalleListService.mahalleSil(mahalle)}" />
+			</p:column>
+			<p:column id="mahalleId" headerText="Mahalle Numarası"
+				style="width:100px">
+				<h:outputText value="#{mahalle.id}" />
+			</p:column>
+			<p:column headerText="Mahalle Adı" style="width:150px">
+				<h:outputText value="#{mahalle.adi}" />
+			</p:column>
+			<p:column headerText="Kayıtlı Olduğu İlçe Adı" style="width:150px">
+				<h:outputText value="#{mahalle.ilce.adi}" />
+			</p:column>
+			<p:column headerText="Kayıtlı Olduğu İl Adı" style="width:150px">
+				<h:outputText value="#{mahalle.ilce.il.adi}" />
+			</p:column>
+		</p:dataTable>
+	</h:form>
+</f:view>

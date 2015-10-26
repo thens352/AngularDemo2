@@ -1,0 +1,199 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form" style="padding-bottom:200px;">
+		<ui:include src="resources/composite/menu.xhtml" />
+		<p:panel header="Ups Resim Anasayfa" style="text-align:center;">
+			<p:panelGrid columns="5">
+				<p:inputText value="#{upsResimService.upsResim.barkod}"
+					placeholder="Barkod" />
+				<p:selectOneMenu var="b" filter="true"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{upsResimService.upsResimSearch.bolge}">
+					<f:selectItem noSelectionOption="true" itemLabel="Bölge Seç"
+						itemValue="" />
+					<f:selectItems value="#{upsResimService.bolgeList}" var="bolge"
+						itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+					<p:column>
+						<h:outputText value="#{b.ad}" />
+					</p:column>
+				</p:selectOneMenu>
+				<p:selectOneMenu var="k" filter="true"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{upsResimService.upsResimSearch.kullanici}">
+					<f:selectItem noSelectionOption="true" itemLabel="Kullanıcı Seç"
+						itemValue="" />
+					<f:selectItems value="#{upsResimService.kullaniciList}"
+						var="kullanici" itemValue="#{kullanici}"
+						itemLabel="#{kullanici.kullaniciAdi}" />
+					<p:column>
+						<h:outputText value="#{k.kullaniciAdi}" />
+					</p:column>
+				</p:selectOneMenu>
+				<p:commandButton value="Ara" process="@parent" update=":form:upsResimTable"
+					action="#{upsResimService.ara}" />
+			</p:panelGrid>
+			<pre />
+			<p:dataTable id="upsResimTable" var="upsResim" paginator="true" 
+				sortBy="#{upsResim.barkod}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="10,20,50" rows="10"
+				value="#{upsResimService.upsResimList}" editable="true" emptyMessage="Kayıt bulunamadı."
+				style="margin-bottom:20px">
+
+				<p:ajax event="rowEdit" listener="#{upsResimService.guncelle}"
+					update=":form:upsResimTable" />
+
+				<p:column style="text-align:center;" sortBy="gununTarihi"
+					headerText="Günün Tarihi">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{upsResim.gununTarihi}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:calendar value="#{upsResim.gununTarihi}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="barkod"
+					headerText="Barkod">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{upsResim.barkod}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{upsResim.barkod}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" headerText="Resim Dosyası">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{upsResimService.getResimAdi(upsResim)}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:fileUpload auto="false" multiple="false"
+								allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+								widgetVar="updateUpsResim" mode="advanced" cancelLabel="Vazgeç"
+								uploadLabel="Yükle" label="Seç" dragDropSupport="true"
+								fileUploadListener="#{upsResimService.update}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="kullanici.kullaniciAdi"
+					headerText="Kullanıcı">
+					<p:outputLabel style="width:30px"
+						value="#{upsResim.kullanici.kullaniciAdi}" />
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="bolge.ad"
+					headerText="Bölge">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{upsResim.bolge.ad}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu style="width:100%" value="#{upsResim.bolge}"
+								converter="omnifaces.SelectItemsConverter" var="b" filter="true"
+								filterMatchMode="contains">
+								<f:selectItem noSelectionOption="true" itemLabel="Bölge Seç"
+									itemValue="" />
+								<f:selectItems value="#{upsResimService.bolgeList}" var="bolge"
+									itemLabel="#{bolge.ad}" itemValue="#{bolge}" />
+								<p:column>
+									<h:outputText value="#{b.ad}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;">
+					<p:commandButton value="İndir" ajax="false"
+						actionListener="#{upsResimService.indir(upsResim)}"
+						style="width:100px">
+						<p:fileDownload value="#{upsResimService.download}" />
+					</p:commandButton>
+				</p:column>
+
+				<p:column style="width:14px;text-align: center">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column style="width:26px;text-align: center">
+					<p:commandButton update=":form:upsResimTable" process="@this"
+						action="#{upsResimService.sil}" icon="ui-icon-trash" title="Sil">
+						<f:setPropertyActionListener value="#{upsResim}"
+							target="#{upsResimService.upsResim}" />
+					</p:commandButton>
+				</p:column>
+
+				<f:facet name="footer">
+					<p:commandButton value="Yeni Ups Resim Ekle"
+						onclick="PF('dlg1').show();" />
+				</f:facet>
+
+			</p:dataTable>
+
+			<p:dialog header="Yeni Ups Resim" widgetVar="dlg1" showEffect="size"
+				hideEffect="scale" draggable="false" resizable="false" modal="true">
+				<p:panel id="yeniupsResimPanel"
+					style="text-align:center;border-style: none !important;">
+					<p:selectOneMenu var="b" filter="true"
+						converter="omnifaces.SelectItemsConverter"
+						value="#{upsResimService.upsResim.bolge}">
+						<f:selectItem noSelectionOption="true" itemLabel="Bölge Seç"
+							itemValue="" />
+						<f:selectItems value="#{upsResimService.bolgeList}" var="bolge"
+							itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+						<p:column>
+							<h:outputText value="#{b.ad}" />
+						</p:column>
+					</p:selectOneMenu>
+					<p:spacer width="20px" />
+
+					<p:selectOneMenu var="k" filter="true"
+						converter="omnifaces.SelectItemsConverter"
+						value="#{upsResimService.upsResim.kullanici}">
+						<f:selectItem noSelectionOption="true" itemLabel="Kullanıcı Seç"
+							itemValue="" />
+						<f:selectItems value="#{upsResimService.kullaniciList}"
+							var="kullanici" itemValue="#{kullanici}"
+							itemLabel="#{kullanici.kullaniciAdi}" />
+						<p:column>
+							<h:outputText value="#{k.kullaniciAdi}" />
+						</p:column>
+					</p:selectOneMenu>
+					<pre />
+
+					<p:calendar value="#{upsResimService.upsResim.gununTarihi}"
+						placeholder="Günün Tarihi" />
+					<p:spacer width="20px" />
+
+					<p:inputText value="#{upsResimService.upsResim.barkod}"
+						placeholder="Barkod" />
+					<pre />
+
+					<p:fileUpload auto="false" multiple="false" mode="advanced"
+						cancelLabel="Vazgeç" uploadLabel="Yükle" label="Seç"
+						dragDropSupport="true" update=":form:upsResimTable,:form:msgs"
+						fileUploadListener="#{upsResimService.upload}" />
+					<pre />
+
+					<p:commandButton value="Kaydet" process="@parent"
+						update=":form:yeniupsResimPanel,:form:upsResimTable"
+						oncomplete="PF('dlg1').hide()" action="#{upsResimService.kaydet}" />
+				</p:panel>
+			</p:dialog>
+
+		</p:panel>
+	</h:form>
+</f:view>

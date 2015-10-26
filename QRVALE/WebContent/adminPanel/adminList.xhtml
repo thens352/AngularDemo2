@@ -1,0 +1,84 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" contentType="text/html">
+
+	<h:head>
+	</h:head>
+
+	<h:form id="admin1">
+		<p:panelGrid columns="1">
+			<p:panel>
+				<p:outputLabel value="Admin Bilgileri" />
+				<pre />
+				<p:panelGrid id="adminBilgisi" columns="1">
+					<p:column>
+						<p:outputLabel value="Ad "/>
+						<p:inputText value="#{adminListS.adminSearch.ad}"/>
+						<pre />
+						<p:outputLabel value="Soyad "/>
+						<p:inputText value="#{adminListS.adminSearch.soyad}"/>
+						<pre />
+						<p:outputLabel value="Kullanıcı Adı "/>
+						<p:inputText value="#{adminListS.adminSearch.kullaniciAdi}"/>
+						<pre />
+						<p:outputLabel value="Email "/>
+						<p:inputText value="#{adminListS.adminSearch.email}"/>
+						<pre />
+						<p:outputLabel for="isletme" value="İşletme " />
+						<p:selectOneMenu id="isletme" value="#{adminListS.isletme}"
+							converter="omnifaces.SelectItemsConverter" var="i" filter="true"
+							filterMatchMode="contains">
+							<f:selectItem noSelectionOption="true" itemLabel="İşletme Seç"
+								itemValue="" />
+							<f:selectItems value="#{adminListS.isletmeList}" var="isletme"
+								itemLabel="#{isletme.isletmeAdi}" itemValue="#{isletme}" />
+							<p:column>
+								<h:outputText value="#{isletme.isletmeAdi}" />
+							</p:column>
+						</p:selectOneMenu>
+					</p:column>
+				</p:panelGrid>
+			</p:panel>
+			<p:commandButton style="float:right" value="Ara"
+				action="#{adminListS.adminAra}" update="admin1" />
+		</p:panelGrid>
+
+		<h3>İşletme Listesi</h3>
+
+		<p:dataTable var="admin" id="adminTable" paginator="true" rows="10"
+			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="5,10,15" value="#{adminListS.adminList}">
+
+
+			<p:column headerText="Ad">
+				<h:outputText value="#{admin.ad}" />
+			</p:column>
+
+			<p:column headerText="Soyad">
+				<h:outputText value="#{admin.soyad}" />
+			</p:column>
+
+			<p:column headerText="Kullanıcı Adı">
+				<h:outputText value="#{admin.kullaniciAdi}" />
+			</p:column>
+
+			<p:column headerText="Email">
+				<h:outputText value="#{admin.email}" />
+			</p:column>
+
+			<p:column headerText="İşletme Adı">
+				<h:outputText value="#{admin.isletme.isletmeAdi}" />
+			</p:column>
+
+			<p:column headerText="Guncelle">
+				<p:button outcome="adminKaydet" value="Guncelle">
+					<f:param name="adminId" value="#{admin.id}" />
+				</p:button>
+			</p:column>
+		</p:dataTable>
+
+	</h:form>
+
+</f:view>

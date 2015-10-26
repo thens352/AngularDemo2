@@ -1,0 +1,458 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form" style="padding-bottom:200px;">
+		<ui:include src="resources/composite/menu.xhtml" />
+		<p:panel header="E24-NoteBook/MasaüstüPC/Monitör"
+			style="text-align:center;">
+			<p:panelGrid columns="10">
+				<p:outputLabel value="Bölge :" />
+				<p:selectOneMenu var="b" filter="true"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{noteBookMasaustuPCMonitorService.noteBookMasaustuPCMonitorSearch.bolge}">
+					<f:selectItem noSelectionOption="true" itemLabel="Bölge Seç"
+						itemValue="" />
+					<f:selectItems
+						value="#{noteBookMasaustuPCMonitorService.bolgeList}" var="bolge"
+						itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+					<p:column>
+						<h:outputText value="#{b.ad}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Kullanıcı :" />
+				<p:selectOneMenu var="k" filter="true"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{noteBookMasaustuPCMonitorService.noteBookMasaustuPCMonitorSearch.kullanici}">
+					<f:selectItem noSelectionOption="true" itemLabel="Kullanıcı Seç"
+						itemValue="" />
+					<f:selectItems
+						value="#{noteBookMasaustuPCMonitorService.kullaniciList}"
+						var="kullanici" itemValue="#{kullanici}"
+						itemLabel="#{kullanici.kullaniciAdi}" />
+					<p:column>
+						<h:outputText value="#{k.kullaniciAdi}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Barkod :" />
+				<p:inputText
+					value="#{noteBookMasaustuPCMonitorService.noteBookMasaustuPCMonitorSearch.barkod}"
+					placeholder="Barkod" />
+
+				<p:outputLabel value="Cihaz Seri No :" />
+				<p:inputText
+					value="#{noteBookMasaustuPCMonitorService.noteBookMasaustuPCMonitorSearch.cihazSeriNo}"
+					placeholder="Cihaz Seri Numarası" />
+
+				<p:outputLabel value="Marka :" />
+				<p:inputText
+					value="#{noteBookMasaustuPCMonitorService.noteBookMasaustuPCMonitorSearch.marka}"
+					placeholder="Marka" />
+
+				<p:outputLabel value="Model :" />
+				<p:inputText
+					value="#{noteBookMasaustuPCMonitorService.noteBookMasaustuPCMonitorSearch.model}"
+					placeholder="Model" />
+
+
+				<p:outputLabel value="Çeşit :" />
+				<p:selectOneMenu var="c" filter="true"
+					value="#{noteBookMasaustuPCMonitorService.noteBookMasaustuPCMonitorSearch.cesit}">
+					<f:selectItem noSelectionOption="true" itemLabel="Çeşit Seç"
+						itemValue="" />
+					<f:selectItems
+						value="#{noteBookMasaustuPCMonitorService.cesitList}" var="cesit"
+						itemValue="#{cesit.label}" itemLabel="#{cesit.label}" />
+					<p:column>
+						<h:outputText value="#{c.valueOf}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Durum :" />
+				<p:selectOneMenu var="dr" filter="true"
+					value="#{noteBookMasaustuPCMonitorService.noteBookMasaustuPCMonitorSearch.durum}">
+					<f:selectItem noSelectionOption="true" itemLabel="Durum Seç"
+						itemValue="" />
+					<f:selectItems
+						value="#{noteBookMasaustuPCMonitorService.durumTipleri}"
+						var="durumTipi" itemValue="#{durumTipi}"
+						itemLabel="#{durumTipi.displayName}" />
+					<p:column>
+						<h:outputText value="#{dr.displayName}" />
+					</p:column>
+				</p:selectOneMenu>
+
+
+				<p:commandButton value="Ara" process="@parent"
+					update=":form:noteBookMasaustuPCMonitorTable"
+					action="#{noteBookMasaustuPCMonitorService.ara}" />
+			</p:panelGrid>
+			<p:dataTable id="noteBookMasaustuPCMonitorTable"
+				var="noteBookMasaustuPCMonitor" paginator="true" 
+				sortBy="#{noteBookMasaustuPCMonitor.barkod}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="10,20,50" rows="10"
+				value="#{noteBookMasaustuPCMonitorService.noteBookMasaustuPCMonitorList}"
+				editable="true" emptyMessage="Kayıt bulunamadı."
+				style="margin-bottom:20px">
+
+				<p:ajax event="rowEdit"
+					listener="#{noteBookMasaustuPCMonitorService.guncelle}"
+					update=":form:noteBookMasaustuPCMonitorTable" />
+
+				<p:column style="text-align:center;" sortBy="gununTarihi"
+					headerText="Günün Tarihi">
+					<p:outputLabel style="width:30px"
+						value="#{noteBookMasaustuPCMonitor.gununTarihi}">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+					</p:outputLabel>
+				</p:column>
+				
+				<p:column style="text-align:center;" sortBy="barkod"
+					headerText="Barkod">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{noteBookMasaustuPCMonitor.barkod}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{noteBookMasaustuPCMonitor.barkod}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="cihazSeriNo"
+					headerText="Cihaz Seri No">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{noteBookMasaustuPCMonitor.cihazSeriNo}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{noteBookMasaustuPCMonitor.cihazSeriNo}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="marka"
+					headerText="Marka">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{noteBookMasaustuPCMonitor.marka}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{noteBookMasaustuPCMonitor.marka}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="model"
+					headerText="Model">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{noteBookMasaustuPCMonitor.model}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{noteBookMasaustuPCMonitor.model}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="productNo"
+					headerText="Product No">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{noteBookMasaustuPCMonitor.productNo}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{noteBookMasaustuPCMonitor.productNo}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="lokasyon_Ofis_SubeAdi"
+					headerText="Lokasyon/Ofis/Şube Adı">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{noteBookMasaustuPCMonitor.lokasyon_Ofis_SubeAdi}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText
+								value="#{noteBookMasaustuPCMonitor.lokasyon_Ofis_SubeAdi}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="urunSahibi"
+					headerText="Ürün Sahibi">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{noteBookMasaustuPCMonitor.urunSahibi}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{noteBookMasaustuPCMonitor.urunSahibi}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="cesit"
+					headerText="Çeşit">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{noteBookMasaustuPCMonitor.cesit}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="c" filter="true" style="width:185px;"
+								value="#{noteBookMasaustuPCMonitor.cesit}">
+								<f:selectItem noSelectionOption="true" itemLabel="Çeşit Seç"
+									itemValue="" />
+								<f:selectItems
+									value="#{noteBookMasaustuPCMonitorService.cesitList}"
+									var="cesit" itemValue="#{cesit}" itemLabel="#{cesit.label}" />
+								<p:column>
+									<h:outputText value="#{c.valueOf}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;"
+					sortBy="uzerindekiIsletimSistemi"
+					headerText="Üzerindeki İşletim Sistemi">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{noteBookMasaustuPCMonitor.uzerindekiIsletimSistemi}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="u" filter="true" style="width:185px;"
+								value="#{noteBookMasaustuPCMonitor.uzerindekiIsletimSistemi}">
+								<f:selectItem noSelectionOption="true"
+									itemLabel="Üzerindeki İşletim Sistemi Seç" itemValue="" />
+								<f:selectItems
+									value="#{noteBookMasaustuPCMonitorService.uzerindekiIsletimSistemiList}"
+									var="uzerindekiIsletimSistemi"
+									itemValue="#{uzerindekiIsletimSistemi}"
+									itemLabel="#{uzerindekiIsletimSistemi.label}" />
+								<p:column>
+									<h:outputText value="#{u.valueOf}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+
+
+				<p:column style="text-align:center;" sortBy="durum"
+					headerText="Durum">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{noteBookMasaustuPCMonitor.durum}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="dr" filter="true" style="width:185px;"
+								value="#{noteBookMasaustuPCMonitor.durum}">
+								<f:selectItem noSelectionOption="true" itemLabel="Durum Seç"
+									itemValue="" />
+								<f:selectItems
+									value="#{noteBookMasaustuPCMonitorService.durumTipleri}"
+									var="durumTipi" itemValue="#{durumTipi}"
+									itemLabel="#{durumTipi.displayName}" />
+								<p:column>
+									<h:outputText value="#{dr.displayName}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="kullanici.kullaniciAdi"
+					headerText="Kullanıcı">
+					<p:outputLabel style="width:30px"
+						value="#{noteBookMasaustuPCMonitor.kullanici.kullaniciAdi}" />
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="bolge.ad"
+					headerText="Bölge">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{noteBookMasaustuPCMonitor.bolge.ad}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu style="width:100%"
+								value="#{noteBookMasaustuPCMonitor.bolge}"
+								converter="omnifaces.SelectItemsConverter" var="b" filter="true"
+								filterMatchMode="contains">
+								<f:selectItem noSelectionOption="true" itemLabel="Bölge Seç"
+									itemValue="" />
+								<f:selectItems
+									value="#{noteBookMasaustuPCMonitorService.bolgeList}"
+									var="bolge" itemLabel="#{bolge.ad}" itemValue="#{bolge}" />
+								<p:column>
+									<h:outputText value="#{b.ad}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column exportable="false" style="width:14px;text-align: center">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column exportable="false" style="width:26px;text-align: center">
+					<p:commandButton update=":form:noteBookMasaustuPCMonitorTable"
+						process="@this" action="#{noteBookMasaustuPCMonitorService.sil}"
+						icon="ui-icon-trash" title="Sil">
+						<f:setPropertyActionListener value="#{noteBookMasaustuPCMonitor}"
+							target="#{noteBookMasaustuPCMonitorService.noteBookMasaustuPCMonitor}" />
+					</p:commandButton>
+				</p:column>
+
+				<f:facet name="footer">
+					<p:commandButton value="Yeni NoteBook/MasaüstüPC/Monitör Ekle"
+						onclick="PF('dlg1').show();" />
+				</f:facet>
+
+				<f:facet name="footer">
+					<h:commandLink style="float:right" id="excel" immediate="true">
+						<h:graphicImage value="/resources/images/excel.png" width="25"
+							height="25" />
+						<p:dataExporter type="xls" target="noteBookMasaustuPCMonitorTable"
+							fileName="noteBookMasaustuPCMonitorRapor" />
+					</h:commandLink>
+				</f:facet>
+
+			</p:dataTable>
+
+			<p:dialog header="Yeni NoteBook/MasaüstüPC/Monitör" widgetVar="dlg1"
+				showEffect="size" hideEffect="scale" draggable="false"
+				resizable="false" modal="true">
+				<p:panel id="yeninoteBookMasaustuPCMonitorPanel"
+					style="text-align:center;border-style: none !important;">
+					<p:panelGrid columns="4">
+
+						<p:outputLabel value="Bölge :" />
+						<p:selectOneMenu var="b" filter="true"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{noteBookMasaustuPCMonitorService.noteBookMasaustuPCMonitor.bolge}">
+							<f:selectItems
+								value="#{noteBookMasaustuPCMonitorService.bolgeList}"
+								var="bolge" itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+							<p:column>
+								<h:outputText value="#{b.ad}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Kullanıcı :" />
+						<p:selectOneMenu var="k" filter="true"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{noteBookMasaustuPCMonitorService.noteBookMasaustuPCMonitor.kullanici}">
+							<f:selectItems
+								value="#{noteBookMasaustuPCMonitorService.kullaniciList}"
+								var="kullanici" itemValue="#{kullanici}"
+								itemLabel="#{kullanici.kullaniciAdi}" />
+							<p:column>
+								<h:outputText value="#{k.kullaniciAdi}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Barkod :" />
+						<p:inputText
+							value="#{noteBookMasaustuPCMonitorService.noteBookMasaustuPCMonitor.barkod}"
+							placeholder="Barkod" />
+
+						<p:outputLabel value="Cihaz Seri No :" />
+						<p:inputText
+							value="#{noteBookMasaustuPCMonitorService.noteBookMasaustuPCMonitor.cihazSeriNo}"
+							placeholder="Cihaz Seri Numarası" />
+
+						<p:outputLabel value="Marka :" />
+						<p:inputText
+							value="#{noteBookMasaustuPCMonitorService.noteBookMasaustuPCMonitor.marka}"
+							placeholder="Marka" />
+
+						<p:outputLabel value="Model :" />
+						<p:inputText
+							value="#{noteBookMasaustuPCMonitorService.noteBookMasaustuPCMonitor.model}"
+							placeholder="Model" />
+
+						<p:outputLabel value="Ürün Sahibi :" />
+						<p:inputText
+							value="#{noteBookMasaustuPCMonitorService.noteBookMasaustuPCMonitor.urunSahibi}"
+							placeholder="Ürün Sahibi" />
+
+						<p:outputLabel value="Çeşit :" />
+						<p:selectOneMenu var="c" filter="true"
+							value="#{noteBookMasaustuPCMonitorService.noteBookMasaustuPCMonitor.cesit}">
+							<f:selectItems
+								value="#{noteBookMasaustuPCMonitorService.cesitList}"
+								var="cesit" itemValue="#{cesit}" itemLabel="#{cesit.label}" />
+							<p:column>
+								<h:outputText value="#{c.valueOf}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Product :" />
+						<p:inputText
+							value="#{noteBookMasaustuPCMonitorService.noteBookMasaustuPCMonitor.productNo}"
+							placeholder="Product No" />
+
+						<p:outputLabel value="Lokasyon/Ofis/Şube Adı :" />
+						<p:inputText
+							value="#{noteBookMasaustuPCMonitorService.noteBookMasaustuPCMonitor.lokasyon_Ofis_SubeAdi}"
+							placeholder="Lokasyon/Ofis/Şube Adı" />
+
+						<p:outputLabel value="Üzerindeki İşletim Sistemi :" />
+						<p:selectOneMenu var="uz" filter="true"
+							value="#{noteBookMasaustuPCMonitorService.noteBookMasaustuPCMonitor.uzerindekiIsletimSistemi}">
+							<f:selectItems
+								value="#{noteBookMasaustuPCMonitorService.uzerindekiIsletimSistemiList}"
+								var="uzerindekiIsletimSistemi"
+								itemValue="#{uzerindekiIsletimSistemi}"
+								itemLabel="#{uzerindekiIsletimSistemi.label}" />
+							<p:column>
+								<h:outputText value="#{uz.valueOf}" />
+							</p:column>
+						</p:selectOneMenu>
+
+
+						<p:outputLabel value="Durum :" />
+						<p:selectOneMenu var="dr" filter="true"
+							value="#{noteBookMasaustuPCMonitorService.noteBookMasaustuPCMonitor.durum}">
+							<f:selectItems
+								value="#{noteBookMasaustuPCMonitorService.durumTipleri}"
+								var="durumTipi" itemValue="#{durumTipi}"
+								itemLabel="#{durumTipi.displayName}" />
+							<p:column>
+								<h:outputText value="#{dr.displayName}" />
+							</p:column>
+						</p:selectOneMenu>
+
+
+						<p:commandButton value="Kaydet" process="@parent"
+							update=":form:yeninoteBookMasaustuPCMonitorPanel,:form:noteBookMasaustuPCMonitorTable"
+							oncomplete="PF('dlg1').hide()"
+							action="#{noteBookMasaustuPCMonitorService.kaydet}" />
+					</p:panelGrid>
+				</p:panel>
+			</p:dialog>
+
+		</p:panel>
+	</h:form>
+</f:view>

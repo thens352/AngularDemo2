@@ -1,0 +1,42 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" contentType="text/html">
+
+	<h:head>
+	</h:head>
+
+	<h:form id="form1">
+		<h:outputLabel value=" Form Giris : " />
+		<h:inputText value="#{formListesi.formSearch.id}" />
+		<h:outputLabel value=" Firma Adı : " />
+		<h:inputText value="#{formListesi.formSearch.name}" />
+		<p:commandButton value="Form Ara" action="#{formListesi.listele}"
+			update="form1" />
+
+		<h3>Form Listesi</h3>
+
+		<p:dataTable var="form" id="formtable" paginator="true" rows="10"
+			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="5,10,15" value="#{formListesi.formList}">
+
+			<p:column headerText="Guncelle">
+				<p:button outcome="formGiris" value="Guncelle">
+					<f:param name="formId" value="#{form.id}" />
+				</p:button>
+			</p:column>
+
+			<p:column headerText="id">
+				<h:outputText value="#{form.id}" />
+			</p:column>
+
+			<p:column headerText="Adı">
+				<h:outputText value="#{form.name}" />
+			</p:column>
+
+		</p:dataTable>
+
+	</h:form>
+
+</f:view>

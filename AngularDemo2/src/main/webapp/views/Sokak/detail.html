@@ -1,0 +1,71 @@
+<header ng-switch on="$location.path().indexOf('/Sokaks/new') > -1">
+	<h3 ng-switch-when="true">Create a new Sokak</h3>
+	<h3 ng-switch-when="false">View or edit Sokak</h3>
+</header>
+<form id="SokakForm" name="SokakForm" class="form-horizontal"
+	role="form">
+	<div ng-show="displayError" class="alert alert-danger">
+		<strong>Error!</strong> Something broke. Retry, or cancel and start
+		afresh.
+	</div>
+
+
+	<div class="form-group" ng-class="{'has-error': SokakForm.ad.$invalid}">
+		<label for="ad" class="col-sm-2 control-label">Ad</label>
+		<div id="adControls" class="col-sm-10">
+			<input id="ad" name="ad" type="text" class="form-control"
+				ng-model="sokak.ad" placeholder="Enter the Sokak Ad"></input>
+		</div>
+	</div>
+
+	<div class="form-group" ng-class="{'has-error': SokakForm.il.$invalid}">
+		<label for="il" class="col-sm-2 control-label">Il</label>
+		<div id="ilControls" class="col-sm-10">
+			<select id="il" name="il" class="form-control" ng-model="ilSelection"
+				ng-options="i.text for i in ilSelectionList">
+				<option value="">Choose a Il</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="form-group"
+		ng-class="{'has-error': SokakForm.ilce.$invalid}">
+		<label for="ilce" class="col-sm-2 control-label">Ilce</label>
+		<div id="ilceControls" class="col-sm-10">
+			<select id="ilce" name="ilce" class="form-control"
+				ng-model="ilceSelection"
+				ng-options="i.ad for i in (ilceList | filter:ilceFilter:{ID:i.il.id})">
+				<option value="">Choose a Ilce</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="form-group"
+		ng-class="{'has-error': SokakForm.mahalle.$invalid}">
+		<label for="mahalle" class="col-sm-2 control-label">Mahalle</label>
+		<div id="mahalleControls" class="col-sm-10">
+			<select id="mahalle" name="mahalle" class="form-control"
+				ng-model="mahalleSelection"
+				ng-options="m.ad for m in (mahalleList | filter:mahalleFilter:{ID:m.ilce.id})">
+				<option value="">Choose a Mahalle</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<button id="saveSokak" name="saveSokak" class="btn btn-primary"
+				ng-disabled="isClean() || SokakForm.$invalid" ng-click="save()">
+				<span class="glyphicon glyphicon-ok-sign"></span> Save
+			</button>
+			<button id="cancel" name="cancel" class="btn btn-default"
+				ng-click="cancel()">
+				<span class="glyphicon glyphicon-remove-sign"></span> Cancel
+			</button>
+			<button id="deleteSokak" name="deleteSokak" class="btn btn-danger"
+				ng-show="sokak.id" ng-click="remove()">
+				<span class="glyphicon glyphicon-trash"></span> Delete
+			</button>
+		</div>
+	</div>
+</form>

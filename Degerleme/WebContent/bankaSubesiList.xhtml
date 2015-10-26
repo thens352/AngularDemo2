@@ -1,0 +1,65 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" contentType="text/html">
+
+	<h:head>
+	</h:head>
+
+	<h:form id="bankaSubesi1">
+		<h:outputLabel value=" Banka Subesi id : " />
+		<h:inputText value="#{bankaSubesiListesi.bankaSubesiSearch.id}" />
+		<h:outputLabel value=" Banka Subesi Adı : " />
+		<h:inputText value="#{bankaSubesiListesi.bankaSubesiSearch.name}" />
+		<p:commandButton value="Banka Subesi Ara" action="#{bankaSubesiListesi.listele}"
+			update="bankaSubesi1" />
+
+
+		<h3>Banka Subesi Listesi</h3>
+
+
+
+		<p:dataTable var="bankaSubesi" id="bankaSubesitable" paginator="true" rows="10"
+			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="5,10,15" value="#{bankaSubesiListesi.bankaSubesiList}">
+
+			<p:column headerText="Guncelle">
+				<p:button outcome="bankaSubesiGiris" value="Guncelle">
+					<f:param name="bankaSubesiId" value="#{bankaSubesi.id}" />
+				</p:button>
+			</p:column>
+
+			<p:column headerText="id">
+				<h:outputText value="#{bankaSubesi.id}" />
+			</p:column>
+			
+			<p:column headerText="Banka Adı ">
+				<h:outputText value="#{bankaSubesi.banka.name}" />
+			</p:column>
+
+			<p:column headerText="Şube Adı ">
+				<h:outputText value="#{bankaSubesi.name}" />
+			</p:column>
+			
+			<p:column headerText="İlgili Kisi ">
+				<h:outputText value="#{bankaSubesi.ilgiliKisi}" />
+			</p:column>
+			
+			<p:column headerText="Telefon Numarası">
+				<h:outputText value="#{bankaSubesi.telNo}" />
+			</p:column>
+			
+			<p:column headerText="Adres">
+				<h:outputText value="#{bankaSubesi.adres}" />
+			</p:column>
+
+
+
+		</p:dataTable>
+
+
+
+	</h:form>
+
+</f:view>

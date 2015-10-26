@@ -1,0 +1,62 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form">
+		<p:panel id="menu">
+			<p:menubar autoDisplay="false">
+				<p:submenu label="Vale İşlemleri" icon="ui-icon-document">
+					<p:menuitem value="Yeni Vale Kaydı" url="valeKaydet.jsf"
+						icon="ui-icon-disk" />
+					<p:menuitem value="Kayıtlı Vale Listesi" url="valeList.jsf"
+						icon="ui-icon-folder-collapsed" />
+				</p:submenu>
+
+				<p:submenu label="Hareket İşlemleri" icon="ui-icon-document">
+					<p:menuitem value="Kayıtlı Hareket Listesi" url="hareketList.jsf"
+						icon="ui-icon-folder-collapsed" />
+				</p:submenu>
+
+				<p:submenu label="Araç İşlemleri" icon="ui-icon-document">
+					<p:menuitem value="Kayıtlı Araç Listesi" url="aracList.jsf"
+						icon="ui-icon-folder-collapsed" />
+				</p:submenu>
+
+				<p:submenu label="Raporlama İşlemleri" icon="ui-icon-document">
+					<p:menuitem value="Genel Hareket Raporu" url="genelRapor.jsf"
+						icon="ui-icon-folder-collapsed" />
+					<p:menuitem value="Araç-Hareket Raporu" url="aracHareketRapor.jsf"
+						icon="ui-icon-folder-collapsed" />
+					<p:menuitem value="Vale-Hareket Raporu" url="valeHareketRapor.jsf"
+						icon="ui-icon-folder-collapsed" />
+				</p:submenu>
+			</p:menubar>
+		</p:panel>
+		<div style="position: absolute; top: 15%; right: 4%;">
+			<p:outputLabel rendered="#{sessionScope.ad != null}"
+				value="Hoşgeldiniz #{sessionScope.ad} #{sessionScope.soyad}" />
+			<br />
+			<p:commandButton value="Logout" rendered="#{sessionScope.ad != null}"
+				actionListener="#{loginService.logout}" />
+		</div>
+		<p:panel header="vale Kaydet" style="margin-bottom:10px;">
+			<h:panelGrid columns="2">
+				<p:outputLabel value="Ad "></p:outputLabel>
+				<p:inputText value="#{valeService.vale.ad}"></p:inputText>
+				<p:outputLabel value="Soyad "></p:outputLabel>
+				<p:inputText value="#{valeService.vale.soyad}"></p:inputText>
+				<p:outputLabel value="Kullanıcı Adı "></p:outputLabel>
+				<p:inputText value="#{valeService.vale.kullaniciAdi}"></p:inputText>
+				<p:outputLabel value="Şifre "></p:outputLabel>
+				<p:inputText value="#{valeService.vale.sifre}"></p:inputText>
+			</h:panelGrid>
+			<p:separator />
+			<p:commandButton value="Kaydet"
+				actionListener="#{valeService.valeKaydet}" />
+			<p:button outcome="valeList" value="Listele" />
+		</p:panel>
+	</h:form>
+</f:view>

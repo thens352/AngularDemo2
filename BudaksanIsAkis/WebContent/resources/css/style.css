@@ -1,0 +1,11 @@
+.ui-panelgrid td, .ui-panelgrid tr {
+	border-style: none !important;
+}
+
+.ui-widget, .ui-widget .ui-widget,.ui-form,.font90,.ui-datatable table {
+    font-size: 92% !important;
+}
+
+.ui-dialog-title{
+	font-size: 18px !important;
+}

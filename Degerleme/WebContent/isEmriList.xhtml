@@ -1,0 +1,153 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" contentType="text/html">
+	<h:head>
+	</h:head>
+	<h:form id="isEmri">
+		<p:panelGrid columns="2">
+			<h:outputLabel value=" Banka Adı : " />
+			<p:selectOneMenu id="banka"
+				value="#{isEmriListesi.isEmriSearch.banka}"
+				converter="omnifaces.SelectItemsConverter" var="b" filter="true"
+				filterMatchMode="contains">
+				<f:selectItem noSelectionOption="true" itemLabel="Banka Seç"
+					itemValue="" />
+				<f:selectItems value="#{isEmriListesi.bankaList}" var="banka"
+					itemLabel="#{banka.name}" itemValue="#{banka}" />
+				<p:column>
+					<h:outputText value="#{b.name}" />
+				</p:column>
+			</p:selectOneMenu>
+			<h:outputLabel value=" Kişi : " />
+			<p:selectOneMenu id="kisi" value="#{isEmriListesi.isEmriSearch.kisi}"
+				converter="omnifaces.SelectItemsConverter" var="k" filter="true"
+				filterMatchMode="contains">
+				<f:selectItem noSelectionOption="true" itemLabel="Kişi Seç"
+					itemValue="" />
+				<f:selectItems value="#{isEmriListesi.kisiList}" var="kisi"
+					itemLabel="#{kisi.tcKimlikNo} #{kisi.name} #{kisi.surName}"
+					itemValue="#{kisi}" />
+				<p:column>
+					<h:outputText value="#{k.tcKimlikNo} - #{k.name} #{k.surName}" />
+				</p:column>
+			</p:selectOneMenu>
+			<h:outputLabel value=" Firma : " />
+			<p:selectOneMenu id="firma"
+				value="#{isEmriListesi.isEmriSearch.firma}"
+				converter="omnifaces.SelectItemsConverter" var="f" filter="true"
+				filterMatchMode="contains">
+				<f:selectItem noSelectionOption="true" itemLabel="Firma Seç"
+					itemValue="" />
+				<f:selectItems value="#{isEmriListesi.firmaList}" var="firma"
+					itemLabel="#{firma.name}" itemValue="#{firma}" />
+				<p:column>
+					<h:outputText value="#{f.name}" />
+				</p:column>
+			</p:selectOneMenu>
+			<p:outputLabel for="tarih" value="Tarih :" />
+			<p:calendar id="tarih" value="#{isEmriListesi.isEmriSearch.tarih}" />
+			<h:outputLabel value=" Kontrol Eden User : " />
+			<p:selectOneMenu id="kuser"
+				value="#{isEmriListesi.isEmriSearch.kontrolEdenUser}"
+				converter="omnifaces.SelectItemsConverter" var="ku" filter="true"
+				filterMatchMode="contains">
+				<f:selectItem noSelectionOption="true" itemLabel="User Seç"
+					itemValue="" />
+				<f:selectItems value="#{isEmriListesi.userList}" var="user"
+					itemLabel="#{user.name} #{user.surName}" itemValue="#{user}" />
+				<p:column>
+					<h:outputText value="#{ku.name} #{ku.surName}" />
+				</p:column>
+			</p:selectOneMenu>
+			<h:outputLabel value=" Atanan User : " />
+			<p:selectOneMenu id="auser"
+				value="#{isEmriListesi.isEmriSearch.atananUser}"
+				converter="omnifaces.SelectItemsConverter" var="au" filter="true"
+				filterMatchMode="contains">
+				<f:selectItem noSelectionOption="true" itemLabel="User Seç"
+					itemValue="" />
+				<f:selectItems value="#{isEmriListesi.userList}" var="user"
+					itemLabel="#{user.name} #{user.surName}" itemValue="#{user}" />
+				<p:column>
+					<h:outputText value="#{au.name} #{au.surName}" />
+				</p:column>
+			</p:selectOneMenu>
+			<h:outputLabel for="isEmriDurumu" value=" İş Emri Durumu " />
+			<p:selectOneMenu id="isEmriDurumu" var="ied" filter="true"
+				filterMatchMode="contains"
+				value="#{isEmriListesi.isEmriSearch.isEmriDurumu}">
+				<f:selectItem noSelectionOption="true"
+					itemLabel="İş Emri Durumu Seç" itemValue="" />
+				<f:selectItems value="#{isEmriListesi.isEmriDurumlari}"
+					var="isEmriDurumu" itemValue="#{isEmriDurumu}"
+					itemLabel="#{isEmriDurumu.displayName}" />
+				<p:column>
+					<h:outputText value="#{ied.displayName}" />
+				</p:column>
+			</p:selectOneMenu>
+			<p:commandButton value="Ara" action="#{isEmriListesi.listele}"
+				update="isEmri" />
+		</p:panelGrid>
+		<h3>İş Emri Listesi</h3>
+		<p:dataTable var="isEmri" id="isEmritable" paginator="true" rows="10"
+			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="5,10,15" value="#{isEmriListesi.isEmriList}">
+			<p:column headerText="İşlemler">
+				<p:panelMenu style="width:130px;font-size:10px;">
+					<p:submenu label="İşlemler">
+						<p:submenu label="Rapor İşlemleri">
+							<p:menuitem value="Oluştur" outcome="raporGiris"
+								icon="ui-icon-disk">
+								<f:param name="isEmriId" value="#{isEmri.id}" />
+							</p:menuitem>
+							<p:menuitem value="Görüntüle" icon="ui-icon-circle-zoomin" />
+							<p:menuitem value="Güncelle" icon="ui-icon-refresh" />
+						</p:submenu>
+						<p:submenu label="İş Emri İşlemleri">
+							<p:menuitem value="Güncelle" outcome="isEmriGiris"
+								icon="ui-icon-refresh">
+								<f:param name="isEmriId" value="#{isEmri.id}" />
+							</p:menuitem>
+						</p:submenu>
+					</p:submenu>
+				</p:panelMenu>
+			</p:column>
+			<p:column headerText="id">
+				<h:outputText value="#{isEmri.id}" />
+			</p:column>
+			<p:column headerText="Banka Adı ">
+				<h:outputText value="#{isEmri.banka.name}" />
+			</p:column>
+			<p:column headerText="Kisi Tc Kimlik Numarası "
+				rendered="#{isEmriListesi.kisiMi}">
+				<h:outputText value="#{isEmri.kisi.tcKimlikNo}" />
+			</p:column>
+			<p:column headerText="Kisi Adı-Soyadı "
+				rendered="#{isEmriListesi.kisiMi}">
+				<h:outputText value="#{isEmri.kisi.name} #{isEmri.kisi.surName}" />
+			</p:column>
+			<p:column headerText="Firma Adı " rendered="#{isEmriListesi.firmaMi}">
+				<h:outputText value="#{isEmri.firma.name}" />
+			</p:column>
+			<p:column headerText="Bina Adresi ">
+				<h:outputText value="#{isEmri.bina.adres}" />
+			</p:column>
+			<p:column headerText="Tarih ">
+				<h:outputText value="#{isEmri.tarih}" />
+			</p:column>
+			<p:column headerText="Atanan User Adı-Soyadı  ">
+				<h:outputText
+					value="#{isEmri.atananUser.name} #{isEmri.atananUser.surName}" />
+			</p:column>
+			<p:column headerText="Kontrol Eden User Adı-Soyadı  ">
+				<h:outputText
+					value="#{isEmri.kontrolEdenUser.name} #{isEmri.kontrolEdenUser.surName}" />
+			</p:column>
+			<p:column headerText="İş Emri Durumu  ">
+				<h:outputText value="#{isEmri.isEmriDurumu.displayName}" />
+			</p:column>
+		</p:dataTable>
+	</h:form>
+</f:view>

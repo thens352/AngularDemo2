@@ -1,0 +1,98 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form" style="padding-bottom:200px;">
+		<ui:include src="resources/composite/menu.xhtml" />
+		<p:panel header="Bilgi Anasayfa" style="text-align:center;">
+			<p:dataTable id="bilgiTable" var="bilgi" paginator="true" 
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="10,20,50" rows="10"
+				value="#{bilgiService.bilgiList}" editable="true"
+				emptyMessage="Kayıt bulunamadı." style="margin-bottom:20px">
+
+				<p:ajax event="rowEdit" listener="#{bilgiService.guncelle}"
+					update=":form:bilgiTable" />
+
+				<p:column style="text-align:center;" headerText="Ekran">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{bilgi.ekran.displayName}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu style="width:100%" value="#{bilgi.ekran}"
+								converter="omnifaces.SelectItemsConverter" var="e" filter="true"
+								filterMatchMode="contains">
+								<f:selectItem noSelectionOption="true" itemLabel="Ekran Seç"
+									itemValue="" />
+								<f:selectItems value="#{bilgiService.ekranlar}" var="ekran"
+									itemLabel="#{ekran.displayName}" itemValue="#{ekran}" />
+								<p:column>
+									<h:outputText value="#{e.displayName}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column  style="text-align:center;" sortBy="aciklama"
+					headerText="Açıklama">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{bilgi.aciklama}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputTextarea  style="width:100%" value="#{bilgi.aciklama}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="width:14px;text-align: center">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column style="width:26px;text-align: center">
+					<p:commandButton update=":form:bilgiTable" process="@this"
+						action="#{bilgiService.sil}" icon="ui-icon-trash" title="Sil">
+						<f:setPropertyActionListener value="#{bilgi}"
+							target="#{bilgiService.bilgi}" />
+					</p:commandButton>
+				</p:column>
+
+				<f:facet name="footer">
+					<p:commandButton value="Yeni Bilgi Ekle"
+						onclick="PF('dlg1').show();" />
+				</f:facet>
+			</p:dataTable>
+
+			<p:dialog header="Yeni Bilgi" widgetVar="dlg1" showEffect="size"
+				hideEffect="scale" draggable="false" resizable="false" modal="true">
+				<p:panel id="yenibilgiPanel"
+					style="text-align:center;border-style: none !important;">
+					<p:selectOneMenu value="#{bilgiService.bilgi.ekran}"
+						converter="omnifaces.SelectItemsConverter" var="e" filter="true"
+						filterMatchMode="contains">
+						<f:selectItem noSelectionOption="true" itemLabel="Ekran Seç"
+							itemValue="" />
+						<f:selectItems value="#{bilgiService.ekranlar}" var="ekran"
+							itemLabel="#{ekran.displayName}" itemValue="#{ekran}" />
+						<p:column>
+							<h:outputText value="#{e.displayName}" />
+						</p:column>
+					</p:selectOneMenu>
+					<pre />
+					<p:inputTextarea style="width:100%" value="#{bilgiService.bilgi.aciklama}" />
+					<pre />
+					<p:commandButton value="Kaydet" process="@parent"
+						update=":form:yenibilgiPanel,:form:bilgiTable"
+						oncomplete="PF('dlg1').hide()" action="#{bilgiService.kaydet}" />
+				</p:panel>
+			</p:dialog>
+
+		</p:panel>
+	</h:form>
+</f:view>

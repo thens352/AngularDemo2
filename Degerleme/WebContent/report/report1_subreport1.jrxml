@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1_subreport1" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="8065c1df-e8e0-4883-9b4f-9b56a235c014">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString language="SQL">
+		<![CDATA[select  tipi,
+       metin,
+       sirano,bolumno from(
+SELECT tipi,
+       metin,
+       sirano,
+       1 bolumno
+  FROM (  SELECT tipi, metin, sirano
+            FROM (SELECT 'Eksiklikler' tipi, '' metin, -1 sirano FROM DUAL
+                  UNION ALL
+                  SELECT 'Eksiklikler' tipi, metin, sirano FROM eksiklik)
+        ORDER BY sirano)
+UNION ALL
+SELECT tipi,
+       metin,
+       sirano,
+       2 bolumno
+  FROM (  SELECT tipi, metin, sirano
+            FROM (SELECT 'Tavsiyeler ve alınması gerekli önlemler' tipi,
+                         '' metin,
+                         -1 sirano
+                    FROM DUAL
+                  UNION ALL
+                  SELECT 'Tavsiyeler ve alınması gerekli önlemler' tipi,
+                         metin,
+                         sirano
+                    FROM ONLEM)
+        ORDER BY sirano))
+        order by bolumno,sirano]]>
+	</queryString>
+	<field name="TIPI" class="java.lang.String"/>
+	<field name="METIN" class="java.lang.String"/>
+	<field name="SIRANO" class="java.math.BigDecimal"/>
+	<field name="BOLUMNO" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="555" height="20" uuid="496491ee-ca3b-49a0-998d-dcc32d8aef92"/>
+				<textFieldExpression><![CDATA[$F{TIPI}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

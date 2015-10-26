@@ -1,0 +1,266 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form" style="padding-bottom:200px;">
+		<ui:include src="resources/composite/menu.xhtml" />
+		<p:panel header="Yakıt Hareket Anasayfa" style="text-align:center;">
+			<p:dataTable id="yakitHareketTable" var="yakitHareket"
+				sortBy="#{yakitHareket.id}" paginator="true"
+				widgetVar="yakitHareketTable"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15"
+				emptyMessage="Arama kriterlerine uyan herhangi bir hareket bulunamadı."
+				filteredValue="#{yakitHareketService.filtrelenenYakitHareketList}"
+				value="#{yakitHareketService.yakitHareketList}" editable="true"
+				style="margin-bottom:20px">
+
+				<p:ajax event="rowEdit" listener="#{yakitHareketService.guncelle}"
+					update=":form:yakitHareketTable,:form:msgs" />
+
+				<f:facet name="header">
+					<p:outputPanel>
+						<h:outputText value="Tüm alanlarda ara " />
+						<p:inputText id="globalFilter"
+							onkeyup="PF('yakitHareketTable').filter()" style="width:150px"
+							placeholder="Anahtar kelime gir" />
+					</p:outputPanel>
+				</f:facet>
+
+				<f:facet name="footer">
+					<p:commandButton value="Yeni Yakıt Hareketi Ekle"
+						onclick="PF('dlg1').show();" />
+				</f:facet>
+
+				<p:column filterBy="#{yakitHareket.arac.plaka}"
+					sortBy="#{yakitHareket.arac.plaka}" style="text-align:center;"
+					headerText="Araç" filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel value="#{yakitHareket.arac.plaka}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu style="width:100%" value="#{yakitHareket.arac}"
+								converter="omnifaces.SelectItemsConverter" var="a" filter="true"
+								filterMatchMode="contains">
+								<f:selectItem noSelectionOption="true" itemLabel="Araç Seç"
+									itemValue="" />
+								<f:selectItems value="#{yakitHareketService.aracList}"
+									var="arac" itemLabel="#{arac.plaka}" itemValue="#{arac}" />
+								<p:column>
+									<h:outputText value="#{a.plaka}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column
+					sortBy="#{yakitHareket.sofor.ad} #{yakitHareket.sofor.soyad}"
+					filterBy="#{yakitHareket.sofor.ad} #{yakitHareket.sofor.soyad}"
+					style="text-align:center;" headerText="Şoför"
+					filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel
+								value="#{yakitHareket.sofor.ad} #{yakitHareket.sofor.soyad}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu style="width:100%" value="#{yakitHareket.arac}"
+								converter="omnifaces.SelectItemsConverter" var="a" filter="true"
+								filterMatchMode="contains">
+								<f:selectItem noSelectionOption="true" itemLabel="Araç Seç"
+									itemValue="" />
+								<f:selectItems value="#{yakitHareketService.aracList}"
+									var="arac" itemLabel="#{arac.plaka}" itemValue="#{arac}" />
+								<p:column>
+									<h:outputText value="#{a.plaka}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column filterBy="#{yakitHareket.gidisTarihi}"
+					sortBy="#{yakitHareket.gidisTarihi}" style="text-align:center;"
+					headerText="Gidiş Tarihi" filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel value="#{yakitHareket.gidisTarihi}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:calendar style="width:100%" locale="tr"
+								value="#{yakitHareket.gidisTarihi}"
+								pattern="MM/dd/yyyy HH:mm:ss" placeholder="Gidiş Tarihi" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column filterBy="#{yakitHareket.gidisAdresi}"
+					sortBy="#{yakitHareket.gidisAdresi}" style="text-align:center;"
+					headerText="Gidiş Adresi" filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel value="#{yakitHareket.gidisAdresi}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputTextarea autoResize="true"
+								value="#{yakitHareket.gidisAdresi}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column filterBy="#{yakitHareket.donusTarihi}"
+					sortBy="#{yakitHareket.donusTarihi}" style="text-align:center;"
+					headerText="Dönüş Tarihi" filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel value="#{yakitHareket.donusTarihi}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:calendar style="width:100%" locale="tr"
+								value="#{yakitHareket.donusTarihi}"
+								pattern="MM/dd/yyyy HH:mm:ss" placeholder="Dönüş Tarihi" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column filterBy="#{yakitHareket.yakitMiktari}"
+					sortBy="#{yakitHareket.yakitMiktari}" style="text-align:center;"
+					headerText="Yakıt Miktarı" filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel value="#{yakitHareket.yakitMiktari}" />
+						</f:facet>
+						<f:facet name="input">
+							<pe:inputNumber value="#{yakitHareket.yakitMiktari}"
+								style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column filterBy="#{yakitHareket.katedilenKM}"
+					sortBy="#{yakitHareket.katedilenKM}" style="text-align:center;"
+					headerText="Katedilen KM" filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel value="#{yakitHareket.katedilenKM}" />
+						</f:facet>
+						<f:facet name="input">
+							<pe:inputNumber value="#{yakitHareket.katedilenKM}"
+								style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="width:14px">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column style="width:26px;text-align: center">
+					<p:commandButton update=":form:yakitHareketTable,:form:msgs"
+						process="@this" action="#{yakitHareketService.sil}"
+						icon="ui-icon-trash" title="Sil">
+						<f:setPropertyActionListener value="#{yakitHareket}"
+							target="#{yakitHareketService.yakitHareket}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+			<p:dialog id="yeniYakitHareket" header="Yeni Yakıt Hareket"
+				showEffect="size" hideEffect="scale" draggable="false"
+				resizable="false" widgetVar="dlg1" modal="true">
+				<p:panel id="yeniYakitHareketPanel"
+					style="text-align:center;border-style:none !important;">
+					<p:selectOneMenu value="#{yakitHareketService.yakitHareket.arac}"
+						required="#{yakitHareketService.yakitHareket.arac==null}"
+						requiredMessage="Araç boş geçilemez" style="width:185px"
+						converter="omnifaces.SelectItemsConverter" var="a" filter="true"
+						filterMatchMode="contains">
+						<f:selectItem noSelectionOption="true" itemLabel="Araç Seç"
+							itemValue="" />
+						<f:selectItems value="#{yakitHareketService.aracList}" var="arac"
+							itemLabel="#{arac.plaka}" itemValue="#{arac}" />
+						<p:column>
+							<h:outputText value="#{a.plaka}" />
+						</p:column>
+					</p:selectOneMenu>
+					<pre />
+					<p:selectOneMenu value="#{yakitHareketService.yakitHareket.sofor}"
+						required="#{yakitHareketService.yakitHareket.sofor==null}"
+						requiredMessage="Şoför boş geçilemez" style="width:185px"
+						converter="omnifaces.SelectItemsConverter" var="s" filter="true"
+						filterMatchMode="contains">
+						<f:selectItem noSelectionOption="true" itemLabel="Şoför Seç"
+							itemValue="" />
+						<f:selectItems value="#{yakitHareketService.soforList}"
+							var="sofor" itemLabel="#{sofor.ad} #{sofor.soyad}"
+							itemValue="#{sofor}" />
+						<p:column>
+							<h:outputText value="#{s.ad} #{s.soyad}" />
+						</p:column>
+					</p:selectOneMenu>
+					<pre />
+					<p:calendar locale="tr" showOn="button"
+						required="#{yakitHareketService.yakitHareket.gidisTarihi==null}"
+						requiredMessage="Gidiş Tarihi boş geçilemez"
+						value="#{yakitHareketService.yakitHareket.gidisTarihi}"
+						placeholder="Gidiş Tarihi" />
+					<pre />
+					<p:inputTextarea style="width:185px"
+						value="#{yakitHareketService.yakitHareket.gidisAdresi}"
+						placeholder="Gidiş Adresi" />
+					<pre />
+					<p:calendar locale="tr" showOn="button"
+						required="#{yakitHareketService.yakitHareket.donusTarihi==null}"
+						requiredMessage="Dönüş Tarihi boş geçilemez"
+						value="#{yakitHareketService.yakitHareket.donusTarihi}"
+						placeholder="Dönüş Tarihi" />
+					<pre />
+					<pe:inputNumber style="width:185px"
+						value="#{yakitHareketService.yakitHareket.yakitMiktari}"
+						placeholder="Harcanan Yakıt Miktarı" />
+					<pre />
+					<pe:inputNumber style="width:185px"
+						value="#{yakitHareketService.yakitHareket.katedilenKM}"
+						placeholder="Katedilen KM" />
+					<pre />
+					<p:selectOneMenu var="ht" filter="true" filterMatchMode="contains"
+						required="#{yakitHareketService.yakitHareket.hareketTipi==null}"
+						requiredMessage="Hareket Tipi boş geçilemez" style="width:185px"
+						value="#{yakitHareketService.yakitHareket.hareketTipi}">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Hareket Tipi Seç" itemValue="" />
+						<f:selectItems value="#{yakitHareketService.hareketTipleri}"
+							var="hareketTipi" itemValue="#{hareketTipi}"
+							itemLabel="#{hareketTipi.displayName}" />
+						<p:column>
+							<h:outputText value="#{ht.displayName}" />
+						</p:column>
+					</p:selectOneMenu>
+					<pre />
+					<p:selectOneMenu value="#{yakitHareketService.yakitHareket.proje}"
+						style="width:185px" converter="omnifaces.SelectItemsConverter"
+						var="p" filter="true" filterMatchMode="contains">
+						<f:selectItem noSelectionOption="true" itemLabel="Proje Seç"
+							itemValue="" />
+						<f:selectItems value="#{yakitHareketService.projeList}"
+							var="proje" itemLabel="#{proje.ad}" itemValue="#{proje}" />
+						<p:column>
+							<h:outputText value="#{p.ad}" />
+						</p:column>
+					</p:selectOneMenu>
+					<pre />
+					<p:commandButton value="Kaydet" process="@parent"
+						style="width:92.5px"
+						update=":form:yakitHareketTable,:form:yeniYakitHareketPanel,:form:msgs"
+						oncomplete="if (args &amp;&amp; !args.validationFailed) PF('dlg1').hide()"
+						action="#{yakitHareketService.ekle}" />
+				</p:panel>
+			</p:dialog>
+		</p:panel>
+	</h:form>
+</f:view>

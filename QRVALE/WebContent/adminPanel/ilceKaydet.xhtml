@@ -1,0 +1,60 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form">
+		<p:panel id="menu">
+			<p:menubar autoDisplay="false">
+				<p:submenu label="İl Seçenekleri" icon="ui-icon-document">
+					<p:menuitem value="Yeni İl Oluştur" url="ilKaydet.jsf"
+						icon="ui-icon-disk" />
+				</p:submenu>
+
+				<p:submenu label="İlçe Seçenekleri" icon="ui-icon-document">
+					<p:menuitem value="Yeni İlçe Oluştur" url="ilceKaydet.jsf"
+						icon="ui-icon-disk" />
+					<p:menuitem value="Kayıtlı İlçeler" url="ilceListele.jsf"
+						icon="ui-icon-folder-collapsed" />
+				</p:submenu>
+
+				<p:submenu label="Mahalle Seçenekleri" icon="ui-icon-document">
+					<p:menuitem value="Yeni Mahalle Oluştur" url="mahalleKaydet.jsf"
+						icon="ui-icon-disk" />
+					<p:menuitem value="Kayıtlı Mahalleler" url="mahalleListele.jsf"
+						icon="ui-icon-folder-collapsed" />
+				</p:submenu>
+
+				<p:submenu label="Sokak Seçenekleri" icon="ui-icon-document">
+					<p:menuitem value="Yeni Sokak Oluştur" url="sokakKaydet.jsf"
+						icon="ui-icon-disk" />
+					<p:menuitem value="Kayıtlı Sokaklar" url="sokakListele.jsf"
+						icon="ui-icon-folder-collapsed" />
+				</p:submenu>
+
+			</p:menubar>
+		</p:panel>
+		<p:panel header="İlçe Kaydet" style="margin-bottom:10px;">
+			<h:panelGrid columns="2" cellpadding="5">
+				<p:outputLabel value="İl "></p:outputLabel>
+				<p:selectOneMenu id="il" value="#{ilceService.secilenIl}"
+					converter="omnifaces.SelectItemsConverter" effect="blind">
+					<f:selectItem noSelectionOption="true" itemLabel="İl seç"
+						itemValue="" />
+					<f:selectItems value="#{ilceService.ilList}" itemLabel="#{il.adi}"
+						var="il" itemValue="#{il}" />
+				</p:selectOneMenu>
+				<p:outputLabel value="İlçe adı "></p:outputLabel>
+				<p:inputText value="#{ilceService.ilce.adi}"></p:inputText>
+			</h:panelGrid>
+			<p:separator />
+				<p:button value="Geri" href="ilKaydet.jsf" />
+				<p:commandButton value="Kaydet"
+					actionListener="#{ilceService.ilceKaydet}" />
+				<p:button value="İleri" href="mahalleKaydet.jsf" />
+				<p:button value="Kayıtlı İlçeler" href="ilceListele.jsf" />
+		</p:panel>
+	</h:form>
+</f:view>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1_subreport2" pageWidth="380" pageHeight="25" columnWidth="380" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="ec619440-4051-4388-ac7f-c17245314bdb">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SORU_ID" class="java.math.BigDecimal">
+		<defaultValueExpression><![CDATA[new BigDecimal(17)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="RAPOR_ID" class="java.math.BigDecimal"/>
+	<queryString>
+		<![CDATA[/* Formatted on 1/9/2014 11:28:39 PM (QP5 v5.163.1008.3004) */
+  SELECT soru_id,
+         sira,
+         MAX (DECODE (SIRANO, 0, secili, -1)) secili1,
+         MAX (DECODE (SIRANO, 0, cevap_metni, '')) cevap_metni1,
+         MAX (DECODE (SIRANO, 1, secili, -1)) secili2,
+         MAX (DECODE (SIRANO, 1, cevap_metni, '')) cevap_metni2
+    FROM (SELECT se.soru_id,
+                 sira,
+                 SIRANO,
+                 NVL2 (cs.id, 1, 0) secili,
+                 se.metin
+                 || DECODE (
+                       Se.SORUTIPI,
+                       'COKTAN_SECMELI_SORU', DECODE (
+                                                 ACIKLAMAVARMI,
+                                                 1, NVL2 (
+                                                       cevap_metin,
+                                                          ' (  '
+                                                       || cevap_metin
+                                                       || ' )',
+                                                       ''),
+                                                 NVL2 (
+                                                    CS.METIN,
+                                                    ' (  ' || CS.METIN || ' ) ',
+                                                    '')),
+                       '')
+                    AS cevap_metni
+            FROM (SELECT s.id soru_id,
+                         ROUND (SE.SIRANO / 2) sira,
+                         MOD (SE.SIRANO, 2) sirano,
+                         SE.METIN,
+                         SE.ACIKLAMAVARMI,
+                         se.id secenek_id,
+                         c.id cevap_id,
+                         s.sorutipi,
+                         C.METIN cevap_metin
+                    FROM cevap c, SORU S, secenek se
+                   WHERE     C.SORU_ID = S.ID
+                         AND s.id = se.soru_id
+                         AND c.rapor_id =$P{RAPOR_ID}
+                          AND S.id =  $P{SORU_ID}) se,
+                 cevapsecenek cs
+           WHERE se.secenek_id = CS.SECENEK_ID(+)
+                 AND se.cevap_id = cs.cevap_id(+))
+GROUP BY soru_id, sira
+ORDER BY 1, 2]]>
+	</queryString>
+	<field name="SORU_ID" class="java.math.BigDecimal"/>
+	<field name="SIRA" class="java.math.BigDecimal"/>
+	<field name="SECILI1" class="java.math.BigDecimal"/>
+	<field name="CEVAP_METNI1" class="java.lang.String"/>
+	<field name="SECILI2" class="java.math.BigDecimal"/>
+	<field name="CEVAP_METNI2" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="220" y="0" width="160" height="25" uuid="dc94a9be-a88c-4045-b5eb-2778638d9ce2"/>
+				<textElement verticalAlignment="Middle">
+					<font pdfEncoding="Cp1254" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CEVAP_METNI2}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Transparent" x="34" y="0" width="147" height="25" forecolor="#000000" backcolor="#FFFFFF" uuid="bd7c82c0-7085-46d6-9713-894b590f62db"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CEVAP_METNI1}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="8" y="5" width="20" height="20" uuid="cdafd076-a41e-49ee-bfbb-b926b509fd4e">
+					<printWhenExpression><![CDATA[$F{SECILI1}.intValue()==0]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA["D:\\jasper\\a.png"]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="188" y="5" width="20" height="20" uuid="a9ebd48d-2652-4d30-8942-cc8696f47eff">
+					<printWhenExpression><![CDATA[$F{SECILI2}.intValue()==1]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA["D:\\jasper\\x.png"]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="188" y="5" width="20" height="20" uuid="78023d3e-f8f1-4ff2-9b36-537a0679afa3">
+					<printWhenExpression><![CDATA[$F{SECILI2}.intValue()==0]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA["D:\\jasper\\a.png"]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="8" y="5" width="20" height="20" uuid="02b15030-dd99-4f1c-981e-850ee5ce2019">
+					<printWhenExpression><![CDATA[$F{SECILI1}.intValue()==1]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA["D:\\jasper\\x.png"]]></imageExpression>
+			</image>
+		</band>
+	</detail>
+</jasperReport>

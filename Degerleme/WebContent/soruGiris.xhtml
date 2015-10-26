@@ -1,0 +1,84 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" contentType="text/html">
+	<h:head>
+
+
+
+	</h:head>
+	<h:form id="form1">
+		<p:panel>
+			<p:panelGrid id="sts" columns="2">
+				<p:row>
+					<p:outputLabel value="Form" />
+					<p:selectOneMenu converter="omnifaces.SelectItemsConverter"
+						id="formSec" var="f" filter="true" filterMatchMode="contains"
+						value="#{soruGirisi.form}">
+						<f:selectItem itemLabel="Form Seç" noSelectionOption="true" />
+						<f:selectItems value="#{soruGirisi.formList}" var="form"
+							itemValue="#{form}" itemLabel="#{form.name}" />
+						<p:column>
+							<h:outputText value="#{f.name}" />
+						</p:column>
+						<p:ajax update="bolumSec" listener="#{soruGirisi.formSecildi}" />
+					</p:selectOneMenu>
+				</p:row>
+				<pre />
+				<p:row>
+					<p:outputLabel value="Bölüm" />
+					<p:selectOneMenu converter="omnifaces.SelectItemsConverter"
+						id="bolumSec" var="b" filter="true" filterMatchMode="contains"
+						value="#{soruGirisi.bolum}">
+						<f:selectItem itemLabel="Bölüm Seç" noSelectionOption="true" />
+						<f:selectItems value="#{soruGirisi.bolumList}" var="bolum"
+							itemValue="#{bolum}" itemLabel="#{bolum.name}" />
+						<p:column>
+							<h:outputText value="#{b.name}" />
+						</p:column>
+					</p:selectOneMenu>
+				</p:row>
+				<p:row id="soruTipi1">
+					<p:outputLabel value="Soru Tipi" />
+					<p:selectOneMenu converter="omnifaces.SelectItemsConverter"
+						onchange="#{soruGirisi.soruTipiDegistir(soruGirisi.soru.soruTipi)}"
+						id="soruTipi" var="st" filter="true" filterMatchMode="contains"
+						value="#{soruGirisi.soru.soruTipi}">
+						<f:selectItems value="#{soruGirisi.soruTipleri}" var="soruTipi"
+							itemValue="#{soruTipi}" itemLabel="#{soruTipi.i18nKey}" />
+						<p:column>
+							<h:outputText value="#{st.i18nKey}" />
+						</p:column>
+						<p:ajax process="@all" update=":form1:sts" />
+					</p:selectOneMenu>
+					<pre />
+					<p:outputLabel value="Sıra No" />
+					<p:inputText value="#{soruGirisi.soru.siraNo}" />
+					<pre />
+					<p:outputLabel rendered="#{soruGirisi.defaultCevapSoru}"
+						value="Default Cevap" />
+					<p:inputTextarea rendered="#{soruGirisi.defaultCevapSoru}"
+						value="#{soruGirisi.soru.defaultCevap}" />
+					<pre />
+					<p:outputLabel rendered="#{soruGirisi.parametreSayisiSoru}"
+						value="Parametre Sayisi" />
+					<p:inputText rendered="#{soruGirisi.parametreSayisiSoru}"
+						value="#{soruGirisi.soru.parametreSayisi}" />
+					<pre />
+					<p:outputLabel value="Soru Metni" />
+					<p:inputTextarea value="#{soruGirisi.soru.soruMetni}" />
+					<pre />
+					<p:outputLabel rendered="#{soruGirisi.soruUyari}"
+						value="Soru Uyarı" />
+					<p:inputTextarea rendered="#{soruGirisi.soruUyari}"
+						value="#{soruGirisi.soru.soruUyari}" />
+				</p:row>
+				<p:button value="Listele" outcome="soruList" />
+				<p:commandButton value="Ekle" actionListener="#{soruGirisi.kaydet}"
+					style="float:right;" update=":form1:sts" />
+			</p:panelGrid>
+		</p:panel>
+	</h:form>
+
+</f:view>

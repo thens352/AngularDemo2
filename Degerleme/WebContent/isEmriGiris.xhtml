@@ -1,0 +1,399 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" contentType="text/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+		<h:link rel="Stylesheet" type="text/css" href="/Styles/style.css" />
+	</h:head>
+
+	<h:form id="isEmri">
+		<p:panel id="anaPanel" header="İş Emri Girişi">
+			<p:panelGrid columns="2">
+				<p:column>
+					<p:outputLabel for="banka" value="Banka " />
+					<p:selectOneMenu id="banka" value="#{isEmriGirisi.isEmri.banka}"
+						converter="omnifaces.SelectItemsConverter" var="b" filter="true"
+						filterMatchMode="contains">
+						<f:selectItem noSelectionOption="true" itemLabel="Banka Seç"
+							itemValue="" />
+						<f:selectItems value="#{isEmriGirisi.bankaList}" var="banka"
+							itemLabel="#{banka.name}" itemValue="#{banka}" />
+						<p:column>
+							<h:outputText value="#{b.name}" />
+						</p:column>
+						<p:ajax update="bankaSubesi"
+							listener="#{isEmriGirisi.bankaSecildi}" />
+					</p:selectOneMenu>
+				</p:column>
+				<p:column>
+					<p:outputLabel for="bankaSubesi" value="Banka Şubesi " />
+					<p:selectOneMenu id="bankaSubesi"
+						value="#{isEmriGirisi.isEmri.bankaSubesi}"
+						converter="omnifaces.SelectItemsConverter" var="bs" filter="true"
+						filterMatchMode="contains">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Banka Şubesi Seç" itemValue="" />
+						<f:selectItems value="#{isEmriGirisi.bankaSubesiList}"
+							var="bankaSubesi" itemLabel="#{bankaSubesi.name}"
+							itemValue="#{bankaSubesi}" />
+						<p:column>
+							<h:outputText value="#{bs.name}" />
+						</p:column>
+					</p:selectOneMenu>
+				</p:column>
+			</p:panelGrid>
+
+			<p:panelGrid columns="2">
+				<p:column>
+					<p:outputLabel for="tarih" value="Tarih " />
+					<p:calendar id="tarih" value="#{isEmriGirisi.isEmri.tarih}"
+						effect="fold" />
+				</p:column>
+				<p:column>
+					<p:outputLabel for="form" value="Form " />
+					<p:selectOneMenu id="form" value="#{isEmriGirisi.isEmri.form}"
+						converter="omnifaces.SelectItemsConverter" var="f" filter="true"
+						filterMatchMode="contains">
+						<f:selectItem noSelectionOption="true" itemLabel="Form Seç"
+							itemValue="" />
+						<f:selectItems value="#{isEmriGirisi.formList}" var="form"
+							itemLabel="#{form.name}" itemValue="#{form}" />
+						<p:column>
+							<h:outputText value="#{f.name}" />
+						</p:column>
+					</p:selectOneMenu>
+				</p:column>
+			</p:panelGrid>
+
+			<p:panelGrid columns="1">
+				<p:panel>
+					<p:outputLabel value="Bina Bilgileri" />
+					<pre />
+					<p:panelGrid id="binaAdresi" columns="1">
+						<p:column>
+							<p:outputLabel for="il" value="İl " />
+							<p:selectOneMenu id="il" value="#{isEmriGirisi.secilenIl}"
+								converter="omnifaces.SelectItemsConverter" var="i" filter="true"
+								filterMatchMode="contains">
+								<f:selectItem noSelectionOption="true" itemLabel="İl Seç"
+									itemValue="" />
+								<f:selectItems value="#{isEmriGirisi.ilList}" var="il"
+									itemLabel="#{il.adi}" itemValue="#{il}" />
+								<p:column>
+									<h:outputText value="#{i.adi}" />
+								</p:column>
+								<p:ajax update="ilce,mahalle,sokak"
+									listener="#{isEmriGirisi.ilSecildi}" />
+							</p:selectOneMenu>
+
+							<pre />
+
+							<p:outputLabel for="ilce" value="İlçe " />
+							<p:selectOneMenu id="ilce" value="#{isEmriGirisi.secilenIlce}"
+								converter="omnifaces.SelectItemsConverter" var="ic"
+								filter="true" filterMatchMode="contains">
+								<f:selectItem noSelectionOption="true" itemLabel="İlçe Seç"
+									itemValue="" />
+								<f:selectItems value="#{isEmriGirisi.ilceList}" var="ilce"
+									itemLabel="#{ilce.adi}" itemValue="#{ilce}" />
+								<p:column>
+									<h:outputText value="#{ic.adi}" />
+								</p:column>
+								<p:ajax update="mahalle,sokak"
+									listener="#{isEmriGirisi.ilceSecildi}" />
+							</p:selectOneMenu>
+
+							<pre />
+
+							<p:outputLabel for="mahalle" value="Mahalle " />
+							<p:selectOneMenu id="mahalle"
+								value="#{isEmriGirisi.secilenMahalle}"
+								converter="omnifaces.SelectItemsConverter" var="m" filter="true"
+								filterMatchMode="contains">
+								<f:selectItem noSelectionOption="true" itemLabel="Mahalle Seç"
+									itemValue="" />
+								<f:selectItems value="#{isEmriGirisi.mahalleList}" var="mahalle"
+									itemLabel="#{mahalle.adi}" itemValue="#{mahalle}" />
+								<p:column>
+									<h:outputText value="#{m.adi}" />
+								</p:column>
+								<p:ajax update="sokak" listener="#{isEmriGirisi.mahalleSecildi}" />
+							</p:selectOneMenu>
+
+							<pre />
+
+							<p:outputLabel for="sokak" value="Sokak " />
+							<p:selectOneMenu id="sokak"
+								value="#{isEmriGirisi.isEmri.bina.sokak}"
+								converter="omnifaces.SelectItemsConverter" var="sk"
+								filter="true" filterMatchMode="contains">
+								<f:selectItem noSelectionOption="true" itemLabel="Sokak Seç"
+									itemValue="" />
+								<f:selectItems value="#{isEmriGirisi.sokakList}" var="sokak"
+									itemLabel="#{sokak.adi}" itemValue="#{sokak}" />
+								<p:column>
+									<h:outputText value="#{sk.adi}" />
+								</p:column>
+								<p:ajax process="@parent" />
+							</p:selectOneMenu>
+							<p:commandButton style="float:right;" value="Ara"
+								process="@parent" actionListener="#{isEmriGirisi.adresAra}"
+								onclick="PF('dlg3').show();" update=":isEmri:adresSonucu" />
+							<pre />
+							<p:outputLabel value="Daire No " />
+							<p:inputText id="daireNo"
+								value="#{isEmriGirisi.isEmri.bina.daireNo}" />
+							<pre />
+							<p:outputLabel value="Kapı No " />
+							<p:inputText id="kapiNo"
+								value="#{isEmriGirisi.isEmri.bina.kapiNo}" />
+						</p:column>
+					</p:panelGrid>
+				</p:panel>
+			</p:panelGrid>
+
+			<p:panelGrid columns="2">
+				<p:column>
+					<p:outputLabel for="atananUser" value="Atanan Kişi " />
+					<p:selectOneMenu id="atananUser"
+						value="#{isEmriGirisi.isEmri.atananUser}"
+						converter="omnifaces.SelectItemsConverter" var="au" filter="true"
+						filterMatchMode="contains">
+						<f:selectItem noSelectionOption="true" itemLabel="Atanan Kişi Seç"
+							itemValue="" />
+						<f:selectItems value="#{isEmriGirisi.userList}" var="atananUser"
+							itemLabel="#{atananUser.name} #{atananUser.surName}"
+							itemValue="#{atananUser}" />
+						<p:column>
+							<h:outputText value="#{au.name} #{au.surName}" />
+						</p:column>
+					</p:selectOneMenu>
+				</p:column>
+				<p:column>
+					<p:outputLabel for="kontrolEdenUser" value="Kontrol Eden Kişi " />
+					<p:selectOneMenu id="kontrolEdenUser"
+						value="#{isEmriGirisi.isEmri.kontrolEdenUser}"
+						converter="omnifaces.SelectItemsConverter" var="ku" filter="true"
+						filterMatchMode="contains">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Kontrol Eden Kişi Seç" itemValue="" />
+						<f:selectItems value="#{isEmriGirisi.userList}"
+							var="kontrolEdenUser"
+							itemLabel="#{kontrolEdenUser.name} #{kontrolEdenUser.surName}"
+							itemValue="#{kontrolEdenUser}" />
+						<p:column>
+							<h:outputText value="#{ku.name} #{ku.surName}" />
+						</p:column>
+					</p:selectOneMenu>
+				</p:column>
+			</p:panelGrid>
+
+			<p:panelGrid columns="2">
+
+			</p:panelGrid>
+
+			<p:panelGrid columns="2" id="tuzelKisi">
+				<p:column>
+					<h:outputText value="Kisi/Firma" />
+					<p:selectBooleanCheckbox style="padding-left:10px;"
+						value="#{isEmriGirisi.tuzelKisi}">
+						<p:ajax update="tuzelKisi" />
+					</p:selectBooleanCheckbox>
+				</p:column>
+				<p:column>
+					<p:panel rendered="#{isEmriGirisi.tuzelKisi}">
+						<p:outputLabel value="Kişi Bilgileri" />
+						<pre />
+						<p:outputLabel for="kisi" value="Kişi " />
+						<p:selectOneMenu id="kisi" value="#{isEmriGirisi.secilenKisi}"
+							converter="omnifaces.SelectItemsConverter" var="k" filter="true"
+							filterMatchMode="contains">
+							<f:selectItem noSelectionOption="true" itemLabel="Kişi Seç"
+								itemValue="" />
+							<f:selectItems value="#{isEmriGirisi.kisiList}" var="kisi"
+								itemLabel="#{kisi.name} #{kisi.surName}" itemValue="#{kisi}" />
+							<p:column>
+								<h:outputText value="#{k.name} #{k.surName}" />
+							</p:column>
+						</p:selectOneMenu>
+						<p:commandButton id="yeniKisi" value="Yeni Kişi"
+							onclick="PF('dlg1').show();" />
+					</p:panel>
+
+					<p:panel rendered="#{!isEmriGirisi.tuzelKisi}">
+						<p:outputLabel value="Firma Bilgileri" />
+						<pre />
+						<p:outputLabel for="firma" value="Firma " />
+						<p:selectOneMenu id="firma" value="#{isEmriGirisi.secilenFirma}"
+							converter="omnifaces.SelectItemsConverter" var="f" filter="true"
+							filterMatchMode="contains">
+							<f:selectItem noSelectionOption="true" itemLabel="Firma Seç"
+								itemValue="" />
+							<f:selectItems value="#{isEmriGirisi.firmaList}" var="firma"
+								itemLabel="#{firma.name}" itemValue="#{firma}" />
+							<p:column>
+								<h:outputText value="#{f.name}" />
+							</p:column>
+						</p:selectOneMenu>
+						<p:commandButton id="yeniFirma" value="Yeni Firma"
+							onclick="PF('dlg2').show();" />
+					</p:panel>
+				</p:column>
+			</p:panelGrid>
+			<p:commandButton value="Kaydet"
+				actionListener="#{isEmriGirisi.kaydet}" update=":isEmri:anaPanel" />
+			<p:button outcome="isEmriList" value="Listele" />
+		</p:panel>
+
+
+		<p:dialog id="kisiKaydet" header="Yeni Kişi" widgetVar="dlg1">
+			<p:panel id="yeni1">
+				<p:panelGrid columns="2">
+					<p:outputLabel value=" Kisi TC Kimlik Numarası : " />
+					<p:inputText value="#{kisiGirisi.kisi.tcKimlikNo}" />
+
+					<p:outputLabel value=" Kisi Adı : " />
+					<p:inputText value="#{kisiGirisi.kisi.name}" />
+
+					<p:outputLabel value=" Kisi Soyadı : " />
+					<p:inputText value="#{kisiGirisi.kisi.surName}" />
+
+					<p:outputLabel value=" Kisi Telefonu : " />
+					<p:inputText value="#{kisiGirisi.kisi.telNo}" />
+
+					<p:outputLabel value=" Kisi Adresi : " />
+					<p:inputTextarea value="#{kisiGirisi.kisi.adres}" />
+
+					<p:outputLabel value=" Kapı no : " />
+					<p:inputTextarea value="#{kisiGirisi.kisi.kapiNo}" />
+
+					<p:outputLabel value=" Daire no : " />
+					<p:inputTextarea value="#{kisiGirisi.kisi.daireNo}" />
+				</p:panelGrid>
+			</p:panel>
+			<div align="right">
+				<p:commandButton value="İptal" style="float:left;"
+					onclick="PF('dlg1').hide();" />
+				<p:commandButton value="Kaydet" process="@parent"
+					update=":isEmri:kisi" oncomplete="PF('dlg1').hide();"
+					actionListener="#{isEmriGirisi.kisiKaydet}" />
+			</div>
+		</p:dialog>
+
+		<p:dialog id="firmaKaydet" header="Yeni Firma" widgetVar="dlg2">
+			<p:panel id="yeni2">
+				<p:outputLabel value=" Firma Adı : " />
+				<p:inputText value="#{firmaGirisi.firma.name}" />
+				<p:outputLabel value=" Adresi Adı : " />
+				<p:inputTextarea value="#{firmaGirisi.firma.adres}" />
+			</p:panel>
+			<div align="right">
+				<p:commandButton value="İptal" style="float:left;"
+					onclick="PF('dlg2').hide();" />
+				<p:commandButton value="Kaydet" process="@parent"
+					update=":isEmri:firma" oncomplete="PF('dlg2').hide();"
+					actionListener="#{isEmriGirisi.firmaKaydet}" />
+			</div>
+		</p:dialog>
+
+		<p:dialog id="adresAra" header="Arama Sonucu" widgetVar="dlg3">
+			<p:panel id="ara1">
+				<p:panelGrid columns="1">
+					<p:dataTable id="adresSonucu" var="bina"
+						value="#{isEmriGirisi.binaList}" paginator="true" rows="5"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15">
+						<p:column headerText="Seç">
+							<p:commandButton value="Seç" onclick="PF('dlg3').hide();"
+								actionListener="#{isEmriGirisi.sonucSecildi(bina)}"
+								update=":isEmri:binaAdresi" />
+						</p:column>
+						<p:column headerText="Adres" style="width:150px">
+							<h:outputText value="#{bina.adres}" />
+						</p:column>
+					</p:dataTable>
+				</p:panelGrid>
+				<p:commandButton value="İptal" onclick="PF('dlg3').hide();" />
+				<p:commandButton value="Yeni Adres" style="float:right;"
+					process="@parent" onclick="PF('dlg3').hide();PF('dlg4').show();"
+					update=":isEmri:il2,:isEmri:ilce2,:isEmri:mahalle2,:isEmri:sokak2" />
+			</p:panel>
+		</p:dialog>
+
+		<p:dialog id="yeniBina" header="Yeni Bina Adresi" widgetVar="dlg4">
+			<p:panelGrid id="yeniAdres2" columns="1">
+				<p:column>
+					<p:outputLabel for="il2" value="İl" />
+					<p:selectOneMenu id="il2" value="#{isEmriGirisi.secilenIl}"
+						converter="omnifaces.SelectItemsConverter" var="i" filter="true"
+						filterMatchMode="contains">
+						<f:selectItem noSelectionOption="true" itemLabel="İl Seç"
+							itemValue="" />
+						<f:selectItems value="#{isEmriGirisi.ilList}" var="il"
+							itemLabel="#{il.adi}" itemValue="#{il}" />
+						<p:column>
+							<h:outputText value="#{i.adi}" />
+						</p:column>
+						<p:ajax update="ilce2,mahalle2,sokak2"
+							listener="#{isEmriGirisi.ilSecildi}" />
+					</p:selectOneMenu>
+					<pre />
+					<p:outputLabel for="ilce2" value="İlçe " />
+					<p:selectOneMenu id="ilce2" value="#{isEmriGirisi.secilenIlce}"
+						converter="omnifaces.SelectItemsConverter" var="ic" filter="true"
+						filterMatchMode="contains">
+						<f:selectItem noSelectionOption="true" itemLabel="İlçe Seç"
+							itemValue="" />
+						<f:selectItems value="#{isEmriGirisi.ilceList}" var="ilce"
+							itemLabel="#{ilce.adi}" itemValue="#{ilce}" />
+						<p:column>
+							<h:outputText value="#{ic.adi}" />
+						</p:column>
+						<p:ajax update="mahalle2,sokak2"
+							listener="#{isEmriGirisi.ilceSecildi}" />
+					</p:selectOneMenu>
+					<pre />
+					<p:outputLabel for="mahalle2" value="Mahalle " />
+					<p:selectOneMenu id="mahalle2"
+						value="#{isEmriGirisi.secilenMahalle}"
+						converter="omnifaces.SelectItemsConverter" var="m" filter="true"
+						filterMatchMode="contains">
+						<f:selectItem noSelectionOption="true" itemLabel="Mahalle Seç"
+							itemValue="" />
+						<f:selectItems value="#{isEmriGirisi.mahalleList}" var="mahalle"
+							itemLabel="#{mahalle.adi}" itemValue="#{mahalle}" />
+						<p:column>
+							<h:outputText value="#{m.adi}" />
+						</p:column>
+						<p:ajax update="sokak2" listener="#{isEmriGirisi.mahalleSecildi}" />
+					</p:selectOneMenu>
+					<pre />
+					<p:outputLabel for="sokak2" value="Sokak " />
+					<p:selectOneMenu id="sokak2"
+						value="#{isEmriGirisi.isEmri.bina.sokak}"
+						converter="omnifaces.SelectItemsConverter" var="sk" filter="true"
+						filterMatchMode="contains">
+						<f:selectItem noSelectionOption="true" itemLabel="Sokak Seç"
+							itemValue="" />
+						<f:selectItems value="#{isEmriGirisi.sokakList}" var="sokak"
+							itemLabel="#{sokak.adi}" itemValue="#{sokak}" />
+						<p:column>
+							<h:outputText value="#{sk.adi}" />
+						</p:column>
+					</p:selectOneMenu>
+					<pre />
+					<p:outputLabel value="Daire No " />
+					<p:inputText id="daireNo2" value="#{binaGirisi.bina.daireNo}" />
+					<pre />
+					<p:outputLabel value="Kapı No " />
+					<p:inputText id="kapiNo2" value="#{binaGirisi.bina.kapiNo}" />
+				</p:column>
+			</p:panelGrid>
+			<p:commandButton value="İptal" onclick="PF('dlg4').hide();" />
+			<p:commandButton style="float:right;" value="Kaydet"
+				oncomplete="PF('dlg4').hide();" update=":isEmri:binaAdresi"
+				actionListener="#{isEmriGirisi.binaKaydet}" />
+		</p:dialog>
+	</h:form>
+</f:view>

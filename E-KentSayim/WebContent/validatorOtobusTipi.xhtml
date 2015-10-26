@@ -1,0 +1,502 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form" style="padding-bottom:200px;">
+		<ui:include src="resources/composite/menu.xhtml" />
+		<p:panel header="E1-Validatör-Otobüs Tipi" style="text-align:center;">
+
+			<p:panelGrid columns="10">
+				<p:outputLabel value="Bölge :" />
+				<p:selectOneMenu var="b" filter="true"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{validatorOtobusTipiService.validatorOtobusTipiSearch.bolge}">
+					<f:selectItem noSelectionOption="true" itemLabel="Bölge Seç"
+						itemValue="" />
+					<f:selectItems value="#{validatorOtobusTipiService.bolgeList}"
+						var="bolge" itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+					<p:column>
+						<h:outputText value="#{b.ad}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Kullanıcı :" />
+				<p:selectOneMenu var="k" filter="true"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{validatorOtobusTipiService.validatorOtobusTipiSearch.kullanici}">
+					<f:selectItem noSelectionOption="true" itemLabel="Kullanıcı Seç"
+						itemValue="" />
+					<f:selectItems value="#{validatorOtobusTipiService.kullaniciList}"
+						var="kullanici" itemValue="#{kullanici}"
+						itemLabel="#{kullanici.kullaniciAdi}" />
+					<p:column>
+						<h:outputText value="#{k.kullaniciAdi}" />
+					</p:column>
+				</p:selectOneMenu>
+
+
+				<p:outputLabel value="Barkod :" />
+				<p:inputText
+					value="#{validatorOtobusTipiService.validatorOtobusTipiSearch.barkod}"
+					placeholder="Barkod" />
+
+				<p:outputLabel value="Cihaz Seri No :" />
+				<p:inputText
+					value="#{validatorOtobusTipiService.validatorOtobusTipiSearch.cihazSeriNo}"
+					placeholder="Cihaz Seri Numarası" />
+
+				<p:outputLabel value="Marka :" />
+				<p:selectOneMenu var="m" filter="true"
+					value="#{validatorOtobusTipiService.validatorOtobusTipiSearch.marka}">
+					<f:selectItem noSelectionOption="true" itemLabel="Marka Seç"
+						itemValue="" />
+					<f:selectItems value="#{validatorOtobusTipiService.markaList}"
+						var="marka" itemValue="#{marka}" itemLabel="#{marka.label}" />
+					<p:column>
+						<h:outputText value="#{m.valueOf}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Model :" />
+				<p:selectOneMenu var="md" filter="true"
+					value="#{validatorOtobusTipiService.validatorOtobusTipiSearch.model}">
+					<f:selectItem noSelectionOption="true" itemLabel="Model Seç"
+						itemValue="" />
+					<f:selectItems value="#{validatorOtobusTipiService.modelList}"
+						var="model" itemValue="#{model}" itemLabel="#{model.label}" />
+					<p:column>
+						<h:outputText value="#{md.valueOf}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Otobüs Köşe Numarası :" />
+				<p:inputText
+					value="#{validatorOtobusTipiService.validatorOtobusTipiSearch.otobusKoseNumarasi}"
+					placeholder="Otobüs Köşe Numarası" />
+
+				<p:outputLabel value="Durum :" />
+				<p:selectOneMenu var="dr" filter="true"
+					value="#{validatorOtobusTipiService.validatorOtobusTipiSearch.durum}">
+					<f:selectItem noSelectionOption="true" itemLabel="Durum Seç"
+						itemValue="" />
+					<f:selectItems value="#{validatorOtobusTipiService.durumTipleri}"
+						var="durumTipi" itemValue="#{durumTipi}"
+						itemLabel="#{durumTipi.displayName}" />
+					<p:column>
+						<h:outputText value="#{dr.displayName}" />
+					</p:column>
+				</p:selectOneMenu>
+				<p:commandButton value="Ara" process="@parent"
+					update=":form:validatorOtobusTipiTable,:form:msgs"
+					action="#{validatorOtobusTipiService.ara}" />
+
+			</p:panelGrid>
+
+			<p:dataTable id="validatorOtobusTipiTable" var="validatorOtobusTipi"
+				paginator="true" sortBy="#{validatorOtobusTipi.barkod}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="10,20,50" rows="10"
+				value="#{validatorOtobusTipiService.validatorOtobusTipiList}"
+				editable="true" emptyMessage="Kayıt bulunamadı."
+				style="margin-bottom:20px">
+
+				<p:ajax event="rowEdit"
+					listener="#{validatorOtobusTipiService.guncelle}"
+					update=":form:validatorOtobusTipiTable,:form:msgs" />
+
+				<p:column style="text-align:center;" sortBy="gununTarihi"
+					headerText="Günün Tarihi">
+					<p:outputLabel style="width:30px"
+						value="#{validatorOtobusTipi.gununTarihi}">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+					</p:outputLabel>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="otobusKoseNumarasi"
+					headerText="Otobüs Köşe Numarası">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{validatorOtobusTipi.otobusKoseNumarasi}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{validatorOtobusTipi.otobusKoseNumarasi}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+
+				<p:column style="text-align:center;" sortBy="barkod"
+					headerText="Barkod">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{validatorOtobusTipi.barkod}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{validatorOtobusTipi.barkod}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="cihazSeriNo"
+					headerText="Cihaz Seri No">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{validatorOtobusTipi.cihazSeriNo}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{validatorOtobusTipi.cihazSeriNo}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="marka"
+					headerText="Marka">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{validatorOtobusTipi.marka}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="m" filter="true" style="width:185px;"
+								value="#{validatorOtobusTipi.marka}">
+								<f:selectItem noSelectionOption="true" itemLabel="Marka Seç"
+									itemValue="" />
+								<f:selectItems value="#{validatorOtobusTipiService.markaList}"
+									var="marka" itemValue="#{marka}" itemLabel="#{marka.label}" />
+								<p:column>
+									<h:outputText value="#{m.valueOf}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="model"
+					headerText="Model">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{validatorOtobusTipi.model}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="md" filter="true" style="width:185px;"
+								value="#{validatorOtobusTipi.model}">
+								<f:selectItem noSelectionOption="true" itemLabel="Model Seç"
+									itemValue="" />
+								<f:selectItems value="#{validatorOtobusTipiService.modelList}"
+									var="model" itemValue="#{model}" itemLabel="#{model.label}" />
+								<p:column>
+									<h:outputText value="#{md.valueOf}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="ozellik"
+					headerText="Özellik">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{validatorOtobusTipi.ozellik}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="o" filter="true" style="width:185px;"
+								value="#{validatorOtobusTipi.ozellik}">
+								<f:selectItem noSelectionOption="true" itemLabel="Özellik Seç"
+									itemValue="" />
+								<f:selectItems value="#{validatorOtobusTipiService.ozellikList}"
+									var="ozellik" itemValue="#{ozellik}"
+									itemLabel="#{ozellik.label}" />
+								<p:column>
+									<h:outputText value="#{o.valueOf}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="altTipi"
+					headerText="Alt Tipi">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{validatorOtobusTipi.altTipi}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="a" filter="true" style="width:185px;"
+								value="#{validatorOtobusTipi.altTipi}">
+								<f:selectItem noSelectionOption="true" itemLabel="Alt Tipi Seç"
+									itemValue="" />
+								<f:selectItems value="#{validatorOtobusTipiService.altTipiList}"
+									var="altTipi" itemValue="#{altTipi}"
+									itemLabel="#{altTipi.label}" />
+								<p:column>
+									<h:outputText value="#{a.valueOf}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="kullanimSekli"
+					headerText="Kullanım Şekli">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{validatorOtobusTipi.kullanimSekli}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="ks" filter="true" style="width:185px;"
+								value="#{validatorOtobusTipi.kullanimSekli}">
+								<f:selectItem noSelectionOption="true"
+									itemLabel="Kullanım Şekli Seç" itemValue="" />
+								<f:selectItems
+									value="#{validatorOtobusTipiService.kullanimSekliList}"
+									var="kullanimSekli" itemValue="#{kullanimSekli}"
+									itemLabel="#{kullanimSekli.label}" />
+								<p:column>
+									<h:outputText value="#{ks.valueOf}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="durum"
+					headerText="Durum">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{validatorOtobusTipi.durum}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="dr" filter="true" style="width:185px;"
+								value="#{validatorOtobusTipi.durum}">
+								<f:selectItem noSelectionOption="true" itemLabel="Durum Seç"
+									itemValue="" />
+								<f:selectItems
+									value="#{validatorOtobusTipiService.durumTipleri}"
+									var="durumTipi" itemValue="#{durumTipi}"
+									itemLabel="#{durumTipi.displayName}" />
+								<p:column>
+									<h:outputText value="#{dr.displayName}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="kullanici.kullaniciAdi"
+					headerText="Kullanıcı">
+					<p:outputLabel style="width:30px"
+						value="#{validatorOtobusTipi.kullanici.kullaniciAdi}" />
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="bolge.ad"
+					headerText="Bölge">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{validatorOtobusTipi.bolge.ad}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="b" filter="true" style="width:185px;"
+								converter="omnifaces.SelectItemsConverter"
+								value="#{validatorOtobusTipi.bolge}">
+								<f:selectItem noSelectionOption="true" itemLabel="Bölge Seç"
+									itemValue="" />
+								<f:selectItems value="#{validatorOtobusTipiService.bolgeList}"
+									var="bolge" itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+								<p:column>
+									<h:outputText value="#{b.ad}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column exportable="false" style="width:14px;text-align: center">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column exportable="false" style="width:26px;text-align: center">
+					<p:commandButton update=":form:validatorOtobusTipiTable,:form:msgs"
+						process="@this" action="#{validatorOtobusTipiService.sil}"
+						icon="ui-icon-trash" title="Sil">
+						<f:setPropertyActionListener value="#{validatorOtobusTipi}"
+							target="#{validatorOtobusTipiService.validatorOtobusTipi}" />
+					</p:commandButton>
+				</p:column>
+
+				<f:facet name="footer">
+					<p:commandButton value="Yeni Validatör-Otobüs Tipi Ekle"
+						onclick="PF('dlg1').show();" />
+				</f:facet>
+
+				<f:facet name="footer">
+					<h:commandLink style="float:right" id="excel" immediate="true">
+						<h:graphicImage value="/resources/images/excel.png" width="25"
+							height="25" />
+						<p:dataExporter type="xls" target="validatorOtobusTipiTable"
+							fileName="validatorOtobusTipiRapor" />
+					</h:commandLink>
+				</f:facet>
+
+			</p:dataTable>
+
+			<p:dialog id="yeniValidatorOtobusTipi"
+				header="Yeni Validatör-Otobüs Tipi" widgetVar="dlg1"
+				showEffect="size" hideEffect="scale" draggable="false"
+				resizable="false" modal="true">
+				<p:panel id="yeniValidatorOtobusTipiPanel"
+					style="text-align:center;border-style: none !important;">
+					<p:panelGrid columns="4">
+
+						<p:outputLabel value="Bölge :" />
+						<p:selectOneMenu var="b" filter="true"
+							required="#{validatorOtobusTipiService.validatorOtobusTipi.bolge==null}"
+							requiredMessage="Bölge boş geçilemez"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{validatorOtobusTipiService.validatorOtobusTipi.bolge}">
+							<f:selectItems value="#{validatorOtobusTipiService.bolgeList}"
+								var="bolge" itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+							<p:column>
+								<h:outputText value="#{b.ad}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Kullanıcı :" />
+						<p:selectOneMenu var="k" filter="true"
+							required="#{validatorOtobusTipiService.validatorOtobusTipi.kullanici==null}"
+							requiredMessage="Kullanıcı boş geçilemez"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{validatorOtobusTipiService.validatorOtobusTipi.kullanici}">
+							<f:selectItems
+								value="#{validatorOtobusTipiService.kullaniciList}"
+								var="kullanici" itemValue="#{kullanici}"
+								itemLabel="#{kullanici.kullaniciAdi}" />
+							<p:column>
+								<h:outputText value="#{k.kullaniciAdi}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Otobüs Köşe Numarası :" />
+						<p:inputText id="otobusKoseNumarasi"
+							required="#{validatorOtobusTipiService.validatorOtobusTipi.otobusKoseNumarasi==null and validatorOtobusTipiService.durumStatu}"
+							requiredMessage="Otobüs köşe numarası boş geçilemez"
+							value="#{validatorOtobusTipiService.validatorOtobusTipi.otobusKoseNumarasi}"
+							placeholder="Otobüs Köşe Numarası" />
+
+						<p:outputLabel value="Barkod :" />
+						<p:inputText
+							required="#{validatorOtobusTipiService.validatorOtobusTipi.barkod==null}"
+							requiredMessage="Barkod boş geçilemez"
+							value="#{validatorOtobusTipiService.validatorOtobusTipi.barkod}"
+							placeholder="Barkod" />
+
+						<p:outputLabel value="Cihaz Seri Numarası :" />
+						<p:inputText
+							required="#{validatorOtobusTipiService.validatorOtobusTipi.cihazSeriNo==null}"
+							requiredMessage="Cihaz seri no boş geçilemez"
+							value="#{validatorOtobusTipiService.validatorOtobusTipi.cihazSeriNo}"
+							placeholder="Cihaz Seri Numarası" />
+
+
+						<p:outputLabel value="Marka :" />
+						<p:selectOneMenu var="m" filter="true"
+							required="#{validatorOtobusTipiService.validatorOtobusTipi.marka==null}"
+							requiredMessage="Marka boş geçilemez"
+							value="#{validatorOtobusTipiService.validatorOtobusTipi.marka}">
+							<f:selectItems value="#{validatorOtobusTipiService.markaList}"
+								var="marka" itemValue="#{marka}" itemLabel="#{marka.label}" />
+							<p:column>
+								<h:outputText value="#{m.valueOf}" />
+							</p:column>
+						</p:selectOneMenu>
+
+
+						<p:outputLabel value="Model :" />
+						<p:selectOneMenu var="md" filter="true"
+							required="#{validatorOtobusTipiService.validatorOtobusTipi.model==null}"
+							requiredMessage="Model boş geçilemez"
+							value="#{validatorOtobusTipiService.validatorOtobusTipi.model}">
+							<f:selectItems value="#{validatorOtobusTipiService.modelList}"
+								var="model" itemValue="#{model}" itemLabel="#{model.label}" />
+							<p:column>
+								<h:outputText value="#{md.valueOf}" />
+							</p:column>
+						</p:selectOneMenu>
+
+
+						<p:outputLabel value="Özellik :" />
+						<p:selectOneMenu var="o" filter="true"
+							required="#{validatorOtobusTipiService.validatorOtobusTipi.ozellik==null and validatorOtobusTipiService.durumStatu}"
+							requiredMessage="Özellik boş geçilemez"
+							value="#{validatorOtobusTipiService.validatorOtobusTipi.ozellik}">
+							<f:selectItems value="#{validatorOtobusTipiService.ozellikList}"
+								var="ozellik" itemValue="#{ozellik}"
+								itemLabel="#{ozellik.label}" />
+							<p:column>
+								<h:outputText value="#{o.valueOf}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Alt Tip :" />
+						<p:selectOneMenu var="a" filter="true"
+							required="#{validatorOtobusTipiService.validatorOtobusTipi.altTipi==null and validatorOtobusTipiService.durumStatu}"
+							requiredMessage="Alt Tip boş geçilemez"
+							value="#{validatorOtobusTipiService.validatorOtobusTipi.altTipi}">
+							<f:selectItems value="#{validatorOtobusTipiService.altTipiList}"
+								var="altTipi" itemValue="#{altTipi}"
+								itemLabel="#{altTipi.label}" />
+							<p:column>
+								<h:outputText value="#{a.valueOf}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Kullanım Şekli :" />
+						<p:selectOneMenu var="ks" filter="true"
+							required="#{validatorOtobusTipiService.validatorOtobusTipi.kullanimSekli==null and validatorOtobusTipiService.durumStatu}"
+							requiredMessage="Kullanım Şekli boş geçilemez"
+							value="#{validatorOtobusTipiService.validatorOtobusTipi.kullanimSekli}">
+							<f:selectItems
+								value="#{validatorOtobusTipiService.kullanimSekliList}"
+								var="kullanimSekli" itemValue="#{kullanimSekli}"
+								itemLabel="#{kullanimSekli.label}" />
+							<p:column>
+								<h:outputText value="#{ks.valueOf}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Durum:" />
+						<p:selectOneMenu var="dr" filter="true"
+							value="#{validatorOtobusTipiService.validatorOtobusTipi.durum}">
+							<f:selectItems value="#{validatorOtobusTipiService.durumTipleri}"
+								var="durumTipi" itemValue="#{durumTipi}"
+								itemLabel="#{durumTipi.displayName}" />
+							<p:column>
+								<h:outputText value="#{dr.displayName}" />
+							</p:column>
+							<p:ajax event="change"
+								update=":form:yeniValidatorOtobusTipiPanel" />
+						</p:selectOneMenu>
+
+
+						<p:commandButton value="Kaydet" process="@parent"
+							update=":form:yeniValidatorOtobusTipiPanel,:form:validatorOtobusTipiTable,:form:msgs"
+							oncomplete="if (args &amp;&amp; !args.validationFailed) PF('dlg1').hide()"
+							action="#{validatorOtobusTipiService.ekle}" />
+					</p:panelGrid>
+				</p:panel>
+			</p:dialog>
+
+		</p:panel>
+	</h:form>
+</f:view>

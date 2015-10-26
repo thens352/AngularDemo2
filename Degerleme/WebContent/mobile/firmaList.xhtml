@@ -1,0 +1,59 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pm="http://primefaces.org/mobile" contentType="text/html"
+	renderKitId="PRIMEFACES_MOBILE">
+	<pm:page title="Mobile">
+
+		<pm:view>
+			<pm:header>
+
+			</pm:header>
+			<pm:content>
+				<h:form id="firma1">
+					<pm:field>
+						<h:outputLabel value=" Firma İd : " />
+						<h:inputText value="#{firmaListesi.firmaSearch.id}" />
+					</pm:field>
+					<pm:field>
+						<h:outputLabel value=" Firma Adı : " />
+						<h:inputText value="#{firmaListesi.firmaSearch.name}" />
+					</pm:field>
+					<pm:field>
+						<p:commandButton value="Firma Ara"
+							action="#{firmaListesi.listele}" update="firma1" />
+					</pm:field>
+					<pm:field>
+						<h3>Firma Listesi</h3>
+					</pm:field>
+					<pm:field>
+						<p:dataTable var="firma" id="firmatable" paginator="true"
+							rows="10"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15" value="#{firmaListesi.firmaList}">
+
+							<p:column headerText="Guncelle">
+								<p:button outcome="firmaGiris" value="Guncelle">
+									<f:param name="firmaId" value="#{firma.id}" />
+								</p:button>
+							</p:column>
+
+							<p:column headerText="id">
+								<h:outputText value="#{firma.id}" />
+							</p:column>
+
+							<p:column headerText="Adı">
+								<h:outputText value="#{firma.name}" />
+							</p:column>
+
+							<p:column headerText="Adres">
+								<h:outputText value="#{firma.adres}" />
+							</p:column>
+						</p:dataTable>
+					</pm:field>
+				</h:form>
+			</pm:content>
+		</pm:view>
+	</pm:page>
+</f:view>

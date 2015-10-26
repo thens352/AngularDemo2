@@ -1,0 +1,348 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form" style="padding-bottom:200px;">
+		<ui:include src="resources/composite/menu.xhtml" />
+
+		<p:panel header="E13-Müfettiş El Terminali" style="text-align:center;">
+
+			<p:panelGrid columns="10">
+				<p:outputLabel value="Bölge :" />
+				<p:selectOneMenu var="b" filter="true"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{mufettisElTerminaliService.mufettisElTerminaliSearch.bolge}">
+					<f:selectItem noSelectionOption="true" itemLabel="Bölge Seç"
+						itemValue="" />
+					<f:selectItems value="#{mufettisElTerminaliService.bolgeList}"
+						var="bolge" itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+					<p:column>
+						<h:outputText value="#{b.ad}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Kullanıcı :" />
+				<p:selectOneMenu var="k" filter="true"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{mufettisElTerminaliService.mufettisElTerminaliSearch.kullanici}">
+					<f:selectItem noSelectionOption="true" itemLabel="Kullanıcı Seç"
+						itemValue="" />
+					<f:selectItems value="#{mufettisElTerminaliService.kullaniciList}"
+						var="kullanici" itemValue="#{kullanici}"
+						itemLabel="#{kullanici.kullaniciAdi}" />
+					<p:column>
+						<h:outputText value="#{k.kullaniciAdi}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Barkod :" />
+				<p:inputText
+					value="#{mufettisElTerminaliService.mufettisElTerminaliSearch.barkod}"
+					placeholder="Barkod" />
+
+				<p:outputLabel value="Cihaz Seri No :" />
+				<p:inputText
+					value="#{mufettisElTerminaliService.mufettisElTerminaliSearch.cihazSeriNo}"
+					placeholder="Cihaz Seri Numarası" />
+				<p:outputLabel value="Marka :" />
+				<p:inputText
+					value="#{mufettisElTerminaliService.mufettisElTerminaliSearch.marka}"
+					placeholder="Marka" />
+
+				<p:outputLabel value="Model :" />
+				<p:inputText
+					value="#{mufettisElTerminaliService.mufettisElTerminaliSearch.model}"
+					placeholder="Model" />
+
+				<p:outputLabel value="Kullanıcı Adı-Soyadı:" />
+				<p:inputText
+					value="#{mufettisElTerminaliService.mufettisElTerminaliSearch.kullaniciAdiSoyadi}"
+					placeholder="Kullanıcı Adı-Soyadı" />
+
+				<p:outputLabel value="Durum :" />
+				<p:selectOneMenu var="dr" filter="true"
+					value="#{mufettisElTerminaliService.mufettisElTerminaliSearch.durum}">
+					<f:selectItem noSelectionOption="true" itemLabel="Durum Seç"
+						itemValue="" />
+					<f:selectItems value="#{mufettisElTerminaliService.durumTipleri}"
+						var="durumTipi" itemValue="#{durumTipi}"
+						itemLabel="#{durumTipi.displayName}" />
+					<p:column>
+						<h:outputText value="#{dr.displayName}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:commandButton value="Ara" process="@parent"
+					update=":form:mufettisElTerminaliTable"
+					action="#{mufettisElTerminaliService.ara}" />
+			</p:panelGrid>
+
+			<p:dataTable id="mufettisElTerminaliTable" var="mufettisElTerminali"
+				paginator="true" sortBy="#{mufettisElTerminali.barkod}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="10,20,50" rows="10"
+				value="#{mufettisElTerminaliService.mufettisElTerminaliList}"
+				editable="true" emptyMessage="Kayıt bulunamadı."
+				style="margin-bottom:20px">
+
+				<p:ajax event="rowEdit"
+					listener="#{mufettisElTerminaliService.guncelle}"
+					update=":form:mufettisElTerminaliTable,:form:msgs" />
+
+				<p:column style="text-align:center;" sortBy="gununTarihi"
+					headerText="Günün Tarihi">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{mufettisElTerminali.gununTarihi}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:calendar value="#{mufettisElTerminali.gununTarihi}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="barkod"
+					headerText="Barkod">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{mufettisElTerminali.barkod}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{mufettisElTerminali.barkod}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="cihazSeriNo"
+					headerText="Cihaz Seri No">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{mufettisElTerminali.cihazSeriNo}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{mufettisElTerminali.cihazSeriNo}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="marka"
+					headerText="Marka">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{mufettisElTerminali.marka}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{mufettisElTerminali.marka}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="model"
+					headerText="Model">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{mufettisElTerminali.model}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{mufettisElTerminali.model}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+
+				<p:column style="text-align:center;" sortBy="kullaniciAdiSoyadi"
+					headerText="Kullanıcı Adı Soyadı">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{mufettisElTerminali.kullaniciAdiSoyadi}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{mufettisElTerminali.kullaniciAdiSoyadi}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="durum"
+					headerText="Durum">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{mufettisElTerminali.durum}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="dr" filter="true" style="width:185px;"
+								value="#{mufettisElTerminali.durum}">
+								<f:selectItem noSelectionOption="true" itemLabel="Durum Seç"
+									itemValue="" />
+								<f:selectItems
+									value="#{mufettisElTerminaliService.durumTipleri}"
+									var="durumTipi" itemValue="#{durumTipi}"
+									itemLabel="#{durumTipi.displayName}" />
+								<p:column>
+									<h:outputText value="#{dr.displayName}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="kullanici.kullaniciAdi"
+					headerText="Kullanıcı">
+					<p:outputLabel style="width:30px"
+						value="#{mufettisElTerminali.kullanici.kullaniciAdi}" />
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="bolge.ad"
+					headerText="Bölge">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{mufettisElTerminali.bolge.ad}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="b" filter="true" style="width:185px;"
+								converter="omnifaces.SelectItemsConverter"
+								value="#{mufettisElTerminali.bolge}">
+								<f:selectItem noSelectionOption="true" itemLabel="Bölge Seç"
+									itemValue="" />
+								<f:selectItems value="#{mufettisElTerminaliService.bolgeList}"
+									var="bolge" itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+								<p:column>
+									<h:outputText value="#{b.ad}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column exportable="false" style="width:14px;text-align: center">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column exportable="false" style="width:26px;text-align: center">
+					<p:commandButton update=":form:mufettisElTerminaliTable"
+						process="@this" action="#{mufettisElTerminaliService.sil}"
+						icon="ui-icon-trash" title="Sil">
+						<f:setPropertyActionListener value="#{mufettisElTerminali}"
+							target="#{mufettisElTerminaliService.mufettisElTerminali}" />
+					</p:commandButton>
+				</p:column>
+
+				<f:facet name="footer">
+					<p:commandButton value="Yeni Müfettiş El Terminali Ekle"
+						onclick="PF('dlg1').show();" />
+				</f:facet>
+
+				<f:facet name="footer">
+					<h:commandLink style="float:right" id="excel" immediate="true">
+						<h:graphicImage value="/resources/images/excel.png" width="25"
+							height="25" />
+						<p:dataExporter type="xls" target="mufettisElTerminaliTable"
+							fileName="mufettisElTerminaliRapor" />
+					</h:commandLink>
+				</f:facet>
+
+			</p:dataTable>
+
+
+			<p:dialog id="yenimufettisElTerminali"
+				header="Yeni Müfettiş El Terminali" widgetVar="dlg1"
+				showEffect="size" hideEffect="scale" draggable="false"
+				resizable="false" modal="true">
+				<p:panel id="yenimufettisElTerminaliPanel"
+					style="text-align:center;border-style: none !important;">
+
+					<p:panelGrid columns="4">
+						<p:outputLabel value="Bölge :" />
+						<p:selectOneMenu var="b" filter="true"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{mufettisElTerminaliService.mufettisElTerminali.bolge}">
+							<f:selectItems value="#{mufettisElTerminaliService.bolgeList}"
+								var="bolge" itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+							<p:column>
+								<h:outputText value="#{b.ad}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Kullanıcı :" />
+						<p:selectOneMenu var="k" filter="true"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{mufettisElTerminaliService.mufettisElTerminali.kullanici}">
+							<f:selectItems
+								value="#{mufettisElTerminaliService.kullaniciList}"
+								var="kullanici" itemValue="#{kullanici}"
+								itemLabel="#{kullanici.kullaniciAdi}" />
+							<p:column>
+								<h:outputText value="#{k.kullaniciAdi}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Barkod :" />
+						<p:inputText
+							value="#{mufettisElTerminaliService.mufettisElTerminali.barkod}"
+							placeholder="Barkod" />
+
+						<p:outputLabel value="Cihaz Seri No :" />
+						<p:inputText
+							value="#{mufettisElTerminaliService.mufettisElTerminali.cihazSeriNo}"
+							placeholder="Cihaz Seri Numarası"
+							required="#{mufettisElTerminaliService.mufettisElTerminali.cihazSeriNo==null}"
+							requiredMessage="Cihaz Seri No Boş geçilemez" />
+
+
+						<p:outputLabel value="Marka :" />
+						<p:inputText
+							value="#{mufettisElTerminaliService.mufettisElTerminali.marka}"
+							placeholder="Marka"
+							required="#{mufettisElTerminaliService.mufettisElTerminali.marka==null}"
+							requiredMessage="Marka Boş geçilemez" />
+
+
+						<p:outputLabel value="Model :" />
+						<p:inputText
+							value="#{mufettisElTerminaliService.mufettisElTerminali.model}"
+							placeholder="Model"
+							required="#{mufettisElTerminaliService.mufettisElTerminali.model==null}"
+							requiredMessage="Model Boş geçilemez" />
+
+
+						<p:outputLabel value="Kullanıcı Adı-Soyadı :" />
+						<p:inputText
+							value="#{mufettisElTerminaliService.mufettisElTerminali.kullaniciAdiSoyadi}"
+							placeholder="Kullanıcı Adı-Soyadı"
+							required="#{mufettisElTerminaliService.mufettisElTerminali.kullaniciAdiSoyadi==null}"
+							requiredMessage="Kullanıcı Adı Soy Adı Boş geçilemez" />
+
+						<p:outputLabel value="Durum :" />
+						<p:selectOneMenu var="dr" filter="true"
+							value="#{mufettisElTerminaliService.mufettisElTerminali.durum}">
+							<f:selectItems value="#{mufettisElTerminaliService.durumTipleri}"
+								var="durumTipi" itemValue="#{durumTipi}"
+								itemLabel="#{durumTipi.displayName}" />
+							<p:column>
+								<h:outputText value="#{dr.displayName}" />
+							</p:column>
+						</p:selectOneMenu>
+
+
+						<p:commandButton value="Kaydet" process="@parent"
+							update=":form:yenimufettisElTerminaliPanel,:form:mufettisElTerminaliTable,:form:msgs"
+							oncomplete="if (args &amp;&amp; !args.validationFailed) PF('dlg1').hide()"
+							action="#{mufettisElTerminaliService.ekle}" />
+
+					</p:panelGrid>
+				</p:panel>
+			</p:dialog>
+
+		</p:panel>
+	</h:form>
+</f:view>

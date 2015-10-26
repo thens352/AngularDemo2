@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile">
+
+<f:view />
+
+<h:head>
+</h:head>
+
+<h:body>
+	<pm:page>
+		<pm:content>
+			<h:form id="form1">
+				<p:panel>
+					<p:panelGrid columns="1">
+						<pm:field>
+							<p:row>
+								<p:outputLabel value="Form" />
+								<p:selectOneMenu converter="omnifaces.SelectItemsConverter"
+									id="formSec" var="f" filter="true" filterMatchMode="contains"
+									value="#{secenekGirisi.form}">
+									<f:selectItem itemLabel="Form Seç" noSelectionOption="true" />
+									<f:selectItems value="#{secenekGirisi.formList}" var="form"
+										itemValue="#{form}" itemLabel="#{form.name}" />
+									<p:column>
+										<h:outputText value="#{f.name}" />
+									</p:column>
+									<p:ajax update="bolumSec"
+										listener="#{secenekGirisi.formSecildi}" />
+								</p:selectOneMenu>
+							</p:row>
+						</pm:field>
+						<pre />
+						<pm:field>
+							<p:row>
+								<p:outputLabel value="Bölüm" />
+								<p:selectOneMenu converter="omnifaces.SelectItemsConverter"
+									id="bolumSec" var="b" filter="true" filterMatchMode="contains"
+									value="#{secenekGirisi.bolum}">
+									<f:selectItem itemLabel="Bölüm Seç" noSelectionOption="true" />
+									<f:selectItems value="#{secenekGirisi.bolumList}" var="bolum"
+										itemValue="#{bolum}" itemLabel="#{bolum.name}" />
+									<p:column>
+										<h:outputText value="#{b.name}" />
+									</p:column>
+									<p:ajax update="soruSec"
+										listener="#{secenekGirisi.bolumSecildi}" />
+								</p:selectOneMenu>
+							</p:row>
+						</pm:field>
+						<pre />
+						<pm:field>
+							<p:row>
+								<p:outputLabel value="Soru" />
+								<p:selectOneMenu converter="omnifaces.SelectItemsConverter"
+									onchange="#{secenekGirisi.soruDegistir(secenekGirisi.soru)}"
+									id="soruSec" var="s" filter="true" filterMatchMode="contains"
+									value="#{secenekGirisi.soru}">
+									<f:selectItem itemLabel="Soru Seç" noSelectionOption="true" />
+									<f:selectItems value="#{secenekGirisi.soruList}" var="soru"
+										itemValue="#{soru}" itemLabel="#{soru.soruMetni}" />
+									<p:column>
+										<h:outputText value="#{s.soruMetni}-(#{soru.soruTipi.i18nKey})" />
+									</p:column>
+									<p:ajax update=":form1" />
+								</p:selectOneMenu>
+							</p:row>
+						</pm:field>
+						<pre />
+						<pm:field>
+							<p:row>
+								<p:outputLabel value="Sıra No" />
+								<p:inputText value="#{secenekGirisi.secenek.siraNo}" />
+								<pre />
+								<p:outputLabel value="Seçenek Metni" />
+								<p:inputText value="#{secenekGirisi.secenek.metin}" />
+								<pre />
+								<p:outputLabel rendered="#{secenekGirisi.defaultCevapSecenek}"
+									value="Default Cevap" />
+								<p:inputText rendered="#{secenekGirisi.defaultCevapSecenek}"
+									value="#{secenekGirisi.secenek.defaultCevap}" />
+								<pre />
+								<p:outputLabel
+									rendered="#{secenekGirisi.parametreSayisiSecenek}"
+									value="Parametre Sayisi" />
+								<p:inputText rendered="#{secenekGirisi.parametreSayisiSecenek}"
+									value="#{secenekGirisi.secenek.parametreSayisi}" />
+								<pre />
+								<p:outputLabel rendered="#{secenekGirisi.aciklamaVarMi}"
+									value="Açıklama Var Mı?" />
+								<p:selectOneRadio rendered="#{secenekGirisi.aciklamaVarMi}"
+									converter="omnifaces.SelectItemsConverter" id="aciklama"
+									value="#{secenekGirisi.secenek.aciklamaVarmi}">
+									<f:selectItem itemLabel="Yok" itemValue="Yok" />
+									<f:selectItem itemLabel="Var" itemValue="Var" />
+								</p:selectOneRadio>
+							</p:row>
+						</pm:field>
+						<pre />
+						<pm:field>
+							<p:row>
+							<p:button outcome="secenekList"
+									value="Listele" />
+								<p:commandButton style="float:right;"
+									actionListener="#{secenekGirisi.kaydet}" value="Kaydet" />
+							</p:row>
+						</pm:field>
+						<pm:field>
+							<f:facet name="footer">
+								<p:outputLabel
+									value="(Uyarı:Boşluk Doldurma sorularında boşluklar için '___' i kullanınız.)" />
+							</f:facet>
+						</pm:field>
+					</p:panelGrid>
+				</p:panel>
+			</h:form>
+		</pm:content>
+	</pm:page>
+</h:body>
+
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile">
+
+<f:view />
+
+<h:head>
+</h:head>
+
+<h:body>
+	<pm:page>
+		<pm:content>
+			<h:form id="kisi1">
+				<p:panel>
+
+					<p:panelGrid style="text-align:center;" columns="1">
+
+						<pm:field>
+							<h:outputLabel value=" Kisi İd : " />
+							<h:inputText style="float:right;"
+								value="#{kisiListesi.kisiSearch.id}" />
+						</pm:field>
+						<pm:field>
+							<h:outputLabel value=" Kisi TC Kimlik Numarası : " />
+							<h:inputText style="float:right;"
+								value="#{kisiListesi.kisiSearch.tcKimlikNo}" />
+						</pm:field>
+						<pm:field>
+							<h:outputLabel value=" Kisi Adı : " />
+							<h:inputText style="float:right;"
+								value="#{kisiListesi.kisiSearch.name}" />
+						</pm:field>
+						<pm:field>
+							<h:outputLabel value=" Kisi Soyadı : " />
+							<h:inputText style="float:right;"
+								value="#{kisiListesi.kisiSearch.surName}" />
+						</pm:field>
+						<pm:field>
+							<h:outputLabel value=" Kisi Telefon Numarası : " />
+							<h:inputText style="float:right;"
+								value="#{kisiListesi.kisiSearch.telNo}" />
+						</pm:field>
+						<pm:field>
+							<p:commandButton style="float:right;" value="Kisi Ara"
+								action="#{kisiListesi.listele}" update="kisi1" />
+						</pm:field>
+
+					</p:panelGrid>
+					<pm:field>
+						<h3>Kisi Listesi</h3>
+					</pm:field>
+					<pm:field>
+						<p:dataTable var="kisi" id="kisitable" paginator="true" rows="10"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15" value="#{kisiListesi.kisiList}">
+
+							<p:column headerText="Guncelle">
+								<p:button outcome="kisiGiris" value="Guncelle">
+									<f:param name="kisiId" value="#{kisi.id}" />
+								</p:button>
+							</p:column>
+
+							<p:column headerText="id">
+								<h:outputText value="#{kisi.id}" />
+							</p:column>
+
+							<p:column headerText="Tc Kimlik Numarası">
+								<h:outputText value="#{kisi.tcKimlikNo}" />
+							</p:column>
+
+							<p:column headerText="Adı">
+								<h:outputText value="#{kisi.name}" />
+							</p:column>
+
+							<p:column headerText="Soyadı">
+								<h:outputText value="#{kisi.surName}" />
+							</p:column>
+
+							<p:column headerText="Telefon Numarası">
+								<h:outputText value="#{kisi.telNo}" />
+							</p:column>
+
+							<p:column headerText="Adresi">
+								<h:outputText value="#{kisi.adres}" />
+							</p:column>
+
+						</p:dataTable>
+					</pm:field>
+
+				</p:panel>
+
+
+			</h:form>
+		</pm:content>
+	</pm:page>
+</h:body>
+
+</html>

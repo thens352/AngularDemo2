@@ -1,0 +1,478 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form" style="padding-bottom:185px;">
+		<ui:include src="resources/composite/menu.xhtml" />
+		<p:panel header="Stok Hareket Anasayfa" style="text-align:center;">
+			<p:dataTable id="stokHareketTable" var="stokHareket" paginator="true"
+				sortBy="#{stokHareket.id}" widgetVar="stokHareketTable"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15"
+				emptyMessage="Hiç bir Hareket bulunamadı."
+				value="#{stokHareketService.stokHareketList}" editable="true"
+				filteredValue="#{stokHareketService.filterStokHareketList}"
+				style="margin-bottom:20px" styleClass="font90">
+
+				<f:facet name="header">Stok Hareketleri</f:facet>
+
+				<f:facet name="footer">
+					<p:commandButton value="Yeni Stok Hareket Ekle"
+						onclick="PF('dlg1').show();" />
+				</f:facet>
+
+				<p:ajax event="rowEdit" listener="#{stokHareketService.guncelle}"
+					update=":form:stokHareketTable,:form:msgs" />
+
+				<p:column headerText="Değişim Tarihi" style="text-align:center;"
+					sortBy="#{stokHareket.degisimTarihi}" filterMatchMode="contains"
+					filterBy="#{stokHareket.degisimTarihi}">
+					<!-- 										<f:facet name="filter"> -->
+					<!-- 											<p:calendar showOn="button" readonlyInput="true" -->
+					<!-- 												placeholder="Değişim Tarihi"> -->
+					<!-- 												<p:ajax event="dateSelect" -->
+					<!-- 													onstart="PF('stokHareketTable').filter()" /> -->
+					<!-- 											</p:calendar> -->
+					<!-- 										</f:facet> -->
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel value="#{stokHareket.degisimTarihi}">
+								<f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" locale="tr_TR" />
+							</p:outputLabel>
+						</f:facet>
+						<f:facet name="input">
+							<p:calendar value="#{stokHareket.degisimTarihi}" showOn="button"
+								pattern="MM/dd/yyyy HH:mm:ss" placeholder="Değişim Tarihi" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Malzeme" filterBy="#{stokHareket.malzeme}"
+					sortBy="#{stokHareket.malzeme.ad}" style="text-align:center;"
+					filterMatchMode="exact">
+					<f:facet name="filter">
+						<p:selectOneMenu style="width:100%" var="m" filter="true"
+							filterMatchMode="contains"
+							onchange="PF('stokHareketTable').filter()">
+							<f:selectItem noSelectionOption="true" itemLabel="Malzeme Seç"
+								itemValue="" />
+							<f:selectItems value="#{stokHareketService.malzemeList}"
+								var="malzeme" itemLabel="#{malzeme.ad}"
+								itemValue="#{stokHareket.malzeme}" />
+							<p:column>
+								<h:outputText value="#{m.ad}" />
+							</p:column>
+						</p:selectOneMenu>
+					</f:facet>
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel value="#{stokHareket.malzeme.ad}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu style="width:100%" id="malzemeler"
+								value="#{stokHareket.malzeme}"
+								converter="omnifaces.SelectItemsConverter" var="m" filter="true"
+								filterMatchMode="contains">
+								<f:selectItem noSelectionOption="true" itemLabel="Malzeme Seç"
+									itemValue="" />
+								<f:selectItems value="#{stokHareketService.malzemeList}"
+									var="malzeme" itemLabel="#{malzeme.ad}" itemValue="#{malzeme}" />
+								<p:column>
+									<h:outputText value="#{m.ad}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Gelen Miktar" style="text-align:center;"
+					sortBy="#{stokHareket.gelenMiktar}"
+					filterBy="#{stokHareket.gelenMiktar}" filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel value="#{stokHareket.gelenMiktar}" />
+						</f:facet>
+						<f:facet name="input">
+							<pe:inputNumber value="#{stokHareket.gelenMiktar}"
+								style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Giden Miktar" style="text-align:center;"
+					sortBy="#{stokHareket.gidenMiktar}"
+					filterBy="#{stokHareket.gidenMiktar}" filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel value="#{stokHareket.gidenMiktar}" />
+						</f:facet>
+						<f:facet name="input">
+							<pe:inputNumber value="#{stokHareket.gidenMiktar}"
+								style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Proje" filterBy="#{stokHareket.proje}"
+					sortBy="#{stokHareket.proje.ad}" style="text-align:center;"
+					filterMatchMode="exact">
+					<f:facet name="filter">
+						<p:selectOneMenu style="width:100%" var="p" filter="true"
+							filterMatchMode="contains"
+							onchange="PF('stokHareketTable').filter()">
+							<f:selectItem noSelectionOption="true" itemLabel="Proje Seç"
+								itemValue="" />
+							<f:selectItems value="#{stokHareketService.projeList}"
+								var="proje" itemLabel="#{proje.ad}"
+								itemValue="#{stokHareket.proje}" />
+							<p:column>
+								<h:outputText value="#{p.ad}" />
+							</p:column>
+						</p:selectOneMenu>
+					</f:facet>
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel value="#{stokHareket.proje.ad}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu style="width:150px;"
+								value="#{stokHareket.proje}"
+								converter="omnifaces.SelectItemsConverter" var="p" filter="true"
+								filterMatchMode="contains">
+								<f:selectItem noSelectionOption="true" itemLabel="Proje Seç"
+									itemValue="" />
+								<f:selectItems value="#{stokHareketService.projeList}"
+									var="proje" itemLabel="#{proje.ad}" itemValue="#{proje}" />
+								<p:column>
+									<h:outputText value="#{p.ad}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="width:120px;text-align: center">
+					<p:commandButton style="width:120px;" value="Yakıt Hareketleri"
+						process="@this" oncomplete="PF('dlg5').show()"
+						update=":form:yakitHareketTable,:form:msgs">
+						<f:setPropertyActionListener value="#{stokHareket}"
+							target="#{stokHareketService.stokHareket}" />
+						<f:setPropertyActionListener
+							value="#{stokHareket.yakitHareketList}"
+							target="#{stokHareketService.yakitHareketList}" />
+					</p:commandButton>
+				</p:column>
+
+				<p:column style="width:15px;text-align: center">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column style="width:26px;text-align: center">
+					<p:commandButton update=":form:stokHareketTable,:form:msgs"
+						process="@this" action="#{stokHareketService.sil}"
+						icon="ui-icon-trash" title="Sil">
+						<f:setPropertyActionListener value="#{stokHareket}"
+							target="#{stokHareketService.stokHareket}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+
+			<p:dialog id="yeniStokHareket" header="Yeni Stok Hareket"
+				showEffect="size" hideEffect="scale" draggable="false"
+				resizable="false" widgetVar="dlg1" modal="true">
+				<p:panel style="text-align:center;border-style: none !important;"
+					id="yeniStokHareketPanel">
+					<p:calendar id="degisimTarihi" readonlyInput="true"
+						required="#{stokHareketService.stokHareket.degisimTarihi==null}"
+						requiredMessage="Değişim Tarihi boş geçilemez"
+						value="#{stokHareketService.stokHareket.degisimTarihi}"
+						locale="tr" pattern="MM/dd/yyyy HH:mm:ss"
+						placeholder="Değişim Tarihi" showOn="button" />
+					<pre />
+					<p:selectOneMenu value="#{stokHareketService.stokHareket.malzeme}"
+						style="width:185px" requiredMessage="Malzeme boş geçilemez"
+						required="#{stokHareketService.stokHareket.malzeme==null}"
+						converter="omnifaces.SelectItemsConverter" var="m" filter="true"
+						filterMatchMode="contains">
+						<f:selectItem noSelectionOption="true" itemLabel="Malzeme Seç"
+							itemValue="" />
+						<f:selectItems value="#{stokHareketService.malzemeList}"
+							var="malzeme" itemLabel="#{malzeme.ad}" itemValue="#{malzeme}" />
+						<p:column>
+							<h:outputText value="#{m.ad}" />
+						</p:column>
+					</p:selectOneMenu>
+					<pre />
+					<pe:inputNumber
+						value="#{stokHareketService.stokHareket.gelenMiktar}"
+						style="width:185px" placeholder="Gelen Miktar" label="Number" />
+					<pre />
+					<pe:inputNumber
+						value="#{stokHareketService.stokHareket.gidenMiktar}"
+						label="Number" style="width:185px" placeholder="Giden Miktar" />
+					<pre />
+					<p:selectOneMenu style="width:185px;"
+						value="#{stokHareketService.stokHareket.proje}"
+						converter="omnifaces.SelectItemsConverter" var="p" filter="true"
+						filterMatchMode="contains">
+						<f:selectItem noSelectionOption="true" itemLabel="Proje Seç"
+							itemValue="" />
+						<f:selectItems value="#{stokHareketService.projeList}" var="proje"
+							itemLabel="#{proje.ad}" itemValue="#{proje}" />
+						<p:column>
+							<h:outputText value="#{p.ad}" />
+						</p:column>
+					</p:selectOneMenu>
+					<pre />
+					<p:commandButton value="Yakıt Hareketleri" style="width:185px"
+						update=":form:yakitHareketTable" onclick="PF('dlg5').show();">
+						<f:setPropertyActionListener value="#{stokHareket}"
+							target="#{stokHareketService.stokHareket}" />
+						<f:setPropertyActionListener
+							target="#{stokHareketService.yakitHareketList}"
+							value="#{stokHareketService.stokHareket.yakitHareketList}" />
+					</p:commandButton>
+					<pre />
+					<p:commandButton value="Kaydet"
+						update=":form:stokHareketTable,:form:yeniStokHareketPanel,:form:msgs"
+						process="@parent" style="width:92.5px"
+						action="#{stokHareketService.kaydet}"
+						oncomplete="if (args &amp;&amp; !args.validationFailed) PF('dlg1').hide()" />
+				</p:panel>
+			</p:dialog>
+
+			<p:dialog id="yakitHareketleri" header="Yakıt Hareketleri"
+				width="75%" showEffect="size" hideEffect="scale" draggable="false"
+				modal="true" resizable="false" widgetVar="dlg5">
+				<p:dataTable var="yakitHareket" id="yakitHareketTable"
+					paginator="true" rows="10" editable="true"
+					emptyMessage="Herhangi bir hareket bulunamadı."
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,15"
+					value="#{stokHareketService.yakitHareketList}">
+
+					<f:facet name="footer">
+						<p:commandButton value="Yeni Yakıt Hareketi Ekle" type="button"
+							onclick="PF('dlg6').show();PF('dlg5').hide();" />
+					</f:facet>
+
+					<p:ajax event="rowEdit"
+						listener="#{stokHareketService.yakitHareketGuncelle}"
+						process="@parent" update=":form:yakitHareketTable,:form:msgs" />
+
+					<p:column headerText="Araç">
+						<p:cellEditor>
+							<f:facet name="output">
+								<p:outputLabel value="#{yakitHareket.arac.plaka}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:selectOneMenu style="width:100%" value="#{yakitHareket.arac}"
+									converter="omnifaces.SelectItemsConverter" var="a"
+									filter="true" filterMatchMode="contains">
+									<f:selectItem noSelectionOption="true" itemLabel="Araç Seç"
+										itemValue="" />
+									<f:selectItems value="#{stokHareketService.aracList}"
+										var="arac" itemLabel="#{arac.plaka}" itemValue="#{arac}" />
+									<p:column>
+										<h:outputText value="#{a.plaka}" />
+									</p:column>
+								</p:selectOneMenu>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column headerText="Şoför">
+						<p:cellEditor>
+							<f:facet name="output">
+								<p:outputLabel
+									value="#{yakitHareket.sofor.ad} #{yakitHareket.sofor.soyad}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:selectOneMenu style="width:100%"
+									value="#{yakitHareket.sofor}"
+									converter="omnifaces.SelectItemsConverter" var="s"
+									filter="true" filterMatchMode="contains">
+									<f:selectItem noSelectionOption="true" itemLabel="Şoför Seç"
+										itemValue="" />
+									<f:selectItems value="#{stokHareketService.soforList}"
+										var="sofor" itemLabel="#{sofor.ad} #{sofor.soyad}"
+										itemValue="#{sofor}" />
+									<p:column>
+										<h:outputText value="#{s.ad} #{s.soyad}" />
+									</p:column>
+								</p:selectOneMenu>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column headerText="Gidiş Tarihi">
+						<p:cellEditor>
+							<f:facet name="output">
+								<p:outputLabel value="#{yakitHareket.gidisTarihi}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:calendar style="width:100%"
+									value="#{yakitHareket.gidisTarihi}" locale="tr"
+									pattern="MM/dd/yyyy HH:mm:ss" showOn="button"
+									placeholder="Gidiş Tarihi" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column headerText="Dönüş Tarihi">
+						<p:cellEditor>
+							<f:facet name="output">
+								<p:outputLabel value="#{yakitHareket.donusTarihi}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:calendar style="width:100%"
+									value="#{yakitHareket.donusTarihi}" showOn="button" locale="tr"
+									pattern="MM/dd/yyyy HH:mm:ss" placeholder="Dönüş Tarihi" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column style="width:32px">
+						<p:rowEditor />
+					</p:column>
+
+					<p:column style="width:32px;text-align: center">
+						<p:commandButton update=":form:yakitHareketTable,:form:msgs"
+							process="@this" action="#{stokHareketService.yakitHareketSil}"
+							icon="ui-icon-trash" title="Sil">
+							<f:setPropertyActionListener value="#{yakitHareket}"
+								target="#{stokHareketService.yakitHareket}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</p:dialog>
+
+			<p:dialog id="yeniYakitHareket" header="Yeni Yakıt Hareketi"
+				showEffect="size" hideEffect="scale" draggable="false"
+				resizable="false" onHide="PF('dlg5').show();" widgetVar="dlg6"
+				modal="true">
+				<p:panel id="yeniYakitHareketPanel"
+					style="text-align:center;border-style: none !important;">
+					<p:panelGrid columns="2" style="border:0;">
+						<p:selectOneMenu value="#{stokHareketService.yakitHareket.arac}"
+							style="width:135px"
+							required="#{stokHareketService.yakitHareket.arac==null}"
+							requiredMessage="Araç boş geçilemez"
+							converter="omnifaces.SelectItemsConverter" var="a" filter="true"
+							filterMatchMode="contains">
+							<f:selectItem noSelectionOption="true" itemLabel="Araç Seç"
+								itemValue="" />
+							<f:selectItems value="#{stokHareketService.aracList}" var="arac"
+								itemLabel="#{arac.plaka}" itemValue="#{arac}" />
+							<p:column>
+								<h:outputText value="#{a.plaka}" />
+							</p:column>
+						</p:selectOneMenu>
+						<p:commandButton icon="ui-icon-plus" type="button"
+							onclick="PF('dlg10').show();" />
+						<p:selectOneMenu value="#{stokHareketService.yakitHareket.sofor}"
+							style="width:135px"
+							required="#{stokHareketService.yakitHareket.sofor==null}"
+							requiredMessage="Şoför boş geçilemez"
+							converter="omnifaces.SelectItemsConverter" var="s" filter="true"
+							filterMatchMode="contains">
+							<f:selectItem noSelectionOption="true" itemLabel="Şoför Seç"
+								itemValue="" />
+							<f:selectItems value="#{stokHareketService.soforList}"
+								var="sofor" itemLabel="#{sofor.ad} #{sofor.soyad}"
+								itemValue="#{sofor}" />
+							<p:column>
+								<h:outputText value="#{s.ad} #{s.soyad}" />
+							</p:column>
+						</p:selectOneMenu>
+						<p:commandButton icon="ui-icon-plus" type="button"
+							onclick="PF('dlg11').show();" />
+					</p:panelGrid>
+					<pre />
+					<p:calendar value="#{stokHareketService.yakitHareket.gidisTarihi}"
+						required="#{stokHareketService.yakitHareket.gidisTarihi==null}"
+						requiredMessage="Gidiş Tarihi boş geçilemez" style="width:185px"
+						locale="tr" pattern="MM/dd/yyyy HH:mm:ss" showOn="button"
+						placeholder="Gidiş Tarihi" />
+					<pre />
+					<p:inputTextarea style="width:185px"
+						value="#{stokHareketService.yakitHareket.gidisAdresi}"
+						placeholder="Gidiş Adresi" />
+					<pre />
+					<p:calendar value="#{stokHareketService.yakitHareket.donusTarihi}"
+						required="#{stokHareketService.yakitHareket.donusTarihi==null}"
+						requiredMessage="Dönüş Tarihi boş geçilemez" locale="tr"
+						placeholder="Dönüş Tarihi" showOn="button" />
+					<pre />
+					<pe:inputNumber style="width:185px"
+						value="#{stokHareketService.yakitHareket.yakitMiktari}"
+						placeholder="Harcanan Yakıt Miktarı" />
+					<pre />
+					<pe:inputNumber
+						value="#{stokHareketService.yakitHareket.katedilenKM}"
+						style="width:185px" placeholder="Katedilen KM" />
+					<pre />
+					<p:selectOneMenu var="ht" filter="true" filterMatchMode="contains"
+						required="#{stokHareketService.yakitHareket.hareketTipi==null}"
+						requiredMessage="Hareket Tipi boş geçilemez" style="width:185px"
+						value="#{stokHareketService.yakitHareket.hareketTipi}">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Hareket Tipi Seç" itemValue="" />
+						<f:selectItems value="#{stokHareketService.hareketTipleri}"
+							var="hareketTipi" itemValue="#{hareketTipi}"
+							itemLabel="#{hareketTipi.displayName}" />
+						<p:column>
+							<h:outputText value="#{ht.displayName}" />
+						</p:column>
+					</p:selectOneMenu>
+					<pre />
+					<p:commandButton value="Kaydet" style="width:92.5px"
+						process="@parent"
+						update=":form:yakitHareketleri,:form:yeniYakitHareketPanel,:form:msgs"
+						oncomplete="if (args &amp;&amp; !args.validationFailed) PF('dlg6').hide()"
+						action="#{stokHareketService.yakitHareketEkle}" />
+				</p:panel>
+			</p:dialog>
+
+			<p:dialog id="yeniArac" header="Yeni Araç Ekle" widgetVar="dlg10"
+				onHide="PF('dlg6').show();" showEffect="size" hideEffect="scale"
+				draggable="false" resizable="false" modal="true">
+				<p:panel id="yeniAracPanel" style="border-style:none !important;">
+					<p:inputText id="plaka" value="#{stokHareketService.arac.plaka}"
+						required="#{stokHareketService.arac.plaka==null}"
+						requiredMessage="Plaka boş geçilemez" placeholder="Araç Plakası" />
+					<p:spacer width="20px" />
+					<p:commandButton value="Kaydet"
+						update=":form:yeniYakitHareketPanel,:form:yeniAracPanel,:form:msgs"
+						process="@parent"
+						oncomplete="if (args &amp;&amp; !args.validationFailed) PF('dlg10').hide()"
+						action="#{stokHareketService.aracKaydet}" />
+				</p:panel>
+			</p:dialog>
+
+			<p:dialog id="yeniSofor" header="Yeni Şoför Ekle" widgetVar="dlg11"
+				onHide="PF('dlg6').show();" showEffect="size" hideEffect="scale"
+				draggable="false" resizable="false" modal="true">
+				<p:panel id="yeniSoforPanel" style="border-style:none !important;">
+					<p:inputText id="ad" value="#{stokHareketService.sofor.ad}"
+						required="#{stokHareketService.sofor.ad==null}" placeholder="Ad"
+						requiredMessage="Ad boş geçilemez" />
+					<pre />
+					<p:inputText id="soyad" value="#{stokHareketService.sofor.soyad}"
+						required="#{stokHareketaService.sofor.soyad==null}"
+						requiredMessage="Soyad boş geçilemez" placeholder="Soyad" />
+					<pre />
+					<p:commandButton value="Kaydet" process="@parent"
+						update=":form:yeniYakitHareketPanel,:form:yeniSoforPanel,:form:msgs"
+						oncomplete="if (args &amp;&amp; !args.validationFailed) PF('dlg11').hide()"
+						action="#{stokHareketService.soforKaydet}" />
+				</p:panel>
+			</p:dialog>
+
+		</p:panel>
+	</h:form>
+</f:view>

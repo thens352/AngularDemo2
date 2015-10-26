@@ -1,0 +1,93 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pm="http://primefaces.org/mobile" contentType="text/html"
+	renderKitId="PRIMEFACES_MOBILE">
+	<pm:page title="Mobile">
+
+		<pm:view>
+			<pm:header>
+
+			</pm:header>
+			<pm:content>
+				<h:form id="form">
+					<p:panel id="menu">
+						<pm:field>
+							<p:menubar autoDisplay="false">
+								<p:submenu label="İl Seçenekleri" icon="ui-icon-document">
+									<p:menuitem value="Yeni İl Oluştur" url="ilKaydet.jsf"
+										icon="ui-icon-disk" />
+								</p:submenu>
+
+								<p:submenu label="İlçe Seçenekleri" icon="ui-icon-document">
+									<p:menuitem value="Yeni İlçe Oluştur" url="ilceKaydet.jsf"
+										icon="ui-icon-disk" />
+									<p:menuitem value="Kayıtlı İlçeler" url="ilceListele.jsf"
+										icon="ui-icon-folder-collapsed" />
+								</p:submenu>
+
+								<p:submenu label="Mahalle Seçenekleri" icon="ui-icon-document">
+									<p:menuitem value="Yeni Mahalle Oluştur"
+										url="mahalleKaydet.jsf" icon="ui-icon-disk" />
+									<p:menuitem value="Kayıtlı Mahalleler" url="mahalleListele.jsf"
+										icon="ui-icon-folder-collapsed" />
+								</p:submenu>
+
+								<p:submenu label="Sokak Seçenekleri" icon="ui-icon-document">
+									<p:menuitem value="Yeni Sokak Oluştur" url="sokakKaydet.jsf"
+										icon="ui-icon-disk" />
+									<p:menuitem value="Kayıtlı Sokaklar" url="sokakListele.jsf"
+										icon="ui-icon-folder-collapsed" />
+								</p:submenu>
+
+							</p:menubar>
+						</pm:field>
+					</p:panel>
+					<p:panel id="pnlil" header="İl Kaydet" style="margin-bottom:10px;">
+						<h:panelGrid columns="2" cellpadding="5">
+							<pre />
+							<pm:field>
+								<p:inputText value="#{ilService.il.id}" readonly="true" />
+							</pm:field>
+							<pm:field>
+								<p:outputLabel value="İl adı"></p:outputLabel>
+								<p:inputText value="#{ilService.il.adi}"></p:inputText>
+							</pm:field>
+						</h:panelGrid>
+						<p:separator />
+						<pm:field>
+							<p:commandButton value="Kaydet" icon="ui-icon-disk"
+								update="iller,:form:pnlil"
+								action="#{ilService.ilKaydetGuncelle}" />
+						</pm:field>
+					</p:panel>
+
+					<p:panel header="İl Listesi" style="margin-bottom:10px;">
+						<pm:field>
+							<p:dataTable id="iller" var="ill" value="#{ilService.ilListesi}">
+
+								<p:column id="guncellebtn" headerText="Düzenleme"
+									style="width:120px">
+									<p:commandButton value="Güncelle" icon="ui-icon-refresh"
+										update=":form:pnlil" process="@this"
+										actionListener="#{ilService.guncellemeIcinHazirla(ill)}" />
+									<p:commandButton value="Sil" icon="ui-icon-trash"
+										update=":form:pnlil,iller" process="@this"
+										actionListener="#{ilService.ilSil(ill)}" />
+								</p:column>
+								<p:column headerText="İl Numarası" style="width:100px">
+									<h:outputText value="#{ill.id}" />
+								</p:column>
+								<p:column headerText="İl Adı" style="width:150px">
+									<h:outputText value="#{ill.adi}" />
+								</p:column>
+
+							</p:dataTable>
+						</pm:field>
+					</p:panel>
+				</h:form>
+			</pm:content>
+		</pm:view>
+	</pm:page>
+</f:view>

@@ -1,0 +1,341 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form" style="padding-bottom:200px;">
+		<ui:include src="resources/composite/menu.xhtml" />
+		<p:panel header="E25-Cep Telefonu" style="text-align:center;">
+			<p:panelGrid columns="10">
+
+				<p:outputLabel value="Bölge :" />
+				<p:selectOneMenu var="b" filter="true"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{cepTelefonuService.cepTelefonuSearch.bolge}">
+					<f:selectItem noSelectionOption="true" itemLabel="Bölge Seç"
+						itemValue="" />
+					<f:selectItems value="#{cepTelefonuService.bolgeList}" var="bolge"
+						itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+					<p:column>
+						<h:outputText value="#{b.ad}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Kullanıcı :" />
+				<p:selectOneMenu var="k" filter="true"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{cepTelefonuService.cepTelefonuSearch.kullanici}">
+					<f:selectItem noSelectionOption="true" itemLabel="Kullanıcı Seç"
+						itemValue="" />
+					<f:selectItems value="#{cepTelefonuService.kullaniciList}"
+						var="kullanici" itemValue="#{kullanici}"
+						itemLabel="#{kullanici.kullaniciAdi}" />
+					<p:column>
+						<h:outputText value="#{k.kullaniciAdi}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Barkod :" />
+				<p:inputText value="#{cepTelefonuService.cepTelefonuSearch.barkod}"
+					placeholder="Barkod" />
+
+				<p:outputLabel value="Cihaz Seri No :" />
+				<p:inputText
+					value="#{cepTelefonuService.cepTelefonuSearch.cihazSeriNo}"
+					placeholder="Cihaz Seri Numarası" />
+
+				<p:outputLabel value="Marka :" />
+				<p:inputText value="#{cepTelefonuService.cepTelefonuSearch.marka}"
+					placeholder="Marka" />
+
+				<p:outputLabel value="Model :" />
+				<p:inputText value="#{cepTelefonuService.cepTelefonuSearch.model}"
+					placeholder="Model" />
+
+				<p:outputLabel value="IMEI :" />
+				<p:inputText value="#{cepTelefonuService.cepTelefonuSearch.imei}"
+					placeholder="IMEI" />
+
+				<p:outputLabel value="Durum :" />
+				<p:selectOneMenu var="dr" filter="true"
+					value="#{cepTelefonuService.cepTelefonuSearch.durum}">
+					<f:selectItem noSelectionOption="true" itemLabel="Durum Seç"
+						itemValue="" />
+					<f:selectItems value="#{cepTelefonuService.durumTipleri}"
+						var="durumTipi" itemValue="#{durumTipi}"
+						itemLabel="#{durumTipi.displayName}" />
+					<p:column>
+						<h:outputText value="#{dr.displayName}" />
+					</p:column>
+				</p:selectOneMenu>
+				<p:commandButton value="Ara" process="@parent" update=":form:cepTelefonuTable"
+					action="#{cepTelefonuService.ara}" />
+			</p:panelGrid>
+			<p:dataTable id="cepTelefonuTable" var="cepTelefonu" paginator="true" 
+				sortBy="#{cepTelefonu.barkod}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="10,20,50" rows="10"
+				value="#{cepTelefonuService.cepTelefonuList}" editable="true"
+				emptyMessage="Kayıt bulunamadı." style="margin-bottom:20px">
+
+				<p:ajax event="rowEdit" listener="#{cepTelefonuService.guncelle}"
+					update=":form:cepTelefonuTable" />
+
+				<p:column style="text-align:center;" sortBy="gununTarihi"
+					headerText="Günün Tarihi">
+					<p:outputLabel style="width:30px"
+						value="#{cepTelefonu.gununTarihi}">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+					</p:outputLabel>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="barkod"
+					headerText="Barkod">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{cepTelefonu.barkod}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{cepTelefonu.barkod}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="cihazSeriNo"
+					headerText="Cihaz Seri No">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{cepTelefonu.cihazSeriNo}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{cepTelefonu.cihazSeriNo}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="marka"
+					headerText="Marka">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{cepTelefonu.marka}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{cepTelefonu.marka}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="model"
+					headerText="Model">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{cepTelefonu.model}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{cepTelefonu.model}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="bulunduguOfis_sube"
+					headerText="Bulunduğu Ofis/Şube">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{cepTelefonu.bulunduguOfis_sube}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{cepTelefonu.bulunduguOfis_sube}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="imei" headerText="IMEI">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{cepTelefonu.imei}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{cepTelefonu.imei}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="urunSahibi"
+					headerText="Ürün Sahibi">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{cepTelefonu.urunSahibi}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{cepTelefonu.urunSahibi}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="durum"
+					headerText="Durum">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{cepTelefonu.durum}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="dr" filter="true" style="width:185px;"
+								value="#{cepTelefonu.durum}">
+								<f:selectItem noSelectionOption="true" itemLabel="Durum Seç"
+									itemValue="" />
+								<f:selectItems value="#{cepTelefonuService.durumTipleri}"
+									var="durumTipi" itemValue="#{durumTipi}"
+									itemLabel="#{durumTipi.displayName}" />
+								<p:column>
+									<h:outputText value="#{dr.displayName}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="kullanici.kullaniciAdi"
+					headerText="Kullanıcı">
+					<p:outputLabel style="width:30px"
+						value="#{cepTelefonu.kullanici.kullaniciAdi}" />
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="bolge.ad"
+					headerText="Bölge">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{cepTelefonu.bolge.ad}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu style="width:100%" value="#{cepTelefonu.bolge}"
+								converter="omnifaces.SelectItemsConverter" var="b" filter="true"
+								filterMatchMode="contains">
+								<f:selectItem noSelectionOption="true" itemLabel="Bölge Seç"
+									itemValue="" />
+								<f:selectItems value="#{cepTelefonuService.bolgeList}"
+									var="bolge" itemLabel="#{bolge.ad}" itemValue="#{bolge}" />
+								<p:column>
+									<h:outputText value="#{b.ad}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column exportable="false" style="width:14px;text-align: center">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column exportable="false" style="width:26px;text-align: center">
+					<p:commandButton update=":form:cepTelefonuTable" process="@this"
+						action="#{cepTelefonuService.sil}" icon="ui-icon-trash"
+						title="Sil">
+						<f:setPropertyActionListener value="#{cepTelefonu}"
+							target="#{cepTelefonuService.cepTelefonu}" />
+					</p:commandButton>
+				</p:column>
+
+				<f:facet name="footer">
+					<p:commandButton value="Yeni Cep Telefonu Ekle"
+						onclick="PF('dlg1').show();" />
+				</f:facet>
+
+				<f:facet name="footer">
+					<h:commandLink style="float:right" id="excel" immediate="true">
+						<h:graphicImage value="/resources/images/excel.png" width="25"
+							height="25" />
+						<p:dataExporter type="xls" target="cepTelefonuTable"
+							fileName="cepTelefonuRapor" />
+					</h:commandLink>
+				</f:facet>
+
+			</p:dataTable>
+
+			<p:dialog header="Yeni Cep Telefonu" widgetVar="dlg1"
+				showEffect="size" id="yenicepTelefonuPanel" hideEffect="scale"
+				draggable="false" resizable="false" modal="true">
+				<p:panel id="sunucuPanel"
+					style="text-align:center;border-style: none !important;">
+
+					<p:panelGrid columns="4">
+						<p:outputLabel value="Bölge :" />
+						<p:selectOneMenu var="b" filter="true"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{cepTelefonuService.cepTelefonu.bolge}">
+							<f:selectItems value="#{cepTelefonuService.bolgeList}"
+								var="bolge" itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+							<p:column>
+								<h:outputText value="#{b.ad}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Kullanıcı :" />
+						<p:selectOneMenu var="k" filter="true"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{cepTelefonuService.cepTelefonu.kullanici}">
+							<f:selectItems value="#{cepTelefonuService.kullaniciList}"
+								var="kullanici" itemValue="#{kullanici}"
+								itemLabel="#{kullanici.kullaniciAdi}" />
+							<p:column>
+								<h:outputText value="#{k.kullaniciAdi}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Barkod :" />
+						<p:inputText value="#{cepTelefonuService.cepTelefonu.barkod}"
+							placeholder="Barkod" />
+
+						<p:outputLabel value="Cihaz Seri Numarası :" />
+						<p:inputText value="#{cepTelefonuService.cepTelefonu.cihazSeriNo}"
+							placeholder="Cihaz Seri Numarası" />
+
+						<p:outputLabel value="Marka :" />
+						<p:inputText value="#{cepTelefonuService.cepTelefonu.marka}"
+							placeholder="Marka" />
+
+						<p:outputLabel value="Model :" />
+						<p:inputText value="#{cepTelefonuService.cepTelefonu.model}"
+							placeholder="Model" />
+
+						<p:outputLabel value="Buluunduğu Ofis/Şube :" />
+						<p:inputText
+							value="#{cepTelefonuService.cepTelefonu.bulunduguOfis_sube}"
+							placeholder="Bulunduğu Ofis/Şube" />
+
+						<p:outputLabel value="IMEI :" />
+						<p:inputText value="#{cepTelefonuService.cepTelefonu.imei}"
+							placeholder="IMEI" />
+
+						<p:outputLabel value="Ürün Sahibi :" />
+						<p:inputText value="#{cepTelefonuService.cepTelefonu.urunSahibi}"
+							placeholder="Ürün Sahibi" />
+
+						<p:outputLabel value="Durum :" />
+						<p:selectOneMenu var="dr" filter="true"
+							value="#{cepTelefonuService.cepTelefonu.durum}">
+							<f:selectItems value="#{cepTelefonuService.durumTipleri}"
+								var="durumTipi" itemValue="#{durumTipi}"
+								itemLabel="#{durumTipi.displayName}" />
+							<p:column>
+								<h:outputText value="#{dr.displayName}" />
+							</p:column>
+						</p:selectOneMenu>
+
+
+						<p:commandButton value="Kaydet" process="@parent"
+							update=":form:yenicepTelefonuPanel,:form:cepTelefonuTable"
+							oncomplete="PF('dlg1').hide()"
+							action="#{cepTelefonuService.kaydet}" />
+
+					</p:panelGrid>
+				</p:panel>
+			</p:dialog>
+
+		</p:panel>
+	</h:form>
+</f:view>

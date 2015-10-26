@@ -1,0 +1,163 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form" style="padding-bottom:200px;">
+		<ui:include src="resources/composite/menu.xhtml" />
+		<p:panel header="Stok Malzeme Anasayfa" style="text-align:center;">
+			<p:dataTable id="stokMalzemeTable" var="malzeme" paginator="true"
+				widgetVar="stokMalzemeTable"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" sortBy="#{malzeme.id}"
+				emptyMessage="Stokta hiç bir malzeme bulunamadı."
+				value="#{stokMalzemeService.malzemeList}" editable="true"
+				style="margin-bottom:20px">
+
+				<p:ajax event="rowEdit"
+					listener="#{stokMalzemeService.malzemeGuncelle}"
+					update=":form:stokMalzemeTable,:form:msgs" />
+
+				<f:facet name="footer">
+					<p:commandButton value="Yeni Stok Malzeme Ekle"
+						onclick="PF('dlg1').show();" />
+				</f:facet>
+
+				<f:facet name="header">Malzemeler</f:facet>
+
+				<p:column filterBy="#{malzeme.ad}" style="text-align:center;"
+					sortBy="#{malzeme.ad}" headerText="Malzeme adı"
+					filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel value="#{malzeme.ad}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{malzeme.ad}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column filterBy="#{malzeme.mevcutMiktar}"
+					sortBy="#{malzeme.mevcutMiktar}" style="text-align:center;"
+					headerText="Mevcut Malzeme Miktarı" filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel value="#{malzeme.mevcutMiktar}" />
+						</f:facet>
+						<f:facet name="input">
+							<pe:inputNumber value="#{malzeme.mevcutMiktar}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column filterBy="#{malzeme.birim}" style="text-align:center;"
+					sortBy="#{malzeme.birim}" headerText="Malzeme Birimi"
+					filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel value="#{malzeme.birim}" />
+						</f:facet>
+						<f:facet name="input">
+							<pe:inputNumber value="#{malzeme.birim}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" headerText="Malzeme Tipi"
+					filterBy="#{malzeme.malzemeTipi}">
+					<f:facet name="filter">
+						<p:selectOneMenu var="i" filter="true"
+							onchange="PF('stokMalzemeTable').filter()"
+							filterMatchMode="contains">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Malzeme Tipi Seç" itemValue="" />
+							<f:selectItems value="#{stokMalzemeService.malzemeTipleri}"
+								var="malzemeTipi" itemLabel="#{malzemeTipi.displayName}"
+								itemValue="#{malzeme.malzemeTipi}" />
+							<p:column>
+								<h:outputText value="#{i.displayName}" />
+							</p:column>
+						</p:selectOneMenu>
+					</f:facet>
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel value="#{malzeme.malzemeTipi.displayName}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu style="width:150px;"
+								value="#{malzeme.malzemeTipi}"
+								converter="omnifaces.SelectItemsConverter" var="i" filter="true"
+								filterMatchMode="contains">
+								<f:selectItem noSelectionOption="true"
+									itemLabel="Malzeme Tipi Seç" itemValue="" />
+								<f:selectItems value="#{stokMalzemeService.malzemeTipleri}"
+									var="malzemeTipi" itemLabel="#{malzemeTipi.displayName}"
+									itemValue="#{malzemeTipi}" />
+								<p:column>
+									<h:outputText value="#{i.displayName}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="width:15px;text-align: center">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column style="width:26px;text-align: center">
+					<p:commandButton update=":form:stokMalzemeTable,:form:msgs"
+						process="@this" action="#{stokMalzemeService.sil}"
+						icon="ui-icon-trash" title="Sil">
+						<f:setPropertyActionListener value="#{malzeme}"
+							target="#{stokMalzemeService.malzeme}" />
+					</p:commandButton>
+				</p:column>
+
+			</p:dataTable>
+
+			<p:dialog id="yeniStokMalzeme" header="Yeni Stok Malzeme"
+				widgetVar="dlg1" showEffect="size" hideEffect="scale"
+				draggable="false" resizable="false" modal="true">
+				<p:panel id="yeniMalzemePanel"
+					style="border-style: none !important;">
+					<p:inputText value="#{stokMalzemeService.malzeme.ad}"
+						required="#{stokMalzemeService.malzeme.ad==null}"
+						requiredMessage="Malzeme Adı boş geçilemez"
+						placeholder="Malzeme Adı" />
+					<pre />
+					<p:inputText value="#{stokMalzemeService.malzeme.birim}"
+						required="#{stokMalzemeService.malzeme.birim==null}"
+						requiredMessage="Malzeme Birimi boş geçilemez"
+						placeholder="Malzeme Birimi" />
+					<pre />
+					<pe:inputNumber value="#{stokMalzemeService.malzeme.mevcutMiktar}"
+						placeholder="Mevcut Miktar" />
+					<pre />
+					<p:selectOneMenu var="mt" filter="true" filterMatchMode="contains"
+						required="#{stokMalzemeService.malzeme.malzemeTipi==null}"
+						requiredMessage="Malzeme Tipi boş geçilemez"
+						value="#{stokMalzemeService.malzeme.malzemeTipi}">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Malzeme Tipi Seç" itemValue="" />
+						<f:selectItems value="#{stokMalzemeService.malzemeTipleri}"
+							var="malzemeTipi" itemValue="#{malzeme}"
+							itemLabel="#{malzeme.displayName}" />
+						<p:column>
+							<h:outputText value="#{mt.displayName}" />
+						</p:column>
+					</p:selectOneMenu>
+					<pre />
+					<p:commandButton value="Kaydet"
+						oncomplete="if (args &amp;&amp; !args.validationFailed) PF('dlg1').hide()"
+						update=":form:stokMalzemeTable,:form:msgs,:form:yeniMalzemePanel"
+						action="#{stokMalzemeService.kaydet}" />
+				</p:panel>
+			</p:dialog>
+		</p:panel>
+	</h:form>
+</f:view>

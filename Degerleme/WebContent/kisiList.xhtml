@@ -1,0 +1,70 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" contentType="text/html">
+
+	<h:head>
+	</h:head>
+
+	<h:form id="kisi1">
+		<h:outputLabel value=" Kisi İd : " />
+		<h:inputText value="#{kisiListesi.kisiSearch.id}" />
+		<h:outputLabel value=" Kisi TC Kimlik Numarası : " />
+		<h:inputText value="#{kisiListesi.kisiSearch.tcKimlikNo}" />
+		<h:outputLabel value=" Kisi Adı : " />
+		<h:inputText value="#{kisiListesi.kisiSearch.name}" />
+		<h:outputLabel value=" Kisi Soyadı : " />
+		<h:inputText value="#{kisiListesi.kisiSearch.surName}" />
+		<h:outputLabel value=" Kisi Telefon Numarası : " />
+		<h:inputText value="#{kisiListesi.kisiSearch.telNo}" />
+		<p:commandButton value="Kisi Ara" action="#{kisiListesi.listele}"
+			update="kisi1" />
+
+
+		<h3>Kisi Listesi</h3>
+
+
+
+		<p:dataTable var="kisi" id="kisitable" paginator="true" rows="10"
+			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="5,10,15" value="#{kisiListesi.kisiList}">
+
+			<p:column headerText="Guncelle">
+				<p:button outcome="kisiGiris" value="Guncelle">
+					<f:param name="kisiId" value="#{kisi.id}" />
+				</p:button>
+			</p:column>
+
+			<p:column headerText="id">
+				<h:outputText value="#{kisi.id}" />
+			</p:column>
+
+			<p:column headerText="Tc Kimlik Numarası">
+				<h:outputText value="#{kisi.tcKimlikNo}" />
+			</p:column>
+
+			<p:column headerText="Adı">
+				<h:outputText value="#{kisi.name}" />
+			</p:column>
+
+			<p:column headerText="Soyadı">
+				<h:outputText value="#{kisi.surName}" />
+			</p:column>
+
+			<p:column headerText="Telefon Numarası">
+				<h:outputText value="#{kisi.telNo}" />
+			</p:column>
+
+			<p:column headerText="Adresi">
+				<h:outputText value="#{kisi.adres}" />
+			</p:column>
+
+
+		</p:dataTable>
+
+
+
+	</h:form>
+
+</f:view>

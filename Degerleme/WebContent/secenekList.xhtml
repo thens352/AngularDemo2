@@ -1,0 +1,108 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" contentType="text/html">
+	<h:head>
+	</h:head>
+
+
+
+	<h:form id="form1">
+
+		<p:panel>
+			<p:panelGrid columns="1">
+				<p:row>
+					<p:outputLabel value="ID" />
+					<p:inputText value="#{secenekListesi.secenekSearch.id}" />
+				</p:row>
+				<pre />
+				<p:row>
+					<p:outputLabel value="Seçenek Metni" />
+					<p:inputText value="#{secenekListesi.secenekSearch.metin}" />
+				</p:row>
+				<pre />
+				<p:row>
+					<p:outputLabel value="Form" />
+					<p:selectOneMenu converter="omnifaces.SelectItemsConverter"
+						id="formSec" var="f" filter="true" filterMatchMode="contains"
+						value="#{secenekListesi.form}">
+						<f:selectItem itemLabel="Form Seç" noSelectionOption="true" />
+						<f:selectItems value="#{secenekListesi.formList}" var="form"
+							itemValue="#{form}" itemLabel="#{form.name}" />
+						<p:column>
+							<p:outputLabel value="#{f.name}" />
+						</p:column>
+						<p:ajax update="bolumSec" listener="#{secenekListesi.formSecildi}" />
+					</p:selectOneMenu>
+				</p:row>
+				<pre />
+				<p:row>
+					<p:outputLabel value="Bölüm" />
+					<p:selectOneMenu converter="omnifaces.SelectItemsConverter"
+						id="bolumSec" var="b" filter="true" filterMatchMode="contains"
+						value="#{secenekListesi.bolum}">
+						<f:selectItem itemLabel="Bölüm Seç" noSelectionOption="true" />
+						<f:selectItems value="#{secenekListesi.bolumList}" var="bolum"
+							itemValue="#{bolum}" itemLabel="#{bolum.name}" />
+						<p:column>
+							<p:outputLabel value="#{b.name}" />
+						</p:column>
+						<p:ajax update="soruSec" listener="#{secenekListesi.bolumSecildi}" />
+					</p:selectOneMenu>
+				</p:row>
+				<pre />
+				<p:row>
+					<p:outputLabel value="Soru" />
+					<p:selectOneMenu converter="omnifaces.SelectItemsConverter"
+						id="soruSec" var="s" filter="true" filterMatchMode="contains"
+						value="#{secenekListesi.secenekSearch.soru}">
+						<f:selectItem itemLabel="Soru Seç" noSelectionOption="true" />
+						<f:selectItems value="#{secenekListesi.soruList}" var="soru"
+							itemValue="#{soru}" itemLabel="#{soru.soruMetni}" />
+						<p:column>
+							<p:outputLabel value="#{s.soruMetni}-(#{s.soruTipi.i18nKey})" />
+						</p:column>
+					</p:selectOneMenu>
+				</p:row>
+				<p:row>
+					<p:commandButton value="Ara"
+						actionListener="#{secenekListesi.listele}"
+						update=":form1:secenekler" />
+				</p:row>
+			</p:panelGrid>
+			<p:dataTable id="secenekler" paginator="true" rows="5"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" var="secenek"
+				value="#{secenekListesi.secenekList}">
+				<p:column headerText="İşlemler" style="text-align:center;">
+					<p:button outcome="secenekGiris" value="Guncelle">
+						<f:param name="secenekId" value="#{secenek.id}" />
+					</p:button>
+					<p:commandButton value="Sil"
+						actionListener="#{secenekListesi.secenekSil(secenek)}" />
+				</p:column>
+				<p:column headerText="Sıra No">
+					<p:outputLabel value="#{secenek.siraNo}" />
+				</p:column>
+				<p:column headerText="Seçenek Metni">
+					<p:outputLabel value="#{secenek.metin}" />
+				</p:column>
+				<p:column headerText="Parametre Sayisi">
+					<p:outputLabel value="#{secenek.parametreSayisi}" />
+				</p:column>
+				<p:column headerText="Açıklama">
+					<p:outputLabel value="#{secenek.aciklama}" />
+				</p:column>
+				<p:column headerText="Seçenek Tipi">
+					<p:outputLabel value="#{secenek.secenekTipi}" />
+				</p:column>
+				<p:column headerText="Bulunduğu Soru">
+					<p:outputLabel value="#{secenek.soru.soruMetni}" />
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+
+	</h:form>
+
+</f:view>

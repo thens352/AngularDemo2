@@ -1,0 +1,27 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" contentType="text/html">
+	<h:head>
+	</h:head>
+
+
+
+	<h:form id="banka1">
+		<p:panelGrid columns="2">
+			<p:outputLabel value=" Banka Adı : " />
+			<p:inputText value="#{bankaGirisi.banka.name}" />
+			<p:outputLabel value=" Banka Email : " />
+			<p:inputText value="#{bankaGirisi.banka.email}" />
+			<p:outputLabel value=" İlgili Kisi : " />
+			<p:inputText value="#{bankaGirisi.banka.ilgiliKisi}" />
+			<p:commandButton value="Kaydet" action="#{bankaGirisi.kaydet}" />
+			<p:button outcome="bankaList" value="Listele" />
+
+
+		
+		</p:panelGrid>
+	</h:form>
+
+</f:view>

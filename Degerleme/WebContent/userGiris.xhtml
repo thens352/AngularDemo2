@@ -1,0 +1,24 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" contentType="text/html">
+	<h:head>
+	</h:head>
+
+
+
+	<h:form id="user1">
+		<p:panelGrid columns="2">
+			<p:outputLabel value=" User Adı : " />
+			<p:inputText value="#{userGirisi.user.name}" />
+			<p:outputLabel value=" User Soyadı : " />
+			<p:inputText value="#{userGirisi.user.surName}" />
+
+			<p:commandButton value="Kaydet" action="#{userGirisi.kaydet}" />
+			<p:button outcome="userList" value="Listele" />
+
+		</p:panelGrid>
+	</h:form>
+
+</f:view>

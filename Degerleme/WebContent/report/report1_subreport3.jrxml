@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1_subreport3" printOrder="Horizontal" pageWidth="380" pageHeight="25" columnWidth="380" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="4eafe0d9-331d-480c-a471-fd1c567b778d">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SORU_ID" class="java.math.BigDecimal"/>
+	<parameter name="RAPOR_ID" class="java.math.BigDecimal"/>
+	<queryString>
+		<![CDATA[SELECT NVL2 (cs.id, 1, 0) secili, se.metin||nvl2( CS.METIN, ' :  '|| CS.METIN ,'') as cevap_metni
+  FROM (SELECT SE.METIN, se.id secenek_id, c.id cevap_id
+          FROM cevap c, SORU S, secenek se
+         WHERE C.SORU_ID = S.ID AND s.id = se.soru_id
+AND c.rapor_id=$P{RAPOR_ID} AND S.id =$P{SORU_ID}) se,
+       cevapsecenek cs
+ WHERE se.secenek_id = CS.SECENEK_ID(+) AND se.cevap_id = cs.cevap_id(+)]]>
+	</queryString>
+	<field name="SECILI" class="java.math.BigDecimal"/>
+	<field name="CEVAP_METNI" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="false">
+				<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="0" y="0" width="380" height="25" forecolor="#000000" backcolor="#FFFFFF" uuid="6a8e21b2-9d45-48c0-a621-a65653a1991b"/>
+				<box leftPadding="4"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="Arial" size="11" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1254" isPdfEmbedded="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CEVAP_METNI}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

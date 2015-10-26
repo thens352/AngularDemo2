@@ -1,0 +1,78 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form" style="padding-bottom:200px;">
+		<ui:include src="resources/composite/menu.xhtml" />
+		<p:panel header="Yakıt Araç Anasayfa" style="text-align:center;">
+			<p:dataTable id="aracTable" var="arac" paginator="true"
+				sortBy="#{arac.id}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15"
+				emptyMessage="Arama kriterlerine uyan herhangi bir araç bulunamadı."
+				filteredValue="#{aracService.filtrelenenAracList}"
+				value="#{aracService.aracList}" editable="true"
+				style="margin-bottom:20px">
+
+				<p:ajax event="rowEdit" listener="#{aracService.guncelle}"
+					update=":form:aracTable,:form:msgs" />
+
+				<f:facet name="header">
+					<p:outputLabel value="Araçlar" />
+				</f:facet>
+
+				<f:facet name="footer">
+					<p:commandButton value="Yeni Araç Ekle"
+						onclick="PF('dlg1').show();" />
+				</f:facet>
+
+				<p:column filterBy="#{arac.plaka}" style="text-align:center;"
+					sortBy="#{arac.plaka}" headerText="Plaka"
+					filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel value="#{arac.plaka}" />
+						</f:facet>
+						<f:facet name="input">
+							<pe:inputNumber value="#{arac.plaka}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="width:14px">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column style="width:26px;text-align: center">
+					<p:commandButton update=":form:aracTable,:form:msgs"
+						process="@this" action="#{aracService.sil}" icon="ui-icon-trash"
+						title="Sil">
+						<f:setPropertyActionListener value="#{arac}"
+							target="#{aracService.arac}" />
+					</p:commandButton>
+				</p:column>
+
+			</p:dataTable>
+
+			<p:dialog id="yeniArac" header="Yeni Araç" widgetVar="dlg1"
+				showEffect="size" hideEffect="scale" draggable="false"
+				resizable="false" modal="true">
+				<p:panel id="yeniAracPanel"
+					style="text-align:center;border-style: none !important;">
+					<pe:inputNumber value="#{aracService.arac.plaka}"
+						placeholder="Plaka" required="#{aracService.arac.plaka==null}"
+						requiredMessage="Plaka boş geçilemez" />
+					<p:spacer width="20px" />
+					<p:commandButton value="Ekle" process="@parent"
+						update=":form:yeniAracPanel,:form:aracTable,:form:msgs"
+						oncomplete="if (args &amp;&amp; !args.validationFailed) PF('dlg1').hide()"
+						action="#{aracService.ekle}" />
+				</p:panel>
+			</p:dialog>
+		</p:panel>
+	</h:form>
+</f:view>

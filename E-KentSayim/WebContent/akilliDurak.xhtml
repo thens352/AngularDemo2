@@ -1,0 +1,432 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+	</h:head>
+	<h:form id="form" style="padding-bottom:200px;">
+		<ui:include src="resources/composite/menu.xhtml" />
+
+		<p:panel header="e11-Akıllı Durak" style="text-align:center;">
+
+			<p:panelGrid columns="10">
+
+				<p:outputLabel value="Bölge :" />
+				<p:selectOneMenu var="b" filter="true"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{akilliDurakService.akilliDurakSearch.bolge}">
+					<f:selectItem noSelectionOption="true" itemLabel="Bölge Seç"
+						itemValue="" />
+					<f:selectItems value="#{akilliDurakService.bolgeList}" var="bolge"
+						itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+					<p:column>
+						<h:outputText value="#{b.ad}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Kullanıcı :" />
+				<p:selectOneMenu var="k" filter="true"
+					converter="omnifaces.SelectItemsConverter"
+					value="#{akilliDurakService.akilliDurakSearch.kullanici}">
+					<f:selectItem noSelectionOption="true" itemLabel="Kullanıcı Seç"
+						itemValue="" />
+					<f:selectItems value="#{akilliDurakService.kullaniciList}"
+						var="kullanici" itemValue="#{kullanici}"
+						itemLabel="#{kullanici.kullaniciAdi}" />
+					<p:column>
+						<h:outputText value="#{k.kullaniciAdi}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Barkod :" />
+				<p:inputText value="#{akilliDurakService.akilliDurakSearch.barkod}"
+					placeholder="Barkod" />
+
+				<p:outputLabel value="Cihaz Seri no :" />
+				<p:inputText
+					value="#{akilliDurakService.akilliDurakSearch.cihazSeriNo}"
+					placeholder="Cihaz Seri Numarası" />
+
+				<p:outputLabel value="Marka :" />
+				<p:selectOneMenu var="m" filter="true"
+					value="#{akilliDurakService.akilliDurakSearch.marka}">
+					<f:selectItem noSelectionOption="true" itemLabel="Marka Seç"
+						itemValue="" />
+					<f:selectItems value="#{akilliDurakService.markaList}" var="marka"
+						itemValue="#{marka}" itemLabel="#{marka.label}" />
+					<p:column>
+						<h:outputText value="#{m.valueOf}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Model :" />
+				<p:selectOneMenu var="md" filter="true"
+					value="#{akilliDurakService.akilliDurakSearch.model}">
+					<f:selectItem noSelectionOption="true" itemLabel="Model Seç"
+						itemValue="" />
+					<f:selectItems value="#{akilliDurakService.modelList}" var="model"
+						itemValue="#{model}" itemLabel="#{model.label}" />
+					<p:column>
+						<h:outputText value="#{md.valueOf}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Durak Adı :" />
+				<p:inputText
+					value="#{akilliDurakService.akilliDurakSearch.durakAdi}"
+					placeholder="Durak Adı" />
+
+				<p:outputLabel value="Durum :" />
+				<p:selectOneMenu var="dr" filter="true"
+					value="#{akilliDurakService.akilliDurakSearch.durum}">
+					<f:selectItem noSelectionOption="true" itemLabel="Durum Seç"
+						itemValue="" />
+					<f:selectItems value="#{akilliDurakService.durumTipleri}"
+						var="durumTipi" itemValue="#{durumTipi}"
+						itemLabel="#{durumTipi.displayName}" />
+					<p:column>
+						<h:outputText value="#{dr.displayName}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:commandButton value="Ara" process="@parent"
+					update=":form:akilliDurakTable" action="#{akilliDurakService.ara}" />
+			</p:panelGrid>
+
+			<p:dataTable id="akilliDurakTable" var="akilliDurak" paginator="true"
+				sortBy="#{akilliDurak.barkod}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="10,20,50" rows="10"
+				value="#{akilliDurakService.akilliDurakList}" editable="true"
+				emptyMessage="Kayıt bulunamadı." style="margin-bottom:20px">
+
+				<p:ajax event="rowEdit" listener="#{akilliDurakService.guncelle}"
+					update=":form:akilliDurakTable,:form:msgs" />
+
+				<p:column style="text-align:center;" sortBy="gununTarihi"
+					headerText="Günün Tarihi">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{akilliDurak.gununTarihi}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:calendar value="#{akilliDurak.gununTarihi}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="barkod"
+					headerText="Barkod">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{akilliDurak.barkod}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{akilliDurak.barkod}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="cihazSeriNo"
+					headerText="Cihaz Seri No">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{akilliDurak.cihazSeriNo}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{akilliDurak.cihazSeriNo}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="marka"
+					headerText="Marka">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{akilliDurak.marka}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="m" filter="true" style="width:185px;"
+								value="#{akilliDurak.marka}">
+								<f:selectItem noSelectionOption="true" itemLabel="Marka Seç"
+									itemValue="" />
+								<f:selectItems value="#{akilliDurakService.markaList}"
+									var="marka" itemValue="#{marka}" itemLabel="#{marka.label}" />
+								<p:column>
+									<h:outputText value="#{m.valueOf}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="model"
+					headerText="Model">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{akilliDurak.model}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="md" filter="true" style="width:185px;"
+								value="#{akilliDurak.model}">
+								<f:selectItem noSelectionOption="true" itemLabel="Model Seç"
+									itemValue="" />
+								<f:selectItems value="#{akilliDurakService.modelList}"
+									var="model" itemValue="#{model}" itemLabel="#{model.label}" />
+								<p:column>
+									<h:outputText value="#{md.valueOf}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="gpsKoordinati"
+					headerText="Gps Koordinatı">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px"
+								value="#{akilliDurak.gpsKoordinati}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{akilliDurak.gpsKoordinati}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="adresi"
+					headerText="Adres">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{akilliDurak.adresi}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{akilliDurak.adresi}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="durakAdi"
+					headerText="Durak Adı">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{akilliDurak.durakAdi}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{akilliDurak.durakAdi}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="termId"
+					headerText="Term ID">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{akilliDurak.termId}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{akilliDurak.termId}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="durum"
+					headerText="Durum">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{akilliDurak.durum}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="dr" filter="true" style="width:185px;"
+								value="#{akilliDurak.durum}">
+								<f:selectItem noSelectionOption="true" itemLabel="Durum Seç"
+									itemValue="" />
+								<f:selectItems value="#{akilliDurakService.durumTipleri}"
+									var="durumTipi" itemValue="#{durumTipi}"
+									itemLabel="#{durumTipi.displayName}" />
+								<p:column>
+									<h:outputText value="#{dr.displayName}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="kullanici.kullaniciAdi"
+					headerText="Kullanıcı">
+					<p:outputLabel style="width:30px"
+						value="#{akilliDurak.kullanici.kullaniciAdi}" />
+				</p:column>
+
+				<p:column style="text-align:center;" sortBy="bolge.ad"
+					headerText="Bölge">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:outputLabel style="width:30px" value="#{akilliDurak.bolge.ad}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu var="b" filter="true" style="width:185px;"
+								converter="omnifaces.SelectItemsConverter"
+								value="#{akilliDurak.bolge}">
+								<f:selectItem noSelectionOption="true" itemLabel="Bölge Seç"
+									itemValue="" />
+								<f:selectItems value="#{akilliDurakService.bolgeList}"
+									var="bolge" itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+								<p:column>
+									<h:outputText value="#{b.ad}" />
+								</p:column>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column exportable="false" style="width:14px;text-align: center">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column exportable="false" style="width:26px;text-align: center">
+					<p:commandButton update=":form:akilliDurakTable,:form:msgs"
+						process="@this" action="#{akilliDurakService.sil}"
+						icon="ui-icon-trash" title="Sil">
+						<f:setPropertyActionListener value="#{akilliDurak}"
+							target="#{akilliDurakService.akilliDurak}" />
+					</p:commandButton>
+				</p:column>
+
+				<f:facet name="footer">
+					<p:commandButton value="Yeni Akıllı Durak Ekle"
+						onclick="PF('dlg1').show();" />
+				</f:facet>
+
+				<f:facet name="footer">
+					<h:commandLink style="float:right" id="excel" immediate="true">
+						<h:graphicImage value="/resources/images/excel.png" width="25"
+							height="25" />
+						<p:dataExporter type="xls" target="akilliDurakTable"
+							fileName="akilliDurakRapor" />
+					</h:commandLink>
+				</f:facet>
+
+
+			</p:dataTable>
+
+
+
+			<p:dialog id="yeniakilliDurak" header="Yeni Akıllı Durak"
+				widgetVar="dlg1" showEffect="size" hideEffect="scale"
+				draggable="false" resizable="false" modal="true">
+				<p:panel id="yeniakilliDurakPanel"
+					style="text-align:center;border-style: none !important;">
+					<p:panelGrid columns="4">
+
+						<p:outputLabel value="Bölge :" />
+						<p:selectOneMenu var="b" filter="true"
+							required="#{akilliDurakService.akilliDurak.bolge==null}"
+							requiredMessage="Bölge boş geçilemez"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{akilliDurakService.akilliDurak.bolge}">
+							<f:selectItems value="#{akilliDurakService.bolgeList}"
+								var="bolge" itemValue="#{bolge}" itemLabel="#{bolge.ad}" />
+							<p:column>
+								<h:outputText value="#{b.ad}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Kullanıcı :" />
+						<p:selectOneMenu var="k" filter="true"
+							required="#{akilliDurakService.akilliDurak.kullanici==null}"
+							requiredMessage="Kullanıcı boş geçilemez"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{akilliDurakService.akilliDurak.kullanici}">
+							<f:selectItems value="#{akilliDurakService.kullaniciList}"
+								var="kullanici" itemValue="#{kullanici}"
+								itemLabel="#{kullanici.kullaniciAdi}" />
+							<p:column>
+								<h:outputText value="#{k.kullaniciAdi}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Barkod :" />
+						<p:inputText
+							required="#{akilliDurakService.akilliDurak.barkod==null}"
+							requiredMessage="Barkod boş geçilemez"
+							value="#{akilliDurakService.akilliDurak.barkod}"
+							placeholder="Barkod" />
+
+						<p:outputLabel value="Cihaz Seri Numarası :" />
+						<p:inputText value="#{akilliDurakService.akilliDurak.cihazSeriNo}"
+							placeholder="Cihaz Seri Numarası"
+							required="#{akilliDurakService.akilliDurak.cihazSeriNo==null}"
+							requiredMessage="Cihaz Seri No Boş geçilemez" />
+
+
+						<p:outputLabel value="Marka :" />
+						<p:selectOneMenu var="m" filter="true"
+							required="#{akilliDurakService.akilliDurak.marka==null}"
+							requiredMessage="Marka boş geçilemez"
+							value="#{akilliDurakService.akilliDurak.marka}">
+							<f:selectItems value="#{akilliDurakService.markaList}"
+								var="marka" itemValue="#{marka}" itemLabel="#{marka.label}" />
+							<p:column>
+								<h:outputText value="#{m.valueOf}" />
+							</p:column>
+						</p:selectOneMenu>
+
+
+						<p:outputLabel value="Model :" />
+						<p:selectOneMenu var="md" filter="true"
+							required="#{akilliDurakService.akilliDurak.model==null}"
+							requiredMessage="Model boş geçilemez"
+							value="#{akilliDurakService.akilliDurak.model}">
+							<f:selectItems value="#{akilliDurakService.modelList}"
+								var="model" itemValue="#{model}" itemLabel="#{model.label}" />
+							<p:column>
+								<h:outputText value="#{md.valueOf}" />
+							</p:column>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Gps Koordinatı :" />
+						<p:inputText
+							value="#{akilliDurakService.akilliDurak.gpsKoordinati}"
+							placeholder="Gps Koorditanı"
+							required="#{akilliDurakService.akilliDurak.gpsKoordinati==null and akilliDurakService.durumStatu}"
+							requiredMessage="Gps Koordinatı Boş geçilemez" />
+
+						<p:outputLabel value="Adres :" />
+						<p:inputText value="#{akilliDurakService.akilliDurak.adresi}"
+							placeholder="Adres"
+							required="#{akilliDurakService.akilliDurak.adresi==null and akilliDurakService.durumStatu}"
+							requiredMessage="Adres Boş geçilemez" />
+
+						<p:outputLabel value="Durak Adı :" />
+						<p:inputText value="#{akilliDurakService.akilliDurak.durakAdi}"
+							placeholder="Durak Adı"
+							required="#{akilliDurakService.akilliDurak.durakAdi==null and akilliDurakService.durumStatu}"
+							requiredMessage="Durak Adı Boş geçilemez" />
+
+						<p:outputLabel value="Durum :" />
+						<p:selectOneMenu var="dr" filter="true"
+							value="#{akilliDurakService.akilliDurak.durum}">
+							<f:selectItems value="#{akilliDurakService.durumTipleri}"
+								var="durumTipi" itemValue="#{durumTipi}"
+								itemLabel="#{durumTipi.displayName}" />
+							<p:column>
+								<h:outputText value="#{dr.displayName}" />
+							</p:column>
+							<p:ajax event="change" update=":form:yeniakilliDurakPanel" />
+						</p:selectOneMenu>
+
+						<p:commandButton value="Kaydet" process="@parent"
+							update=":form:yeniakilliDurakPanel,:form:akilliDurakTable,:form:msgs"
+							oncomplete="if (args &amp;&amp; !args.validationFailed) PF('dlg1').hide()"
+							action="#{akilliDurakService.ekle}" />
+					</p:panelGrid>
+				</p:panel>
+			</p:dialog>
+
+		</p:panel>
+	</h:form>
+</f:view>

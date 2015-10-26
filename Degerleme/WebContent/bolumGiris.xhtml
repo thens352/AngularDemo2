@@ -1,0 +1,46 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" contentType="text/html">
+	<h:head>
+	</h:head>
+
+
+
+	<h:form id="form1">
+		<p:panelGrid columns="2">
+			<p:column>
+				<p:row>
+					<p:outputLabel value="Form" />
+					<p:selectOneMenu converter="omnifaces.SelectItemsConverter"
+						id="form" var="f" filter="true" filterMatchMode="contains"
+						value="#{bolumGirisi.form}">
+						<f:selectItem itemLabel="Form Seç" itemValue=""
+							noSelectionOption="true" />
+						<f:selectItems value="#{bolumGirisi.formList}" var="form"
+							itemValue="#{form}" itemLabel="#{form.name}" />
+						<p:column>
+							<h:outputText value="#{f.name}" />
+						</p:column>
+					</p:selectOneMenu>
+				</p:row>
+				<pre />
+				<p:row>
+					<p:outputLabel value="Bölüm Adı" />
+					<p:inputText value="#{bolumGirisi.bolum.name}" />
+					<pre />
+					<p:outputLabel value="Bölüm Sırası" />
+					<p:inputText value="#{bolumGirisi.bolum.sira}" style="float:right;" />
+				</p:row>
+				<pre />
+				<p:row>
+					<p:button value="Listele" outcome="bolumList" />
+					<p:commandButton value="Kaydet" style="float:right;"
+						actionListener="#{bolumGirisi.kaydet}" />
+				</p:row>
+			</p:column>
+		</p:panelGrid>
+	</h:form>
+
+</f:view>

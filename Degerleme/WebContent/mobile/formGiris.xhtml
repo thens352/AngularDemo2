@@ -1,0 +1,295 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pm="http://primefaces.org/mobile" contentType="text/html"
+	renderKitId="PRIMEFACES_MOBILE">
+	<pm:page title="Mobile">
+
+		<pm:view>
+			<pm:header>
+
+			</pm:header>
+			<pm:content>
+				<h:form id="form1">
+					<p:panel id="anaPanel" header="Form Girişi">
+						<p:panelGrid columns="1">
+							<p:column>
+								<p:row>
+									<p:panel style="text-align:center;">
+										<pm:field>
+											<p:outputLabel value="Form Adı " />
+											<p:inputText value="#{formGirisi.form.name}" />
+										</pm:field>
+									</p:panel>
+								</p:row>
+								<p:row>
+									<p:panel header="Bölümler" style="text-align:center;">
+										<pm:field>
+											<p:dataTable id="bolumler" paginator="true" rows="10"
+												paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+												rowsPerPageTemplate="5,10,15" var="bolum"
+												value="#{formGirisi.form.bolumList}">
+												<p:column headerText="İşlemler">
+													<p:commandButton value="Güncelle"
+														actionListener="#{formGirisi.bolumGuncelleHazirla(bolum)}"
+														update=":form1:bolumEkle" oncomplete="PF('dlg1').show();" />
+													<p:commandButton value="Sil"
+														actionListener="#{formGirisi.bolumSil(bolum)}"
+														update=":form1:bolumler" />
+												</p:column>
+												<p:column headerText="Bölüm Sırası">
+													<p:outputLabel value="#{bolum.sira}" />
+												</p:column>
+												<p:column headerText="Bölüm Adı">
+													<p:outputLabel value="#{bolum.name}" />
+												</p:column>
+											</p:dataTable>
+										</pm:field>
+										<pm:field>
+											<p:commandButton value="Bölüm Ekle"
+												actionListener="#{formGirisi.yeniBolum}"
+												onclick="PF('dlg1').show();" />
+										</pm:field>
+									</p:panel>
+								</p:row>
+								<pm:field>
+									<p:commandButton actionListener="#{formGirisi.kaydet}"
+										update=":form1" value="Kaydet" />
+									<p:button outcome="formList" style="float:right;"
+										value="Listele" />
+								</pm:field>
+							</p:column>
+						</p:panelGrid>
+
+						<p:dialog id="bolumEkle" header="Bölüm Ekle" widgetVar="dlg1"
+							maximizable="true" height="550px" width="1200px" modal="true">
+							<p:panelGrid id="bolum11" columns="2">
+								<p:column>
+									<p:row>
+										<pm:field>
+											<p:outputLabel value="Bölüm Adı" />
+											<p:inputText value="#{formGirisi.bolum.name}" />
+										</pm:field>
+										<pm:field>
+											<p:inputText value="#{formGirisi.bolum.sira}"
+												style="float:right;" />
+											<p:outputLabel style="float:right;" value="Bölüm Sırası" />
+										</pm:field>
+									</p:row>
+
+									<p:row>
+										<p:panel header="Sorular" style="text-align:center;">
+											<pm:field>
+												<p:dataTable id="sorular" paginator="true" rows="5"
+													paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+													rowsPerPageTemplate="5,10,15" var="soru"
+													value="#{formGirisi.bolum.soruListesi}">
+													<p:column headerText="İşlemler">
+														<p:commandButton value="Güncelle"
+															actionListener="#{formGirisi.soruGuncelleHazirla(soru)}"
+															update=":form1:soruEkle" oncomplete="PF('dlg2').show();" />
+														<p:commandButton value="Sil"
+															actionListener="#{formGirisi.soruSil(soru)}"
+															update=":form1:sorular" />
+													</p:column>
+													<p:column headerText="Sıra No">
+														<p:outputLabel value="#{soru.siraNo}" />
+													</p:column>
+													<p:column headerText="Default Cevap">
+														<p:outputLabel value="#{soru.defaultCevap}" />
+													</p:column>
+													<p:column headerText="Parametre Sayısı">
+														<p:outputLabel value="#{soru.parametreSayisi}" />
+													</p:column>
+													<p:column headerText="Soru Metni">
+														<p:outputLabel value="#{soru.soruMetni}" />
+													</p:column>
+													<p:column headerText="Soru Uyarı">
+														<p:outputLabel value="#{soru.soruUyari}" />
+													</p:column>
+												</p:dataTable>
+											</pm:field>
+											<pm:field>
+												<p:commandButton value="Soru Ekle"
+													actionListener="#{formGirisi.yeniSoru}"
+													onclick="PF('dlg2').show();" />
+											</pm:field>
+										</p:panel>
+									</p:row>
+									<pm:field>
+										<p:commandButton value="İptal" oncomplete="PF('dlg1').hide();" />
+										<p:commandButton value="Ekle" style="float:right;"
+											actionListener="#{formGirisi.bolumEkle}"
+											update=":form1:bolumler,:form1:bolumEkle"
+											oncomplete="PF('dlg1').hide();" />
+									</pm:field>
+								</p:column>
+							</p:panelGrid>
+						</p:dialog>
+						<p:dialog id="soruEkle" header="Soru Ekle" widgetVar="dlg2"
+							maximizable="true" modal="true">
+							<p:panelGrid id="sts" columns="2">
+								<p:row>
+									<pm:field>
+										<p:outputLabel value="Soru Tipi" />
+										<p:selectOneMenu converter="omnifaces.SelectItemsConverter"
+											onchange="#{formGirisi.soruTipiDegistir(formGirisi.soru.soruTipi)}"
+											id="soruTipi" var="st" filter="true"
+											filterMatchMode="contains"
+											value="#{formGirisi.soru.soruTipi}">
+											<f:selectItems value="#{formGirisi.soruTipleri}"
+												var="soruTipi" itemValue="#{soruTipi}"
+												itemLabel="#{soruTipi.i18nKey}" />
+											<p:column>
+												<h:outputText value="#{st.i18nKey}" />
+											</p:column>
+											<p:ajax update=":form1:sts,:form1:secenekEkle" />
+										</p:selectOneMenu>
+									</pm:field>
+									<pre />
+									<pm:field>
+										<p:outputLabel value="Sıra No" />
+										<p:inputText value="#{formGirisi.soru.siraNo}" />
+									</pm:field>
+									<pre />
+									<pm:field>
+										<p:outputLabel rendered="#{formGirisi.defaultCevapSoru}"
+											value="Default Cevap" />
+										<p:inputTextarea rendered="#{formGirisi.defaultCevapSoru}"
+											value="#{formGirisi.soru.defaultCevap}" />
+									</pm:field>
+									<pre />
+									<pm:field>
+										<p:outputLabel rendered="#{formGirisi.parametreSayisiSoru}"
+											value="Parametre Sayisi" />
+										<p:inputText rendered="#{formGirisi.parametreSayisiSoru}"
+											value="#{formGirisi.soru.parametreSayisi}" />
+									</pm:field>
+									<pre />
+									<pm:field>
+										<p:outputLabel value="Soru Metni" />
+										<p:inputTextarea value="#{formGirisi.soru.soruMetni}" />
+									</pm:field>
+									<pre />
+									<pm:field>
+										<p:outputLabel rendered="#{formGirisi.soruUyari}"
+											value="Soru Uyarı" />
+										<p:inputTextarea rendered="#{formGirisi.soruUyari}"
+											value="#{formGirisi.soru.soruUyari}" />
+									</pm:field>
+								</p:row>
+								<p:row>
+									<p:panel rendered="#{formGirisi.secenekVarMi}"
+										header="Secenekler" style="text-align:center;">
+										<pm:field>
+											<p:dataTable id="secenekler" paginator="true" rows="5"
+												paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+												rowsPerPageTemplate="5,10,15" var="secenek"
+												value="#{formGirisi.soru.seceneklList}">
+												<p:column headerText="İşlemler" style="text-align:center;">
+													<p:commandButton value="Güncelle"
+														actionListener="#{formGirisi.secenekGuncelleHazirla(secenek)}"
+														update=":form1:secenekEkle"
+														oncomplete="PF('dlg3').show();" />
+													<p:commandButton value="Sil"
+														actionListener="#{formGirisi.secenekSil(secenek)}"
+														update=":form1:secenekler" />
+												</p:column>
+												<p:column headerText="Sıra No">
+													<p:outputLabel value="#{secenek.siraNo}" />
+												</p:column>
+												<p:column headerText="Seçenek Metni">
+													<p:outputLabel value="#{secenek.metin}" />
+												</p:column>
+												<p:column headerText="Parametre Sayisi">
+													<p:outputLabel value="#{secenek.parametreSayisi}" />
+												</p:column>
+												<p:column headerText="Açıklama">
+													<p:outputLabel value="#{secenek.aciklama}" />
+												</p:column>
+												<p:column headerText="Seçenek Tipi">
+													<p:outputLabel value="#{secenek.secenekTipi}" />
+												</p:column>
+											</p:dataTable>
+										</pm:field>
+										<pm:field>
+											<p:commandButton value="Secenek Ekle"
+												actionListener="#{formGirisi.yeniSecenek}"
+												onclick="PF('dlg3').show();" />
+										</pm:field>
+									</p:panel>
+								</p:row>
+								<pm:field>
+									<p:commandButton value="İptal" oncomplete="PF('dlg2').hide();" />
+									<p:commandButton value="Ekle"
+										actionListener="#{formGirisi.soruEkle}" style="float:right;"
+										update=":form1:sorular,:form1:soruEkle"
+										oncomplete="PF('dlg2').hide();" />
+								</pm:field>
+							</p:panelGrid>
+						</p:dialog>
+						<p:dialog id="secenekEkle" header="Seçenek Ekle" widgetVar="dlg3"
+							maximizable="true" modal="true">
+							<p:panelGrid columns="1">
+								<p:column>
+									<p:row>
+										<pm:field>
+											<p:outputLabel value="Sıra No" />
+											<p:inputText value="#{formGirisi.secenek.siraNo}" />
+										</pm:field>
+										<pre />
+										<pm:field>
+											<p:outputLabel value="Seçenek Metni" />
+											<p:inputText value="#{formGirisi.secenek.metin}" />
+										</pm:field>
+										<pre />
+										<pm:field>
+											<p:outputLabel rendered="#{formGirisi.defaultCevapSecenek}"
+												value="Default Cevap" />
+											<p:inputText rendered="#{formGirisi.defaultCevapSecenek}"
+												value="#{formGirisi.secenek.defaultCevap}" />
+										</pm:field>
+										<pre />
+										<pm:field>
+											<p:outputLabel
+												rendered="#{formGirisi.parametreSayisiSecenek}"
+												value="Parametre Sayisi" />
+											<p:inputText rendered="#{formGirisi.parametreSayisiSecenek}"
+												value="#{formGirisi.secenek.parametreSayisi}" />
+										</pm:field>
+										<pre />
+										<pm:field>
+											<p:outputLabel rendered="#{formGirisi.aciklamaVarMi}"
+												value="Açıklama Var Mı?" />
+											<p:selectOneRadio rendered="#{formGirisi.aciklamaVarMi}"
+												converter="omnifaces.SelectItemsConverter"
+												style="float:right;" id="aciklama"
+												value="#{formGirisi.secenek.aciklamaVarmi}">
+												<f:selectItem itemLabel="Yok" itemValue="Yok" />
+												<f:selectItem itemLabel="Var" itemValue="Var" />
+											</p:selectOneRadio>
+										</pm:field>
+									</p:row>
+								</p:column>
+								<pm:field>
+									<f:facet name="footer">
+										<p:outputLabel
+											value="(Uyarı:Boşluk Doldurma sorularında boşluklar için '___' i kullanınız.)" />
+									</f:facet>
+								</pm:field>
+							</p:panelGrid>
+							<pm:field>
+								<p:commandButton value="İptal" oncomplete="PF('dlg3').hide();" />
+								<p:commandButton style="float:right;"
+									actionListener="#{formGirisi.secenekEkle}"
+									update=":form1:secenekler,:form1:secenekEkle" value="Ekle"
+									oncomplete="PF('dlg3').hide();" />
+							</pm:field>
+						</p:dialog>
+					</p:panel>
+				</h:form>
+			</pm:content>
+		</pm:view>
+	</pm:page>
+</f:view>
